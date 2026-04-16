@@ -1,0 +1,141 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Initialize React + Vite PWA project with TypeScript and Tailwind CSS",
+        "description": "Set up the foundational project structure using Vite, React 18, TypeScript, Tailwind CSS, and PWA capabilities for offline-first functionality",
+        "details": "1. Run `npm create vite@latest . -- --template react-ts` to initialize React with TypeScript\n2. Install dependencies: `npm install -D tailwindcss postcss autoprefixer vite-plugin-pwa`\n3. Initialize Tailwind: `npx tailwindcss init -p`\n4. Configure tailwind.config.js with content paths: ['./index.html', './src/**/*.{js,ts,jsx,tsx}']\n5. Add Tailwind directives to src/index.css: @tailwind base; @tailwind components; @tailwind utilities;\n6. Install vite-plugin-pwa and configure in vite.config.ts with registerType: 'autoUpdate', workbox strategies for offline caching\n7. Add PWA manifest.json with app name 'Workout Plan PWA', theme_color: dark, display: 'standalone', icons (192x192, 512x512)\n8. Configure TypeScript strict mode in tsconfig.json\n9. Set up ESLint and Prettier for code quality\n10. Create basic folder structure: src/{components, pages, hooks, services, types, utils}",
+        "testStrategy": "Verify: npm run dev starts development server successfully, Tailwind classes render correctly, PWA manifest is accessible at /manifest.json, Service worker registers in browser DevTools, TypeScript compilation has no errors",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 2,
+        "title": "Configure Supabase backend with authentication and database schema",
+        "description": "Set up Supabase project, configure authentication, and create PostgreSQL schema for users, routines, exercises, and workout_logs",
+        "details": "1. Create Supabase project at supabase.com\n2. Install Supabase client: `npm install @supabase/supabase-js @supabase/auth-ui-react @supabase/auth-ui-shared`\n3. Create .env.local with VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY\n4. Create src/services/supabase.ts client initialization using createClient()\n5. Execute SQL schema:\n   - CREATE TABLE routines (id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), user_id UUID REFERENCES auth.users NOT NULL, name TEXT NOT NULL, created_at TIMESTAMPTZ DEFAULT NOW());\n   - CREATE TABLE exercises (id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), routine_id UUID REFERENCES routines ON DELETE CASCADE, name TEXT NOT NULL, muscle_group TEXT, machine_info TEXT, target_sets_reps TEXT, media_url TEXT, sort_order INTEGER DEFAULT 0);\n   - CREATE TABLE workout_logs (id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), user_id UUID REFERENCES auth.users NOT NULL, exercise_id UUID REFERENCES exercises, date DATE DEFAULT CURRENT_DATE, weight_used DECIMAL(5,2), reps_completed INTEGER, user_comment TEXT, created_at TIMESTAMPTZ DEFAULT NOW());\n6. Enable Row Level Security (RLS) policies: users can only read/write their own data\n7. Set up Storage bucket 'exercise-media' for JPG/GIF uploads with public read access\n8. Create database indexes on user_id, routine_id, exercise_id for query performance",
+        "testStrategy": "Verify: Supabase client connects successfully, tables exist in Supabase dashboard, RLS policies prevent unauthorized access, can upload test image to Storage bucket, queries execute without errors",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 3,
+        "title": "Implement authentication flow with Supabase Auth",
+        "description": "Create login/signup pages with email authentication, protected routes, and session management",
+        "details": "1. Create src/contexts/AuthContext.tsx using React Context API to manage auth state\n2. Use Supabase's onAuthStateChange to track session changes\n3. Create src/pages/Auth.tsx with Supabase Auth UI component for magic link/password login\n4. Install react-router-dom: `npm install react-router-dom`\n5. Create ProtectedRoute component that redirects to /auth if not authenticated\n6. Configure routes in App.tsx: /auth (public), /routines, /workout/:id (protected)\n7. Implement signOut functionality in header/nav component\n8. Store user session in localStorage for persistence\n9. Add loading state while checking authentication status\n10. Style auth page with Tailwind dark theme (bg-gray-900, text-white)",
+        "testStrategy": "Test: Sign up with new email creates user in Supabase, login redirects to /routines, protected routes redirect unauthenticated users to /auth, logout clears session, page refresh maintains authentication state",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 4,
+        "title": "Create routine management interface (CRUD operations)",
+        "description": "Build interface to create, view, edit, and delete workout routines with exercise lists",
+        "details": "1. Create src/pages/Routines.tsx as main dashboard listing all routines\n2. Create src/components/RoutineCard.tsx displaying routine name with exercise count\n3. Implement createRoutine() service function: INSERT INTO routines (user_id, name) VALUES (...)\n4. Create src/pages/RoutineEditor.tsx for adding/editing exercises within a routine\n5. Implement drag-and-drop sorting using @dnd-kit/core: `npm install @dnd-kit/core @dnd-kit/sortable`\n6. Exercise form fields: name (text), muscle_group (select: Chest, Back, Legs, Shoulders, Arms), machine_info (text), target_sets_reps (text e.g. '12/10/8'), media upload\n7. Implement updateExerciseOrder() to save sort_order to database\n8. Add deleteRoutine() with confirmation modal using Headless UI: `npm install @headlessui/react`\n9. Create responsive grid layout for routine cards (grid-cols-1 md:grid-cols-2 lg:grid-cols-3)\n10. Add empty state with CTA button when no routines exist",
+        "testStrategy": "Test: Create new routine saves to database and appears in list, add exercises to routine, drag-and-drop reordering persists after page refresh, edit routine name updates correctly, delete routine removes from database, media upload stores URL in exercise.media_url",
+        "priority": "high",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "Implement swipe-based workout session interface",
+        "description": "Create mobile-first workout mode with horizontal swipe navigation between exercises, showing exercise media and input fields",
+        "details": "1. Install Swiper for touch gestures: `npm install swiper`\n2. Create src/pages/WorkoutSession.tsx receiving routineId from route params\n3. Use Swiper component with effect='cards' or 'creative' for smooth transitions\n4. Fetch routine exercises ordered by sort_order on mount\n5. Each slide displays: exercise name, muscle_group, machine_info, target_sets_reps, media (IMG or GIF), input fields for weight and reps\n6. Pre-fill weight/reps with last logged values from workout_logs query: SELECT weight_used, reps_completed FROM workout_logs WHERE exercise_id = ? AND user_id = ? ORDER BY date DESC LIMIT 1\n7. Implement auto-save on input change with debouncing (500ms)\n8. Add progress indicator showing current exercise number / total exercises\n9. Full-screen design optimized for one-hand use: large touch targets (min 44px), bottom-positioned controls\n10. Add 'Complete Workout' button on last slide that saves session and navigates to summary",
+        "testStrategy": "Test: Swipe left/right navigates between exercises, media loads correctly (JPG/GIF), weight/reps pre-fill from previous workout, input changes auto-save, progress bar updates, complete button saves all logs to database, works in airplane mode (offline PWA)",
+        "priority": "high",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 6,
+        "title": "Build exercise media upload and management system",
+        "description": "Create interface for uploading JPG/GIF exercise demonstration media to Supabase Storage with preview",
+        "details": "1. Create src/components/MediaUpload.tsx component accepting exercise_id prop\n2. Implement file input with accept='image/jpeg,image/jpg,image/gif' restriction\n3. Add file size validation (max 10MB) and dimensions check (recommended 1080px width)\n4. Create upload function: supabase.storage.from('exercise-media').upload(`${user_id}/${exercise_id}/${file.name}`, file)\n5. On successful upload, retrieve public URL and update exercises.media_url\n6. Show image/GIF preview using <img> or React component\n7. Add delete media functionality with confirmation\n8. Implement loading spinner during upload with progress percentage\n9. Handle errors gracefully (network failure, quota exceeded, invalid format)\n10. Style with Tailwind: drag-and-drop zone with border-dashed, hover states",
+        "testStrategy": "Test: Upload JPG displays correctly in exercise card, upload GIF plays in workout session, file size over 10MB shows error, invalid format rejected, delete media removes from Storage and clears media_url, upload progress shows percentage, works offline (queues upload)",
+        "priority": "medium",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "Implement workout logging and comment system",
+        "description": "Create functionality to log completed sets with weight, reps, and optional comments per exercise",
+        "details": "1. Create src/components/ExerciseLogger.tsx with controlled inputs for weight (number) and reps (number)\n2. Add textarea for user_comment with placeholder: 'Notes on today's performance, injuries, etc.'\n3. Implement saveWorkoutLog() function: INSERT INTO workout_logs (user_id, exercise_id, date, weight_used, reps_completed, user_comment) VALUES (...)\n4. Use optimistic UI updates: show data immediately, sync to Supabase in background\n5. Add timestamp and date tracking (use current date, allow manual date adjustment for logging past workouts)\n6. Create visual indicator for successful save (checkmark animation using Framer Motion)\n7. Implement input validation: weight and reps must be positive numbers\n8. Add quick-adjust buttons: +/- 2.5kg for weight, +/- 1 rep for reps\n9. Store logs locally in IndexedDB when offline, sync when online using workbox-background-sync\n10. Show loading state and retry mechanism if sync fails",
+        "testStrategy": "Test: Log weight and reps saves to database with correct user_id and exercise_id, comment text persists, date defaults to today, quick-adjust buttons increment correctly, optimistic UI updates immediately, offline logs sync when connection restored, validation prevents negative values",
+        "priority": "high",
+        "dependencies": [
+          5
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 8,
+        "title": "Import initial workout data from PRD specifications",
+        "description": "Create seed data script to populate database with 4 initial routines (Brust & Bizeps, Beine & Schultern, Rücken & Trizeps, Ganzkörper) from PRD",
+        "details": "1. Create src/data/seedData.ts with typed interfaces for RoutineData and ExerciseData\n2. Define 4 routines array based on PRD 'Training 1-4' structure:\n   - Training 1: Brust & Bizeps (exercises like 'Flachbank LH', 'Schrägbank LH', etc.)\n   - Training 2: Beine & Schultern (exercises like 'Beinpresse', 'Beinstrecker', etc.)\n   - Training 3: Rücken & Trizeps (exercises like 'Latzug', 'Rudern', etc.)\n   - Training 4: Ganzkörper Bonus (compound exercises)\n3. For each exercise, include: name, muscle_group, machine_info, target_sets_reps (e.g. '12/10/8')\n4. Create importSeedData() function that checks if user already has routines, prompts before import\n5. Implement batch insert: await supabase.from('routines').insert(...).select() to get IDs, then insert exercises with routine_id foreign keys\n6. Add UI button in settings/profile page: 'Import Sample Workouts'\n7. Show progress modal during import with exercise count\n8. Handle errors: rollback on failure, show user-friendly error messages\n9. Optionally fetch placeholder media URLs from public CDN for demo purposes\n10. Log import completion with timestamp",
+        "testStrategy": "Test: Import creates exactly 4 routines in database, all exercises linked to correct routines, muscle_group and machine_info populated, target_sets_reps format correct, import button disabled after first use, error handling shows message if database unavailable",
+        "priority": "medium",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "Implement dark mode UI with mobile-first responsive design",
+        "description": "Apply comprehensive dark theme styling with Tailwind CSS, optimize for mobile touch interactions and one-handed use",
+        "details": "1. Configure Tailwind darkMode: 'class' in tailwind.config.js\n2. Create src/contexts/ThemeContext.tsx to manage dark mode state (default: dark)\n3. Apply dark mode classes globally: bg-gray-900, text-gray-100, border-gray-700\n4. Style components with dark variants: input fields (bg-gray-800, focus:ring-blue-500), buttons (bg-blue-600 hover:bg-blue-700), cards (bg-gray-800 shadow-lg)\n5. Use high contrast for readability in gym environments: text at least 16px, bold headings\n6. Implement bottom navigation bar (fixed bottom-0) for primary actions: Home, Routines, Profile\n7. Add large touch targets: buttons min-h-12, swipeable areas full width\n8. Optimize for one-handed thumb reach: place primary actions in bottom third of screen\n9. Add haptic feedback using Vibration API on button taps and swipes\n10. Test on various screen sizes: 320px (iPhone SE), 390px (iPhone 14), 428px (iPhone 14 Pro Max)",
+        "testStrategy": "Test: Dark mode applies consistently across all pages, text is readable in low-light conditions, buttons are easily tappable with thumb, bottom nav accessible without stretching, haptic feedback triggers on interactions, responsive breakpoints work on iPhone SE to iPad, no horizontal scroll on any screen size",
+        "priority": "medium",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "Configure PWA offline functionality and deployment to Vercel",
+        "description": "Finalize PWA service worker configuration for offline data sync, cache strategies, and deploy production build to Vercel",
+        "details": "1. Configure vite-plugin-pwa with workbox strategies:\n   - NetworkFirst for API calls (supabase.co/*)\n   - CacheFirst for static assets (images, fonts)\n   - StaleWhileRevalidate for exercise media\n2. Implement background sync queue for workout_logs using workbox-background-sync\n3. Add offline indicator UI component showing connection status\n4. Create custom service worker logic in src/sw.ts for handling failed requests\n5. Set up IndexedDB for local data persistence using idb library: `npm install idb`\n6. Test offline scenarios: log workout without internet, create routine offline, media upload queuing\n7. Create Vercel account and install Vercel CLI: `npm install -g vercel`\n8. Configure vercel.json with build settings: { \"buildCommand\": \"npm run build\", \"outputDirectory\": \"dist\" }\n9. Set environment variables in Vercel dashboard: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY\n10. Deploy: `vercel --prod`, verify PWA installation works on mobile devices\n11. Test PWA 'Add to Home Screen' on iOS Safari and Android Chrome\n12. Configure custom domain if needed and enable HTTPS",
+        "testStrategy": "Test: PWA installs successfully on mobile home screen, app works completely offline (view routines, log workouts), background sync uploads logs when online, offline indicator shows accurate status, static assets load from cache, vercel deployment accessible via URL, HTTPS enabled, Lighthouse PWA score > 90",
+        "priority": "high",
+        "dependencies": [
+          1,
+          5,
+          7
+        ],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2026-04-16T08:06:34.089Z",
+      "updated": "2026-04-16T08:06:34.090Z",
+      "description": "Tasks for master context"
+    }
+  }
+}

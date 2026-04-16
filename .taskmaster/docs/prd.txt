@@ -1,0 +1,61 @@
+# Product Requirement Document (PRD)
+## Custom Trainingsplan PWA
+
+### 1. Projektübersicht
+Die geplante Anwendung ist eine massgeschneiderte, Mobile-First Web-Applikation (Progressive Web App - PWA) zur Erfassung und Verwaltung von Trainingsplänen. Der Fokus liegt auf einer reibungslosen, intuitiven Bedienung während des Trainings (Einhandbedienung, Swipe-Gesten) sowie der visuellen Unterstützung durch Medien.
+
+### 2. Kernfunktionen (Features)
+
+#### 2.1 Benutzerverwaltung & Pläne
+* **Persönliche Konten:** Unterstützung für individuelle Benutzerprofile zur sicheren Speicherung persönlicher Trainingsdaten.
+* **Plankonfiguration:** Nutzer können mehrere Trainingseinheiten selbst erstellen und konfigurieren (z.B. gemäss dem bestehenden "3er Split" oder dem "Ganzkörper Bonus" Plan).
+* **Übungsverwaltung:** Hinzufügen, Bearbeiten und Sortieren von Übungen innerhalb einer Trainingseinheit.
+
+#### 2.2 Trainings-Modus & Navigation
+* **Swipe-Navigation:** Nach der Auswahl eines Plans (z.B. "Rücken & Trizeps") wird der Nutzer in eine Fokus-Ansicht geleitet. Man kann einfach zur nächsten Übung swipen (wischen), was den Flow während des Trainings nicht unterbricht.
+* **Smart Defaults:** Die Eingabefelder für Gewicht und Wiederholungen sind vorausgefüllt (mit dem Startgewicht oder den Werten der letzten Session).
+
+#### 2.3 Medien-Unterstützung (Bilder & GIFs)
+* **Visuelle Hilfen:** Für jede Übung kann ein JPG-Bild oder ein GIF-Video hinterlegt werden. Dies dient als direkte bildliche Information zur korrekten Ausführung der Übung direkt im Swipe-Screen.
+
+#### 2.4 Logging & Tracking
+* **Schnelleingabe:** Aktualisieren des Gewichts und der erreichten Wiederholungen entsprechend der erbrachten Leistung.
+* **Kommentarfunktion:** Ein Textfeld pro geloggter Übung für Notizen zur Tagesform, Verletzungen, abweichenden Leistungen oder sonstigen Beobachtungen (z.B. "Schulter zwickt, musste Gewicht reduzieren").
+
+### 3. User Interface (UI) / User Experience (UX)
+* **Mobile-First:** Konsequent für Smartphones entworfen. Grosse Touch-Flächen für die Bedienung mit verschwitzten Händen.
+* **Dark Mode (empfohlen):** Akkusparend und angenehm für die Augen in Studioumgebungen.
+* **Offline-Fähigkeit:** Die PWA-Architektur stellt sicher, dass Trainingsdaten auch ohne aktive Internetverbindung erfasst und später synchronisiert werden können (wichtig für Trainingsbereiche im Untergeschoss).
+
+### 4. Datenmodell (Vorschlag für Backend/Datenbank)
+
+**Tabelle: `users`**
+* Standard Authentifizierungs-Tabelle (z.B. via Supabase Auth).
+
+**Tabelle: `routines` (Trainingspläne)**
+* `id`, `user_id`, `name` (z.B. "Training 1: Brust & Bizeps")
+
+**Tabelle: `exercises` (Übungen)**
+* `id`, `routine_id`, `name` (z.B. "Flachbank LH")
+* `muscle_group`, `machine_info` (z.B. "Gerät 41")
+* `target_sets_reps` (z.B. "12 / 10 / 8")
+* `media_url` (Link zum JPG/GIF im Storage)
+
+**Tabelle: `workout_logs` (Leistungserfassung)**
+* `id`, `user_id`, `exercise_id`, `date`
+* `weight_used`, `reps_completed`
+* `user_comment` (Notizen zur Tagesform/Verletzung)
+
+### 5. Initialer Datenbestand (Aus bestehenden CSVs)
+Das System sollte so aufgebaut sein, dass die initialen Daten aus den zur Verfügung gestellten Dokumenten ("Trainingsplan 01-2026") einfach überführt werden können:
+* **Training 1:** Brust & Bizeps
+* **Training 2:** Beine & Schultern
+* **Training 3:** Rücken & Trizeps
+* **Training 4:** Ganzkörper (Bonus)
+
+### 6. Technischer Stack (Empfehlung für Taskmaster AI)
+* **Frontend:** React (mit Vite) oder Vue.js
+* **Styling:** Tailwind CSS (für schnelles, responsives UI)
+* **Interaktionen:** Framer Motion oder Swipe.js für weiche Wisch-Gesten.
+* **Backend/Datenbank/Storage:** Supabase (PostgreSQL + Auth + Media Storage für die GIFs/JPGs)
+* **Deployment:** Vercel (inkl. Vite PWA Plugin für Offline-Fähigkeit)
