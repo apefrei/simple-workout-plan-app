@@ -10,7 +10,116 @@
         "priority": "high",
         "dependencies": [],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Initialize Vite + React + TypeScript project and install core dependencies",
+            "description": "Bootstrap the project using Vite's React-TypeScript template and install all required dependencies for Tailwind CSS and PWA functionality",
+            "dependencies": [],
+            "details": "1. Run `npm create vite@latest . -- --template react-ts` to initialize React 18 with TypeScript in the current directory\n2. Accept overwrite prompt if needed (only README.md exists)\n3. Install base dependencies with `npm install`\n4. Install Tailwind CSS and PostCSS dependencies: `npm install -D tailwindcss postcss autoprefixer`\n5. Install PWA plugin: `npm install -D vite-plugin-pwa workbox-window`\n6. Install code quality tools: `npm install -D eslint prettier eslint-config-prettier @typescript-eslint/eslint-plugin @typescript-eslint/parser`\n7. Verify package.json contains correct versions: react@^18, vite@^5, typescript@^5\n8. Create .gitignore entries for node_modules, dist, .env.local if not present\n9. Test installation by running `npm run dev` and verify no errors\n10. Verify project structure contains: src/, public/, index.html, vite.config.ts, tsconfig.json",
+            "status": "pending",
+            "testStrategy": "Run `npm run dev` successfully starts development server on localhost:5173, verify no dependency conflicts in package.json, confirm all TypeScript compilation succeeds with no errors, check node_modules folder is populated"
+          },
+          {
+            "id": 2,
+            "title": "Configure Tailwind CSS with dark theme defaults",
+            "description": "Initialize Tailwind CSS configuration, set up dark mode, and add Tailwind directives to the main CSS file",
+            "dependencies": [
+              1
+            ],
+            "details": "1. Run `npx tailwindcss init -p` to generate tailwind.config.js and postcss.config.js\n2. Update tailwind.config.js content paths to scan all relevant files: content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}']\n3. Configure dark mode strategy: darkMode: 'class' (allows manual toggle)\n4. Extend theme with custom colors for dark UI: colors: { primary: '#3B82F6' (blue-500), background: { dark: '#111827', light: '#F9FAFB' } }\n5. Open src/index.css and replace contents with Tailwind directives:\n   @tailwind base;\n   @tailwind components;\n   @tailwind utilities;\n6. Add custom base styles in index.css: body { @apply bg-gray-900 text-gray-100; }\n7. Update src/App.tsx to test Tailwind classes: add className=\"min-h-screen bg-gray-900 text-white\"\n8. Remove default Vite styles from App.css\n9. Test dark theme rendering in browser\n10. Verify Tailwind IntelliSense works in VSCode if available",
+            "status": "pending",
+            "testStrategy": "Run dev server, verify Tailwind classes apply correctly in browser (bg-gray-900 shows dark background), inspect element shows compiled Tailwind CSS classes, text-white renders white text, no CSS errors in console, hot reload works on CSS changes"
+          },
+          {
+            "id": 3,
+            "title": "Configure PWA capabilities with vite-plugin-pwa and manifest",
+            "description": "Set up Progressive Web App functionality including service worker, manifest.json, and offline caching strategies",
+            "dependencies": [
+              1
+            ],
+            "details": "1. Create vite.config.ts and import VitePWA plugin: import { VitePWA } from 'vite-plugin-pwa'\n2. Add VitePWA to plugins array with configuration:\n   - registerType: 'autoUpdate' (automatically update service worker)\n   - includeAssets: ['favicon.ico', 'robots.txt', '*.png']\n   - workbox: { globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,gif}'] }\n   - workbox.runtimeCaching strategies: NetworkFirst for API calls, CacheFirst for static assets\n3. Configure manifest object in VitePWA options:\n   - name: 'Workout Plan PWA'\n   - short_name: 'Workout'\n   - description: 'Track your gym workouts offline-first'\n   - theme_color: '#111827' (matches dark bg)\n   - background_color: '#111827'\n   - display: 'standalone' (looks like native app)\n   - icons: [{ src: '/icon-192x192.png', sizes: '192x192', type: 'image/png' }, { src: '/icon-512x512.png', sizes: '512x512', type: 'image/png' }]\n4. Create placeholder icon files in public/ folder (192x192 and 512x512 PNG)\n5. Add devOptions: { enabled: true } to test PWA in development mode\n6. Update index.html to include theme-color meta tag: <meta name=\"theme-color\" content=\"#111827\">\n7. Verify manifest.webmanifest is generated in dist after build",
+            "status": "pending",
+            "testStrategy": "Run `npm run build` and verify dist/manifest.webmanifest exists, open Chrome DevTools > Application > Manifest shows correct PWA config, Service Worker registers successfully in DevTools, manifest icons display correctly, theme color matches dark theme, dev server shows PWA installable prompt"
+          },
+          {
+            "id": 4,
+            "title": "Configure TypeScript strict mode and set up ESLint + Prettier",
+            "description": "Enable TypeScript strict compiler options for type safety and configure code quality tools with consistent formatting rules",
+            "dependencies": [
+              1
+            ],
+            "details": "1. Open tsconfig.json and enable strict mode: \"strict\": true, \"noUnusedLocals\": true, \"noUnusedParameters\": true, \"noFallthroughCasesInSwitch\": true\n2. Add path aliases for cleaner imports: \"paths\": { \"@/*\": [\"./src/*\"] }, update vite.config.ts with resolve.alias: { '@': '/src' }\n3. Create .eslintrc.json with configuration:\n   - extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'plugin:react/recommended', 'plugin:react-hooks/recommended', 'prettier']\n   - parser: '@typescript-eslint/parser'\n   - rules: { 'react/react-in-jsx-scope': 'off' (not needed in React 18), '@typescript-eslint/no-unused-vars': 'warn' }\n4. Create .prettierrc with formatting rules: { \"semi\": true, \"trailingComma\": \"es5\", \"singleQuote\": true, \"printWidth\": 100, \"tabWidth\": 2 }\n5. Add .prettierignore: dist/, node_modules/, *.config.js\n6. Add npm scripts to package.json: \"lint\": \"eslint . --ext ts,tsx\", \"format\": \"prettier --write \\\"src/**/*.{ts,tsx,css}\\\"\"\n7. Run `npm run lint` to check for errors in default Vite template code\n8. Run `npm run format` to format all existing files\n9. Fix any TypeScript errors in src/App.tsx and src/main.tsx\n10. Add VSCode settings recommendation in .vscode/settings.json: { \"editor.formatOnSave\": true, \"editor.defaultFormatter\": \"esbenp.prettier-vscode\" }",
+            "status": "pending",
+            "testStrategy": "Run `npm run lint` with no errors, run `npm run format` successfully formats files, TypeScript compiler shows no errors with strict mode enabled, import aliases work (@/components/Example), verify unused variables show warnings, build command succeeds with strict checks"
+          },
+          {
+            "id": 5,
+            "title": "Create project folder structure and clean up default Vite template",
+            "description": "Establish organized directory structure for scalable React application and remove unnecessary boilerplate code",
+            "dependencies": [
+              2,
+              4
+            ],
+            "details": "1. Create organized folder structure in src/:\n   - mkdir -p src/components (reusable UI components)\n   - mkdir -p src/pages (route-level page components)\n   - mkdir -p src/hooks (custom React hooks)\n   - mkdir -p src/services (API clients, Supabase integration)\n   - mkdir -p src/types (TypeScript type definitions)\n   - mkdir -p src/utils (helper functions, formatters)\n   - mkdir -p src/contexts (React Context providers)\n   - mkdir -p src/data (seed data, constants)\n2. Create placeholder index.ts files in each folder for easier imports: echo \"export {};\" > src/components/index.ts\n3. Clean up default Vite template: remove src/App.css, remove react.svg logo\n4. Create new minimal src/App.tsx:\n   - Import React\n   - Return a simple div with \"Workout Plan PWA\" heading\n   - Apply Tailwind classes: className=\"min-h-screen bg-gray-900 text-white flex items-center justify-center\"\n5. Update src/main.tsx to use strict mode and clean imports\n6. Create src/types/database.types.ts (empty for now, will hold Supabase types)\n7. Create src/utils/constants.ts with app-level constants: export const APP_NAME = 'Workout Plan PWA'\n8. Create public/robots.txt for SEO: \"User-agent: *\\nAllow: /\"\n9. Update index.html title to \"Workout Plan PWA\"\n10. Test entire setup: run `npm run dev`, verify clean UI displays, run `npm run build`, verify dist/ output is clean",
+            "status": "pending",
+            "testStrategy": "Verify all folders exist in src/, App.tsx displays \"Workout Plan PWA\" heading with dark theme styling, no console errors in browser, build output in dist/ is production-ready, TypeScript compilation succeeds with no errors, folder structure matches scalable React patterns"
+          },
+          {
+            "id": 6,
+            "title": "Initialize Vite project with React-TypeScript template and install base dependencies",
+            "description": "Bootstrap the foundational Vite + React + TypeScript project structure and install all core dependencies required for the application stack",
+            "dependencies": [],
+            "details": "1. Run `npm create vite@latest . -- --template react-ts` in the project root to initialize React 18 with TypeScript using Vite's official template\n2. Accept any prompts to scaffold the project in the current directory (only TaskMaster config and README.md exist currently)\n3. Install base dependencies: `npm install` to set up React, React-DOM, Vite, and TypeScript packages\n4. Verify package.json contains: react@^18.x, react-dom@^18.x, vite@^5.x, typescript@^5.x, @vitejs/plugin-react\n5. Create .gitignore file (if not generated) with entries: node_modules/, dist/, .env.local, *.log\n6. Test the installation by running `npm run dev` and verify the development server starts without errors on localhost:5173\n7. Verify the default Vite + React template files exist: src/App.tsx, src/main.tsx, index.html, vite.config.ts, tsconfig.json, tsconfig.node.json\n8. Stop the dev server (Ctrl+C) after confirming it works\n9. Review tsconfig.json to ensure it has baseline TypeScript configuration (target: ES2020, useDefineForClassFields, lib, module, jsx, strict options)\n10. Confirm public/ directory exists for static assets (will hold PWA icons and manifest later)",
+            "status": "pending",
+            "testStrategy": "Verify `npm run dev` starts successfully on port 5173, open browser to localhost:5173 and see default Vite + React welcome page, check package.json dependencies include react@^18, vite@^5, typescript@^5, confirm node_modules folder is populated with packages, verify TypeScript compilation works with no errors, verify .gitignore excludes node_modules and dist"
+          },
+          {
+            "id": 7,
+            "title": "Install and configure Tailwind CSS with PostCSS and dark theme setup",
+            "description": "Set up Tailwind CSS with PostCSS configuration, initialize Tailwind config file with dark mode enabled, and integrate Tailwind directives into the application's main CSS file",
+            "dependencies": [
+              6
+            ],
+            "details": "1. Install Tailwind CSS and its peer dependencies: `npm install -D tailwindcss@^3.4 postcss@^8 autoprefixer@^10`\n2. Initialize Tailwind configuration: `npx tailwindcss init -p` which generates tailwind.config.js and postcss.config.js\n3. Open tailwind.config.js and configure content paths to scan for Tailwind classes: content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}']\n4. Enable class-based dark mode in tailwind.config.js: darkMode: 'class' (allows manual dark mode toggle)\n5. Optionally extend the theme with custom colors for the dark UI aesthetic: theme: { extend: { colors: { primary: '#3B82F6' } } }\n6. Open src/index.css and replace all existing content with Tailwind directives:\n   @tailwind base;\n   @tailwind components;\n   @tailwind utilities;\n7. Add global dark theme base styles in src/index.css:\n   @layer base {\n     body {\n       @apply bg-gray-900 text-gray-100;\n     }\n   }\n8. Update src/App.tsx to use Tailwind classes: add className=\"min-h-screen bg-gray-900 text-white flex items-center justify-center\" to the root div\n9. Delete src/App.css file (no longer needed as Tailwind handles all styling)\n10. Test Tailwind by running `npm run dev` and verify dark background (bg-gray-900) and white text (text-white) render correctly in the browser",
+            "status": "pending",
+            "testStrategy": "Run `npm run dev`, open browser to localhost:5173, verify page has dark gray background (#111827 from bg-gray-900), verify text is white, inspect element in DevTools and confirm Tailwind CSS classes are applied and compiled correctly, verify hot module replacement works when changing Tailwind classes in App.tsx, check no CSS compilation errors in terminal, confirm tailwind.config.js content paths are correct"
+          },
+          {
+            "id": 8,
+            "title": "Install vite-plugin-pwa and configure service worker with manifest for PWA capabilities",
+            "description": "Integrate the vite-plugin-pwa package, configure Workbox service worker strategies for offline caching, and set up the PWA manifest.json with app metadata and icons",
+            "dependencies": [
+              6
+            ],
+            "details": "1. Install vite-plugin-pwa plugin: `npm install -D vite-plugin-pwa@^0.17 workbox-window@^7`\n2. Open vite.config.ts and import the plugin: import { VitePWA } from 'vite-plugin-pwa'\n3. Add VitePWA to the plugins array in vite.config.ts with configuration:\n   VitePWA({\n     registerType: 'autoUpdate',\n     includeAssets: ['favicon.ico', 'robots.txt', '*.png'],\n     workbox: {\n       globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,gif}'],\n     },\n     manifest: {\n       name: 'Workout Plan PWA',\n       short_name: 'Workout',\n       description: 'Track your gym workouts offline-first',\n       theme_color: '#111827',\n       background_color: '#111827',\n       display: 'standalone',\n       icons: [\n         { src: '/icon-192x192.png', sizes: '192x192', type: 'image/png' },\n         { src: '/icon-512x512.png', sizes: '512x512', type: 'image/png' }\n       ]\n     },\n     devOptions: { enabled: true }\n   })\n4. Create placeholder PWA icon files in public/ directory: icon-192x192.png and icon-512x512.png (can use simple colored squares for now, will replace with actual icons later)\n5. Add theme-color meta tag to index.html head section: <meta name=\"theme-color\" content=\"#111827\" />\n6. Run `npm run build` to generate the production build and verify dist/manifest.webmanifest is created\n7. Serve the production build locally: `npx vite preview` and test PWA installation in Chrome DevTools > Application > Manifest\n8. Verify service worker registration in DevTools > Application > Service Workers tab\n9. Test offline functionality by enabling offline mode in DevTools Network tab and verifying cached assets load\n10. Note: Full Workbox caching strategies will be enhanced in Task 10, this subtask sets up the foundation",
+            "status": "pending",
+            "testStrategy": "Run `npm run build` successfully without errors, verify dist/ folder contains manifest.webmanifest file, run `npx vite preview` and open Chrome DevTools, navigate to Application tab > Manifest and verify all fields are populated correctly (name, icons, theme_color, display: standalone), check Application > Service Workers shows service worker registered and activated, verify icon-192x192.png and icon-512x512.png exist in public/ and dist/ directories, test install prompt appears in supported browsers, verify theme-color meta tag in index.html"
+          },
+          {
+            "id": 9,
+            "title": "Configure TypeScript strict mode and install ESLint + Prettier for code quality",
+            "description": "Enable TypeScript strict compiler options for enhanced type safety, set up ESLint with TypeScript and React plugins, and configure Prettier for consistent code formatting",
+            "dependencies": [
+              6
+            ],
+            "details": "1. Open tsconfig.json and enable strict TypeScript options:\n   \"strict\": true,\n   \"noUnusedLocals\": true,\n   \"noUnusedParameters\": true,\n   \"noFallthroughCasesInSwitch\": true,\n   \"noImplicitReturns\": true\n2. Add path aliases for cleaner imports in tsconfig.json:\n   \"baseUrl\": \".\",\n   \"paths\": {\n     \"@/*\": [\"./src/*\"]\n   }\n3. Update vite.config.ts to resolve path aliases: add resolve: { alias: { '@': '/src' } } to defineConfig\n4. Install ESLint and TypeScript plugins: `npm install -D eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-plugin-react eslint-plugin-react-hooks`\n5. Install Prettier and integration: `npm install -D prettier eslint-config-prettier eslint-plugin-prettier`\n6. Create .eslintrc.json with configuration:\n   {\n     \"extends\": [\n       \"eslint:recommended\",\n       \"plugin:@typescript-eslint/recommended\",\n       \"plugin:react/recommended\",\n       \"plugin:react-hooks/recommended\",\n       \"prettier\"\n     ],\n     \"parser\": \"@typescript-eslint/parser\",\n     \"parserOptions\": { \"ecmaVersion\": \"latest\", \"sourceType\": \"module\" },\n     \"rules\": {\n       \"react/react-in-jsx-scope\": \"off\",\n       \"@typescript-eslint/no-unused-vars\": \"warn\"\n     },\n     \"settings\": { \"react\": { \"version\": \"detect\" } }\n   }\n7. Create .prettierrc with formatting rules:\n   {\n     \"semi\": true,\n     \"trailingComma\": \"es5\",\n     \"singleQuote\": true,\n     \"printWidth\": 100,\n     \"tabWidth\": 2\n   }\n8. Create .prettierignore: add dist/, node_modules/, *.config.js, .taskmaster/\n9. Add npm scripts to package.json:\n   \"lint\": \"eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0\",\n   \"format\": \"prettier --write \\\"src/**/*.{ts,tsx,css}\\\"\"\n10. Run `npm run lint` and `npm run format` to verify setup, fix any errors in default Vite template files",
+            "status": "pending",
+            "testStrategy": "Run `npm run lint` with zero errors and warnings (or only expected warnings), run `npm run format` and verify files are formatted consistently, verify TypeScript compiler shows no errors with strict mode enabled (run `npx tsc --noEmit`), test path aliases by importing a file using @/ syntax (e.g., import { something } from '@/utils/test'), verify unused variables trigger warnings as expected, create intentional formatting error and verify Prettier fixes it, confirm ESLint catches React and TypeScript issues"
+          },
+          {
+            "id": 10,
+            "title": "Create organized project folder structure and clean up Vite template boilerplate",
+            "description": "Establish a scalable directory structure for components, pages, services, hooks, types, and utilities, then remove unnecessary Vite template boilerplate code",
+            "dependencies": [
+              7,
+              9
+            ],
+            "details": "1. Create organized folder structure in src/:\n   - `mkdir -p src/components` (reusable UI components)\n   - `mkdir -p src/pages` (route-level page components)\n   - `mkdir -p src/hooks` (custom React hooks)\n   - `mkdir -p src/services` (API clients, Supabase integration)\n   - `mkdir -p src/types` (TypeScript type definitions and interfaces)\n   - `mkdir -p src/utils` (helper functions, formatters, constants)\n   - `mkdir -p src/contexts` (React Context providers for global state)\n   - `mkdir -p src/data` (seed data, mock data, constants)\n2. Create placeholder barrel export files for cleaner imports:\n   - `echo 'export {};' > src/components/index.ts`\n   - Repeat for other folders (pages, hooks, utils, contexts)\n3. Remove default Vite template files: delete src/App.css, delete public/vite.svg, delete src/assets/react.svg\n4. Create new minimal src/App.tsx:\n   export default function App() {\n     return (\n       <div className=\"min-h-screen bg-gray-900 text-white flex items-center justify-center\">\n         <h1 className=\"text-4xl font-bold\">Workout Plan PWA</h1>\n       </div>\n     )\n   }\n5. Ensure src/main.tsx uses StrictMode and imports index.css:\n   import React from 'react'\n   import ReactDOM from 'react-dom/client'\n   import App from './App.tsx'\n   import './index.css'\n   ReactDOM.createRoot(document.getElementById('root')!).render(\n     <React.StrictMode>\n       <App />\n     </React.StrictMode>\n   )\n6. Create src/types/database.types.ts (empty file for now, will hold Supabase-generated types later): export type {}\n7. Create src/utils/constants.ts with initial app constants:\n   export const APP_NAME = 'Workout Plan PWA'\n   export const APP_VERSION = '0.1.0'\n8. Update index.html title tag to: <title>Workout Plan PWA</title>\n9. Create public/robots.txt for SEO: User-agent: *\\nAllow: /\n10. Run `npm run dev` and verify the clean setup displays 'Workout Plan PWA' heading with dark theme, run `npm run build` to confirm production build succeeds",
+            "status": "pending",
+            "testStrategy": "Verify all required folders exist in src/ directory (components, pages, hooks, services, types, utils, contexts, data), run `npm run dev` and verify browser shows 'Workout Plan PWA' heading centered on dark background, verify no console errors in browser DevTools, run `npm run build` and confirm dist/ output is clean and production-ready, verify TypeScript compilation succeeds with no errors (`npx tsc --noEmit`), check folder structure matches scalable React application patterns, verify barrel export files (index.ts) exist in created folders, confirm boilerplate files are removed (App.css, vite.svg, react.svg), verify constants.ts exports APP_NAME correctly"
+          }
+        ]
       },
       {
         "id": 2,
@@ -23,7 +132,61 @@
           1
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Supabase project and install client dependencies",
+            "description": "Set up a new Supabase project through the web dashboard and install the required Supabase client libraries for authentication and database access",
+            "dependencies": [],
+            "details": "1. Navigate to https://supabase.com and create a new account or sign in\n2. Click 'New Project' and configure:\n   - Organization: Create new or select existing\n   - Project name: 'workout-plan-pwa' (or preferred name)\n   - Database password: Generate strong password and save securely\n   - Region: Select closest to target users (e.g., 'West EU (London)' for Europe)\n   - Pricing plan: Select 'Free' tier for development\n3. Wait for project provisioning (typically 2-3 minutes)\n4. Once ready, navigate to Project Settings > API to find:\n   - Project URL (format: https://xxxxx.supabase.co)\n   - anon/public API key (starts with 'eyJ...')\n5. Install Supabase client packages:\n   - Run: npm install @supabase/supabase-js@^2.39.0\n   - Run: npm install @supabase/auth-ui-react@^0.4.7 @supabase/auth-ui-shared@^0.1.8\n6. Verify installation in package.json shows correct versions\n7. Note: @supabase/supabase-js is the core client, auth-ui packages provide pre-built auth components\n8. Keep Supabase dashboard tab open for next configuration steps",
+            "status": "pending",
+            "testStrategy": "Verify package.json contains @supabase/supabase-js, @supabase/auth-ui-react, and @supabase/auth-ui-shared in dependencies, confirm Supabase project appears in dashboard with 'Active' status, verify Project URL and anon key are accessible in API settings"
+          },
+          {
+            "id": 2,
+            "title": "Configure environment variables and initialize Supabase client",
+            "description": "Set up environment variables for Supabase credentials and create the TypeScript client initialization file with proper typing",
+            "dependencies": [
+              1
+            ],
+            "details": "1. Create .env.local file in project root (this file should be in .gitignore)\n2. Add Supabase credentials from dashboard:\n   VITE_SUPABASE_URL=https://xxxxx.supabase.co\n   VITE_SUPABASE_ANON_KEY=eyJxxx...your-anon-key\n3. Verify .gitignore contains .env.local to prevent committing secrets\n4. Create src/services/supabase.ts file\n5. Import Supabase client: import { createClient } from '@supabase/supabase-js'\n6. Add environment variable type safety:\n   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string\n   const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string\n7. Add validation to throw error if env vars missing:\n   if (!supabaseUrl || !supabaseAnonKey) { throw new Error('Missing Supabase environment variables') }\n8. Initialize and export client:\n   export const supabase = createClient(supabaseUrl, supabaseAnonKey)\n9. Add JSDoc comment explaining usage: /** Supabase client instance for database and auth operations */\n10. Create src/types/database.types.ts placeholder for generated types (will be populated after schema creation)",
+            "status": "pending",
+            "testStrategy": "Import supabase client in App.tsx and call supabase.from('_test').select() to verify connection (should fail with table not found, not auth error), confirm .env.local is git-ignored, verify TypeScript shows no errors in supabase.ts, check environment variables load correctly with console.log(import.meta.env.VITE_SUPABASE_URL)"
+          },
+          {
+            "id": 3,
+            "title": "Create database schema with tables for routines, exercises, and workout logs",
+            "description": "Execute SQL commands in Supabase SQL Editor to create the core database tables with proper relationships, constraints, and indexes",
+            "dependencies": [
+              2
+            ],
+            "details": "1. Open Supabase dashboard > SQL Editor > New Query\n2. Enable UUID extension (required for uuid_generate_v4()):\n   CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";\n3. Create routines table:\n   CREATE TABLE routines (\n     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),\n     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,\n     name TEXT NOT NULL CHECK (char_length(name) >= 1 AND char_length(name) <= 100),\n     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL\n   );\n4. Create exercises table with foreign key to routines:\n   CREATE TABLE exercises (\n     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),\n     routine_id UUID REFERENCES routines(id) ON DELETE CASCADE NOT NULL,\n     name TEXT NOT NULL CHECK (char_length(name) >= 1),\n     muscle_group TEXT CHECK (muscle_group IN ('Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core', 'Full Body')),\n     machine_info TEXT,\n     target_sets_reps TEXT,\n     media_url TEXT,\n     sort_order INTEGER DEFAULT 0 NOT NULL,\n     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL\n   );\n5. Create workout_logs table:\n   CREATE TABLE workout_logs (\n     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),\n     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,\n     exercise_id UUID REFERENCES exercises(id) ON DELETE SET NULL,\n     date DATE DEFAULT CURRENT_DATE NOT NULL,\n     weight_used DECIMAL(6,2) CHECK (weight_used >= 0),\n     reps_completed INTEGER CHECK (reps_completed >= 0 AND reps_completed <= 1000),\n     user_comment TEXT,\n     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL\n   );\n6. Create performance indexes:\n   CREATE INDEX idx_routines_user_id ON routines(user_id);\n   CREATE INDEX idx_exercises_routine_id ON exercises(routine_id);\n   CREATE INDEX idx_exercises_sort_order ON exercises(routine_id, sort_order);\n   CREATE INDEX idx_workout_logs_user_date ON workout_logs(user_id, date DESC);\n   CREATE INDEX idx_workout_logs_exercise ON workout_logs(exercise_id, date DESC);\n7. Run the query and verify 'Success' message\n8. Navigate to Table Editor to visually confirm all tables exist with correct columns",
+            "status": "pending",
+            "testStrategy": "Verify in Supabase Table Editor that routines, exercises, and workout_logs tables exist with correct column types, confirm foreign key relationships shown in schema diagram, test constraint by attempting invalid insert (should fail), verify indexes exist in Database > Indexes tab, run SELECT COUNT(*) FROM routines successfully returns 0"
+          },
+          {
+            "id": 4,
+            "title": "Enable Row Level Security policies for multi-tenant data isolation",
+            "description": "Configure RLS policies on all tables to ensure users can only access their own data, implementing secure multi-tenant architecture",
+            "dependencies": [
+              3
+            ],
+            "details": "1. In Supabase dashboard > Authentication > Policies, enable RLS on all tables:\n   - Click 'routines' table > Enable RLS\n   - Click 'exercises' table > Enable RLS\n   - Click 'workout_logs' table > Enable RLS\n2. Create RLS policy for routines table:\n   - Policy name: 'Users can manage their own routines'\n   - Allowed operations: SELECT, INSERT, UPDATE, DELETE\n   - USING expression: (auth.uid() = user_id)\n   - WITH CHECK expression: (auth.uid() = user_id)\n3. Create RLS policy for exercises table (via routines relationship):\n   - Policy name: 'Users can manage exercises in their routines'\n   - Allowed operations: SELECT, INSERT, UPDATE, DELETE\n   - USING expression: EXISTS (SELECT 1 FROM routines WHERE routines.id = exercises.routine_id AND routines.user_id = auth.uid())\n   - WITH CHECK expression: EXISTS (SELECT 1 FROM routines WHERE routines.id = exercises.routine_id AND routines.user_id = auth.uid())\n4. Create RLS policy for workout_logs table:\n   - Policy name: 'Users can manage their own workout logs'\n   - Allowed operations: SELECT, INSERT, UPDATE, DELETE\n   - USING expression: (auth.uid() = user_id)\n   - WITH CHECK expression: (auth.uid() = user_id)\n5. Alternative SQL approach (more efficient):\n   -- For routines:\n   CREATE POLICY \"Users manage own routines\" ON routines FOR ALL USING (auth.uid() = user_id);\n   -- For exercises:\n   CREATE POLICY \"Users manage own exercises\" ON exercises FOR ALL USING (EXISTS (SELECT 1 FROM routines WHERE routines.id = exercises.routine_id AND routines.user_id = auth.uid()));\n   -- For workout_logs:\n   CREATE POLICY \"Users manage own logs\" ON workout_logs FOR ALL USING (auth.uid() = user_id);\n6. Test RLS by attempting query without auth (should return empty, not error)\n7. Verify policies appear in Table Editor under 'Policies' tab for each table",
+            "status": "pending",
+            "testStrategy": "Test RLS by creating two test users in Authentication tab, insert routine as User A, attempt to query as User B (should return empty), verify User A can see their own data, confirm unauthenticated requests return empty results not errors, check exercises inherit permissions through routines relationship correctly"
+          },
+          {
+            "id": 5,
+            "title": "Configure Storage bucket for exercise media uploads with public access",
+            "description": "Set up Supabase Storage bucket for JPG and GIF exercise demonstration media with appropriate security policies and public read access",
+            "dependencies": [
+              2
+            ],
+            "details": "1. Navigate to Supabase dashboard > Storage\n2. Click 'Create a new bucket'\n3. Configure bucket settings:\n   - Name: 'exercise-media'\n   - Public bucket: Toggle ON (enables public read access for URLs)\n   - File size limit: 10485760 (10MB in bytes)\n   - Allowed MIME types: image/jpeg, image/jpg, image/gif\n4. Click 'Create bucket'\n5. Configure storage policies for the bucket:\n   - Click 'Policies' tab under exercise-media bucket\n   - Create policy for INSERT:\n     * Policy name: 'Authenticated users can upload media'\n     * Allowed operation: INSERT\n     * Policy definition: (auth.role() = 'authenticated')\n   - Create policy for SELECT (public read):\n     * Policy name: 'Public read access'\n     * Allowed operation: SELECT\n     * Policy definition: true\n   - Create policy for DELETE:\n     * Policy name: 'Users can delete their own media'\n     * Allowed operation: DELETE\n     * Policy definition: (auth.uid()::text = (storage.foldername(name))[1])\n6. Create folder structure pattern: user_id/exercise_id/filename.jpg\n7. Configure CORS if needed (usually not required for same-origin requests)\n8. Test upload using Supabase dashboard: upload test image manually\n9. Verify public URL generation works: get public URL and open in new tab\n10. Document storage URL pattern for frontend: https://xxxxx.supabase.co/storage/v1/object/public/exercise-media/{user_id}/{exercise_id}/{filename}",
+            "status": "pending",
+            "testStrategy": "Upload test JPG via dashboard successfully, verify public URL is accessible without authentication in incognito browser, attempt to upload 11MB file (should fail), try uploading .png file (should fail based on MIME restrictions), confirm DELETE policy allows users to only delete their own files, verify storage.foldername parsing works correctly for nested paths"
+          }
+        ]
       },
       {
         "id": 3,
@@ -36,7 +199,62 @@
           2
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Install react-router-dom and configure routing structure in App.tsx",
+            "description": "Set up client-side routing with React Router v6, define public and protected route paths, and create the basic routing configuration",
+            "dependencies": [],
+            "details": "1. Install react-router-dom: `npm install react-router-dom@^6.21.0`\n2. Install TypeScript types: `npm install -D @types/react-router-dom`\n3. Open src/App.tsx and import routing components: import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'\n4. Wrap the app with <BrowserRouter> in the return statement\n5. Define route structure:\n   - /auth (public) - will render Auth page for login/signup\n   - / (public) - redirect to /auth if not authenticated, /routines if authenticated\n   - /routines (protected) - main dashboard listing routines\n   - /workout/:routineId (protected) - workout session page\n   - /routine/:routineId/edit (protected) - routine editor page\n6. Create placeholder page components in src/pages/:\n   - Auth.tsx (export default function Auth() { return <div>Auth Page</div> })\n   - Routines.tsx\n   - WorkoutSession.tsx\n7. Import and render these pages in <Routes> component\n8. Test navigation by manually changing URL in browser\n9. Verify TypeScript compilation succeeds with no errors\n10. Note: ProtectedRoute wrapper will be implemented in next subtask",
+            "status": "pending",
+            "testStrategy": "Run `npm run dev`, verify no dependency errors, navigate to http://localhost:5173/auth shows Auth Page placeholder, /routines shows Routines placeholder, TypeScript shows no errors in App.tsx, verify react-router-dom appears in package.json dependencies"
+          },
+          {
+            "id": 2,
+            "title": "Create AuthContext with session state management and Supabase auth listeners",
+            "description": "Build React Context provider to manage authentication state globally, listen to Supabase auth changes, and provide auth utilities to all components",
+            "dependencies": [
+              1
+            ],
+            "details": "1. Create src/contexts/AuthContext.tsx file\n2. Import dependencies: import { createContext, useContext, useEffect, useState, ReactNode } from 'react'; import { Session, User } from '@supabase/supabase-js'; import { supabase } from '@/services/supabase';\n3. Define TypeScript interface:\n   interface AuthContextType {\n     session: Session | null;\n     user: User | null;\n     loading: boolean;\n     signOut: () => Promise<void>;\n   }\n4. Create context: const AuthContext = createContext<AuthContextType | undefined>(undefined)\n5. Implement AuthProvider component:\n   - State: const [session, setSession] = useState<Session | null>(null)\n   - State: const [loading, setLoading] = useState(true)\n   - Derived: const user = session?.user ?? null\n6. Add useEffect to subscribe to auth changes:\n   - Call supabase.auth.getSession() on mount to restore session\n   - Subscribe with supabase.auth.onAuthStateChange((event, session) => { setSession(session); setLoading(false); })\n   - Return cleanup function to unsubscribe\n7. Implement signOut function: const signOut = async () => { await supabase.auth.signOut(); setSession(null); }\n8. Return context provider with value: { session, user, loading, signOut }\n9. Export custom hook: export const useAuth = () => { const context = useContext(AuthContext); if (!context) throw new Error('useAuth must be used within AuthProvider'); return context; }\n10. Wrap App.tsx content with <AuthProvider> in main.tsx or App.tsx",
+            "status": "pending",
+            "testStrategy": "Import useAuth in App.tsx and log user/loading state with console.log, verify loading starts true then becomes false, session is null when not authenticated, TypeScript shows correct types for session and user, verify no infinite re-renders occur, check onAuthStateChange listener is registered in Supabase dashboard > Logs"
+          },
+          {
+            "id": 3,
+            "title": "Build Auth.tsx page with Supabase Auth UI for email authentication",
+            "description": "Create the login/signup page using Supabase's pre-built Auth UI components with email/password and magic link authentication methods",
+            "dependencies": [
+              2
+            ],
+            "details": "1. Open src/pages/Auth.tsx and clear placeholder content\n2. Import dependencies: import { Auth as SupabaseAuth } from '@supabase/auth-ui-react'; import { ThemeSupa } from '@supabase/auth-ui-shared'; import { supabase } from '@/services/supabase'; import { useAuth } from '@/contexts/AuthContext'; import { Navigate } from 'react-router-dom';\n3. Use useAuth hook to get session and loading state\n4. Add redirect logic: if (loading) return loading spinner, if (session) return <Navigate to=\"/routines\" replace />\n5. Render page container with dark theme Tailwind classes: <div className=\"min-h-screen bg-gray-900 flex items-center justify-center px-4\">\n6. Add centered card container: <div className=\"w-full max-w-md bg-gray-800 p-8 rounded-lg shadow-xl\">\n7. Add app branding header: <h1 className=\"text-3xl font-bold text-white text-center mb-8\">Workout Plan PWA</h1>\n8. Render SupabaseAuth component:\n   - supabaseClient={supabase}\n   - appearance={{ theme: ThemeSupa, variables: { default: { colors: { brand: '#3B82F6', brandAccent: '#2563EB' } } } }}\n   - providers={[]} (disable OAuth for MVP, email only)\n   - theme=\"dark\"\n   - redirectTo={window.location.origin + '/routines'}\n9. Add footer text with instructions: <p className=\"text-gray-400 text-sm text-center mt-6\">Sign in with email or create a new account</p>\n10. Test magic link and password authentication flows",
+            "status": "pending",
+            "testStrategy": "Navigate to /auth, verify dark theme styling matches app design, sign up with new email creates user in Supabase Authentication > Users, magic link email arrives and redirects to /routines after click, password login works and redirects, authenticated users visiting /auth automatically redirect to /routines, loading spinner shows during auth check"
+          },
+          {
+            "id": 4,
+            "title": "Create ProtectedRoute component with authentication checks and redirects",
+            "description": "Build a wrapper component that protects routes from unauthenticated access by checking auth state and redirecting to login page",
+            "dependencies": [
+              2
+            ],
+            "details": "1. Create src/components/ProtectedRoute.tsx file\n2. Import dependencies: import { Navigate, Outlet } from 'react-router-dom'; import { useAuth } from '@/contexts/AuthContext';\n3. Define component that accepts no props (uses Outlet for nested routes)\n4. Use useAuth hook to get session and loading state: const { session, loading } = useAuth();\n5. Implement loading state: if (loading) return <div className=\"min-h-screen bg-gray-900 flex items-center justify-center\"><div className=\"text-white\">Loading...</div></div>\n6. Implement redirect logic: if (!session) return <Navigate to=\"/auth\" replace />\n7. If authenticated, render child routes: return <Outlet />\n8. Add TypeScript export: export default ProtectedRoute\n9. Update src/App.tsx routing to wrap protected routes:\n   - Import ProtectedRoute\n   - Wrap /routines and /workout/:routineId routes with <Route element={<ProtectedRoute />}>\n   - Use nested <Route> elements inside for protected paths\n10. Add layout wrapper to ProtectedRoute that includes header with sign out button (optional for this subtask, can be separate component later)",
+            "status": "pending",
+            "testStrategy": "While logged out, navigate to /routines and verify immediate redirect to /auth, log in and verify /routines is accessible, refresh page on /routines and verify no redirect (session persists), sign out and verify redirect back to /auth, test /workout/:routineId similarly, verify loading spinner shows briefly during auth check"
+          },
+          {
+            "id": 5,
+            "title": "Implement sign out functionality with header component and navigation",
+            "description": "Create a persistent header or navigation component with sign out button, display user email, and handle logout with proper session cleanup",
+            "dependencies": [
+              3,
+              4
+            ],
+            "details": "1. Create src/components/Header.tsx component\n2. Import dependencies: import { useAuth } from '@/contexts/AuthContext'; import { useNavigate } from 'react-router-dom';\n3. Get auth utilities: const { user, signOut } = useAuth(); const navigate = useNavigate();\n4. Implement handleSignOut function:\n   - Call await signOut()\n   - Navigate to '/auth' using navigate('/auth', { replace: true })\n   - Wrap in try-catch, log errors to console\n5. Design header layout with Tailwind:\n   - <header className=\"bg-gray-800 border-b border-gray-700 px-4 py-3\">\n   - Flex container with space-between for app name and user controls\n   - Left: App name/logo <h1 className=\"text-xl font-bold text-white\">Workout Plan</h1>\n   - Right: User email (if available) and sign out button\n6. User info display: {user?.email && <span className=\"text-gray-400 text-sm mr-4\">{user.email}</span>}\n7. Sign out button: <button onClick={handleSignOut} className=\"bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition-colors\">Sign Out</button>\n8. Import Header in ProtectedRoute.tsx and render above <Outlet />:\n   - return (<><Header /><Outlet /></>)\n9. Verify header appears on all protected routes (/routines, /workout/:id)\n10. Optional: Add loading state to button during sign out, disable button to prevent double-clicks",
+            "status": "pending",
+            "testStrategy": "Navigate to /routines while authenticated, verify Header displays with user email, click Sign Out button and verify redirect to /auth, verify session is cleared (check Application > Storage > Local Storage in DevTools), verify Supabase session is null after sign out, test that Header does NOT appear on /auth page (public route), verify sign out button shows hover effect and proper cursor"
+          }
+        ]
       },
       {
         "id": 4,
@@ -49,7 +267,63 @@
           3
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Routines.tsx dashboard page with routine listing and empty state",
+            "description": "Build the main routines dashboard page that fetches and displays all user routines in a responsive grid layout with an empty state when no routines exist",
+            "dependencies": [],
+            "details": "1. Create src/pages/Routines.tsx file with TypeScript\n2. Import dependencies: import { useEffect, useState } from 'react'; import { supabase } from '@/services/supabase'; import { useAuth } from '@/contexts/AuthContext';\n3. Define Routine interface: interface Routine { id: string; name: string; created_at: string; exercise_count?: number }\n4. Create state: const [routines, setRoutines] = useState<Routine[]>([]); const [loading, setLoading] = useState(true)\n5. Implement fetchRoutines function that queries: supabase.from('routines').select('*, exercises(count)').eq('user_id', user.id).order('created_at', { ascending: false })\n6. Map exercise count from nested query result to exercise_count property\n7. Call fetchRoutines in useEffect on component mount\n8. Create responsive grid layout: <div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6\">\n9. Render RoutineCard components (placeholder for now) for each routine\n10. Implement empty state when routines.length === 0:\n    - <div className=\"min-h-screen bg-gray-900 flex items-center justify-center\">\n    - Icon or illustration\n    - <h2 className=\"text-2xl text-gray-400 mb-4\">No routines yet</h2>\n    - <button className=\"bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg\" onClick={handleCreateRoutine}>Create Your First Routine</button>\n11. Add loading spinner while fetching: {loading && <div>Loading...</div>}\n12. Implement error handling with try-catch and display error message if fetch fails",
+            "status": "pending",
+            "testStrategy": "Navigate to /routines while authenticated, verify empty state shows CTA button when no data, create test routine in Supabase dashboard and verify it appears in grid, check responsive layout on mobile (1 column), tablet (2 columns), desktop (3 columns), verify exercise count displays correctly, test loading state, test error state by disconnecting internet"
+          },
+          {
+            "id": 2,
+            "title": "Build RoutineCard component with routine info and action buttons",
+            "description": "Create a reusable card component to display individual routine information including name, exercise count, and edit/delete action buttons",
+            "dependencies": [
+              1
+            ],
+            "details": "1. Create src/components/RoutineCard.tsx file\n2. Define props interface: interface RoutineCardProps { routine: { id: string; name: string; exercise_count: number; created_at: string }; onEdit: (id: string) => void; onDelete: (id: string) => void; onStartWorkout: (id: string) => void; }\n3. Implement card layout with dark theme:\n   - <div className=\"bg-gray-800 rounded-lg shadow-lg p-6 hover:bg-gray-750 transition-colors\">\n4. Display routine name: <h3 className=\"text-xl font-bold text-white mb-2\">{routine.name}</h3>\n5. Show exercise count with icon: <p className=\"text-gray-400 mb-4\"><span className=\"inline-block mr-2\">💪</span>{routine.exercise_count} exercises</p>\n6. Add created date formatted: new Date(routine.created_at).toLocaleDateString()\n7. Create action buttons row:\n   - Start Workout button (primary): <button className=\"bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded w-full mb-2\" onClick={() => onStartWorkout(routine.id)}>Start Workout</button>\n   - Edit button: <button className=\"bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded mr-2\" onClick={() => onEdit(routine.id)}>Edit</button>\n   - Delete button: <button className=\"bg-red-600 hover:bg-red-700 px-3 py-1 rounded\" onClick={() => onDelete(routine.id)}>Delete</button>\n8. Add TypeScript export: export default RoutineCard\n9. Import and use in Routines.tsx, passing callback functions\n10. Add hover effects and transitions for better UX",
+            "status": "pending",
+            "testStrategy": "Render RoutineCard with test data, verify name displays correctly, exercise count shows with icon, date formats properly, all three buttons render and trigger callbacks when clicked, hover effects work on buttons, card has proper spacing and dark theme colors, responsive layout works on mobile screens, verify TypeScript types are correct"
+          },
+          {
+            "id": 3,
+            "title": "Implement createRoutine service function and create routine modal",
+            "description": "Build the routine creation functionality with a modal form using Headless UI, including name input validation and database insertion",
+            "dependencies": [
+              1
+            ],
+            "details": "1. Install Headless UI: npm install @headlessui/react\n2. Install React Hook Form for form handling: npm install react-hook-form\n3. Create src/services/routines.ts file\n4. Implement createRoutine function:\n   - export const createRoutine = async (userId: string, name: string): Promise<{ data: any; error: any }> => {\n   - Validate name length (1-100 characters)\n   - Execute: return await supabase.from('routines').insert({ user_id: userId, name }).select().single()\n5. Create src/components/CreateRoutineModal.tsx component\n6. Import Headless UI Dialog: import { Dialog, Transition } from '@headlessui/react'\n7. Define props: interface CreateRoutineModalProps { isOpen: boolean; onClose: () => void; onSuccess: () => void; }\n8. Use React Hook Form: const { register, handleSubmit, formState: { errors }, reset } = useForm<{ name: string }>()\n9. Implement onSubmit handler:\n   - Get user from useAuth()\n   - Call createRoutine(user.id, data.name)\n   - Handle success: show toast notification, call onSuccess() to refresh list, reset form, close modal\n   - Handle error: display error message\n10. Render Dialog with dark theme styling:\n    - Backdrop with opacity transition\n    - Centered modal panel: <Dialog.Panel className=\"bg-gray-800 rounded-lg p-6 max-w-md w-full\">\n    - Input field: <input {...register('name', { required: 'Name is required', maxLength: 100 })} className=\"w-full bg-gray-700 text-white border border-gray-600 rounded px-4 py-2\" />\n    - Submit button and Cancel button\n11. Add modal state management in Routines.tsx: const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)\n12. Import and render CreateRoutineModal in Routines.tsx",
+            "status": "pending",
+            "testStrategy": "Click 'Create Routine' button, verify modal opens with focus on input field, submit empty form shows validation error, submit valid name creates routine in database, verify new routine appears in list after creation without manual refresh, close modal with cancel button, close modal by clicking backdrop, verify form resets after successful creation, test max length validation (101 characters should fail)"
+          },
+          {
+            "id": 4,
+            "title": "Create RoutineEditor page with exercise list and drag-and-drop reordering",
+            "description": "Build the routine editor interface for adding, editing, and reordering exercises within a routine using dnd-kit for drag-and-drop functionality",
+            "dependencies": [
+              2,
+              3
+            ],
+            "details": "1. Install dnd-kit libraries: npm install @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities\n2. Create src/pages/RoutineEditor.tsx file\n3. Import dependencies: import { useParams } from 'react-router-dom'; import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'; import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'\n4. Get routineId from URL params: const { routineId } = useParams<{ routineId: string }>()\n5. Define Exercise interface: interface Exercise { id: string; routine_id: string; name: string; muscle_group: string | null; machine_info: string | null; target_sets_reps: string | null; media_url: string | null; sort_order: number }\n6. Create state: const [exercises, setExercises] = useState<Exercise[]>([]); const [routine, setRoutine] = useState<{ name: string } | null>(null)\n7. Fetch routine and exercises on mount:\n   - Query routine: supabase.from('routines').select('*').eq('id', routineId).single()\n   - Query exercises: supabase.from('exercises').select('*').eq('routine_id', routineId).order('sort_order')\n8. Set up dnd-kit sensors: const sensors = useSensors(useSensor(PointerSensor))\n9. Implement handleDragEnd function:\n   - const { active, over } = event\n   - Find old and new index using exercises array\n   - Update local state: setExercises(arrayMove(exercises, oldIndex, newIndex))\n   - Update sort_order in database for all affected exercises\n10. Render DndContext wrapper with vertical sortable list:\n    - <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>\n    - <SortableContext items={exercises.map(e => e.id)} strategy={verticalListSortingStrategy}>\n    - Map exercises to SortableExerciseItem components (to be created separately)\n11. Add 'Add Exercise' button that opens exercise form modal\n12. Implement page header with routine name and back navigation button",
+            "status": "pending",
+            "testStrategy": "Navigate to /routine/:routineId/edit with valid ID, verify routine name displays in header, exercises load in correct sort_order, drag exercise to new position and verify sort_order updates in database, refresh page and verify new order persists, test with empty exercise list, verify back button navigates to /routines, test drag-and-drop on mobile touch devices, verify smooth animations during drag"
+          },
+          {
+            "id": 5,
+            "title": "Build exercise form with all fields and deleteRoutine functionality",
+            "description": "Create a comprehensive exercise form component with all required fields (name, muscle_group, machine_info, target_sets_reps, media) and implement routine deletion with confirmation modal",
+            "dependencies": [
+              3,
+              4
+            ],
+            "details": "1. Create src/components/ExerciseForm.tsx component\n2. Define props: interface ExerciseFormProps { routineId: string; exercise?: Exercise; onSuccess: () => void; onCancel: () => void; }\n3. Use React Hook Form with default values if editing: const { register, handleSubmit, formState: { errors } } = useForm<ExerciseFormData>({ defaultValues: exercise || {} })\n4. Define form fields:\n   - name: <input {...register('name', { required: true })} className=\"w-full bg-gray-700 text-white border border-gray-600 rounded px-4 py-2\" />\n   - muscle_group: <select {...register('muscle_group')} className=\"w-full bg-gray-700 text-white border border-gray-600 rounded px-4 py-2\"><option value=\"\">Select muscle group</option><option value=\"Chest\">Chest</option><option value=\"Back\">Back</option><option value=\"Legs\">Legs</option><option value=\"Shoulders\">Shoulders</option><option value=\"Arms\">Arms</option><option value=\"Core\">Core</option><option value=\"Full Body\">Full Body</option></select>\n   - machine_info: <input {...register('machine_info')} placeholder=\"e.g., Machine 41\" className=\"w-full bg-gray-700 text-white border border-gray-600 rounded px-4 py-2\" />\n   - target_sets_reps: <input {...register('target_sets_reps')} placeholder=\"e.g., 12/10/8\" className=\"w-full bg-gray-700 text-white border border-gray-600 rounded px-4 py-2\" />\n5. Add media_url field (text input for now, will integrate with MediaUpload component later)\n6. Implement onSubmit handler:\n   - If exercise prop exists: UPDATE exercises SET ... WHERE id = exercise.id\n   - Else: INSERT INTO exercises (routine_id, name, muscle_group, machine_info, target_sets_reps, media_url, sort_order) VALUES (...)\n   - sort_order should be max(existing sort_orders) + 1 for new exercises\n7. Wrap form in Dialog modal from Headless UI with dark theme\n8. Create src/services/routines.ts deleteRoutine function:\n   - export const deleteRoutine = async (routineId: string) => { return await supabase.from('routines').delete().eq('id', routineId) }\n9. Create DeleteConfirmationModal component:\n   - Show routine name: \"Are you sure you want to delete [routine name]? This will also delete all exercises.\"\n   - Two buttons: Cancel (gray) and Delete (red)\n10. Integrate delete functionality in RoutineCard onDelete callback:\n    - Open confirmation modal\n    - On confirm: call deleteRoutine, show success message, refresh routine list\n11. Handle cascade deletion (exercises automatically deleted due to ON DELETE CASCADE foreign key)",
+            "status": "pending",
+            "testStrategy": "Open exercise form from RoutineEditor, fill all fields and submit, verify new exercise appears in list with correct sort_order, edit existing exercise and verify updates persist, test validation by submitting empty name (should fail), verify muscle_group dropdown shows all 7 options, test target_sets_reps accepts freeform text like '12/10/8', click delete on routine card, verify confirmation modal shows routine name, confirm delete and verify routine removed from database and list, verify exercises cascade delete, cancel delete and verify routine still exists"
+          }
+        ]
       },
       {
         "id": 5,
@@ -62,7 +336,61 @@
           4
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Install Swiper library and configure base WorkoutSession page structure",
+            "description": "Install the Swiper library for touch gesture handling and create the foundational WorkoutSession page component with route parameter handling for routineId.",
+            "dependencies": [],
+            "details": "Run `npm install swiper` to add the Swiper library to the project. Create src/pages/WorkoutSession.tsx and set up React Router integration using useParams() to extract routineId from the URL. Import necessary Swiper modules (Swiper, SwiperSlide) and Swiper CSS files ('swiper/css', 'swiper/css/effect-cards' or 'swiper/css/effect-creative'). Create basic page layout with a container div that will hold the Swiper component. Add TypeScript interfaces for Exercise data structure matching the database schema (id, name, muscle_group, machine_info, target_sets_reps, media_url). Ensure the page is wrapped with proper error boundaries and has loading states.",
+            "status": "pending",
+            "testStrategy": "Test: Page component renders without errors, routineId is correctly extracted from URL parameters, Swiper CSS imports properly, TypeScript interfaces compile without errors, console shows no warnings about missing dependencies"
+          },
+          {
+            "id": 2,
+            "title": "Implement exercise data fetching with sort order and pre-fill logic",
+            "description": "Create data fetching logic to load routine exercises ordered by sort_order, and implement query to pre-fill weight/reps from last workout logs.",
+            "dependencies": [
+              1
+            ],
+            "details": "Use Supabase client to fetch exercises for the given routineId: `SELECT * FROM exercises WHERE routine_id = ? ORDER BY sort_order ASC`. Store exercises in component state using useState. For each exercise, fetch the most recent workout log: `SELECT weight_used, reps_completed FROM workout_logs WHERE exercise_id = ? AND user_id = ? ORDER BY date DESC LIMIT 1`. Implement this as a parallel fetch using Promise.all() to avoid sequential delays. Create a data structure that merges exercise details with pre-filled values. Add loading state management and error handling for network failures. Use useEffect to trigger data fetching on component mount. Handle cases where no previous logs exist (default to empty or zero values).",
+            "status": "pending",
+            "testStrategy": "Test: Exercises load in correct sort_order, pre-fill values match the most recent workout_logs entry for each exercise, loading spinner shows during fetch, error message displays if database is unreachable, works correctly for new users with no previous logs"
+          },
+          {
+            "id": 3,
+            "title": "Configure Swiper component with card/creative effect and render exercise slides",
+            "description": "Set up the Swiper component with smooth card-based transition effects and render each exercise as a full-screen slide with all required information.",
+            "dependencies": [
+              2
+            ],
+            "details": "Configure Swiper with effect='cards' or effect='creative' for smooth swipe transitions. Set grabCursor={true} for better UX. Each SwiperSlide should render: exercise name (large, bold heading), muscle_group badge, machine_info display, target_sets_reps label, media element (IMG for JPG or video/gif for GIF based on media_url file extension), controlled input fields for weight (type='number') and reps (type='number') pre-filled with fetched values. Apply mobile-first styling: full-screen slides (min-h-screen), large touch targets (min-h-[44px]), bottom-positioned input controls for one-handed use. Use Tailwind CSS dark mode classes (bg-gray-900, text-gray-100). Add proper image loading states and error handling for missing media. Implement proper keyboard types for mobile (inputMode='numeric' for weight/reps inputs).",
+            "status": "pending",
+            "testStrategy": "Test: Swipe left/right smoothly navigates between exercises, card effect animates correctly, all exercise data displays properly, images load correctly (JPG) and GIFs animate, input fields show pre-filled values, touch targets are at least 44px, works smoothly on iPhone SE and larger devices, no layout shift during image loading"
+          },
+          {
+            "id": 4,
+            "title": "Implement auto-save functionality with debouncing and progress indicator",
+            "description": "Add debounced auto-save logic that persists weight/reps changes to workout_logs table, and display a progress indicator showing current exercise position.",
+            "dependencies": [
+              3
+            ],
+            "details": "Create a debounced save function using useCallback and a 500ms delay (use setTimeout or a library like lodash.debounce). On input change (onChange event), trigger the debounced save. The save function should INSERT or UPDATE workout_logs: `INSERT INTO workout_logs (user_id, exercise_id, date, weight_used, reps_completed) VALUES (...) ON CONFLICT (user_id, exercise_id, date) DO UPDATE SET weight_used=?, reps_completed=?`. Use optimistic UI updates: update local state immediately before database call completes. Add a visual save indicator (small checkmark or 'Saved' text that appears briefly after save). Implement progress indicator at top of screen showing 'Exercise X / Total' (e.g., '3 / 8'). Use Swiper's onSlideChange event to update the current exercise index. Add visual progress bar using a linear gradient or progress element. Handle offline scenarios gracefully with queue-based sync logic (store saves locally if offline, sync when online).",
+            "status": "pending",
+            "testStrategy": "Test: Input changes trigger auto-save after 500ms delay, rapid typing doesn't cause multiple saves, optimistic UI updates immediately, 'Saved' indicator appears after successful save, progress indicator shows correct current/total, progress bar updates on swipe, offline saves queue and sync when connection restored, no data loss on airplane mode"
+          },
+          {
+            "id": 5,
+            "title": "Add 'Complete Workout' button on last slide with session finalization",
+            "description": "Implement a prominent 'Complete Workout' button that appears on the final exercise slide, which finalizes the workout session and navigates to a summary view.",
+            "dependencies": [
+              4
+            ],
+            "details": "Detect when user is on the last slide (use Swiper's activeIndex === exercises.length - 1). Show a large, prominent 'Complete Workout' button at the bottom of the last slide with distinct styling (bg-green-600, large text, full-width or nearly full-width). On button click: (1) Ensure all pending auto-saves are flushed to the database (use Promise.all on any pending save operations), (2) Create a workout_sessions record if needed (table storing session metadata: user_id, routine_id, date, completion_status), (3) Navigate to a summary page (e.g., /workout-summary/:sessionId) using React Router's navigate() function. Add loading state to the button while finalizing (show spinner, disable button). Implement confirmation haptic feedback on mobile (if supported). Add analytics tracking for workout completion. Handle edge cases: partial workouts (some exercises skipped), network failures during finalization (retry logic).",
+            "status": "pending",
+            "testStrategy": "Test: 'Complete Workout' button only appears on last slide, button click saves all pending changes, session record is created in database with correct data, navigation to summary page works correctly, loading spinner shows during save, button is disabled during save to prevent double-submission, works correctly in offline mode (queues session save), haptic feedback triggers on supported devices"
+          }
+        ]
       },
       {
         "id": 6,
@@ -75,7 +403,62 @@
           4
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create MediaUpload.tsx component with file input and validation logic",
+            "description": "Build the base MediaUpload component accepting exercise_id and user_id props, implement file input with MIME type restrictions, and add client-side validation for file size and dimensions",
+            "dependencies": [],
+            "details": "1. Create src/components/MediaUpload.tsx file and import React hooks: import { useState, useRef, ChangeEvent } from 'react'\n2. Import Supabase client: import { supabase } from '@/services/supabase'\n3. Define TypeScript interface for props:\n   interface MediaUploadProps {\n     exerciseId: string;\n     userId: string;\n     currentMediaUrl?: string | null;\n     onUploadSuccess: (url: string) => void;\n   }\n4. Create component with state management:\n   - const [uploading, setUploading] = useState(false)\n   - const [progress, setProgress] = useState(0)\n   - const [error, setError] = useState<string | null>(null)\n   - const [previewUrl, setPreviewUrl] = useState<string | null>(currentMediaUrl || null)\n   - const fileInputRef = useRef<HTMLInputElement>(null)\n5. Implement file validation function:\n   const validateFile = (file: File): string | null => {\n     // Check MIME type\n     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/gif']\n     if (!allowedTypes.includes(file.type)) return 'Only JPG and GIF files are allowed'\n     // Check file size (10MB max)\n     const maxSize = 10 * 1024 * 1024 // 10MB in bytes\n     if (file.size > maxSize) return 'File size must be under 10MB'\n     return null // Valid\n   }\n6. Implement dimension check function using Image API:\n   const checkDimensions = (file: File): Promise<{ width: number; height: number }> => {\n     return new Promise((resolve, reject) => {\n       const img = new Image()\n       img.onload = () => resolve({ width: img.width, height: img.height })\n       img.onerror = reject\n       img.src = URL.createObjectURL(file)\n     })\n   }\n7. Create handleFileChange event handler:\n   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {\n     const file = e.target.files?.[0]\n     if (!file) return\n     // Validate file\n     const validationError = validateFile(file)\n     if (validationError) {\n       setError(validationError)\n       return\n     }\n     // Check dimensions and show warning if not recommended size\n     const { width } = await checkDimensions(file)\n     if (width > 1920) {\n       setError('Recommended width is 1080px, larger images may be slow to load')\n     }\n     // Generate preview\n     setPreviewUrl(URL.createObjectURL(file))\n     setError(null)\n   }\n8. Create file input JSX with accept attribute:\n   <input\n     ref={fileInputRef}\n     type=\"file\"\n     accept=\"image/jpeg,image/jpg,image/gif\"\n     onChange={handleFileChange}\n     className=\"hidden\"\n   />\n9. Add TypeScript types for all event handlers and state\n10. Export component: export default MediaUpload",
+            "status": "pending",
+            "testStrategy": "Test: Component renders without errors, file input only shows JPG/GIF in file picker dialog, selecting 11MB file shows 'File size must be under 10MB' error, selecting .png shows 'Only JPG and GIF files are allowed' error, selecting valid JPG generates preview URL, dimension check logs warning for images over 1920px width, TypeScript compilation succeeds with no type errors"
+          },
+          {
+            "id": 2,
+            "title": "Implement Supabase Storage upload function with progress tracking",
+            "description": "Create the upload logic that uploads files to the exercise-media bucket in Supabase Storage using the user_id/exercise_id/filename path structure, with real-time upload progress percentage",
+            "dependencies": [
+              1
+            ],
+            "details": "1. In MediaUpload.tsx, create upload function:\n   const uploadFile = async (file: File) => {\n     try {\n       setUploading(true)\n       setProgress(0)\n       setError(null)\n       // Generate unique filename with timestamp to prevent collisions\n       const fileExt = file.name.split('.').pop()\n       const timestamp = Date.now()\n       const fileName = `${timestamp}.${fileExt}`\n       const filePath = `${userId}/${exerciseId}/${fileName}`\n       \n       // Upload to Supabase Storage\n       const { data, error: uploadError } = await supabase.storage\n         .from('exercise-media')\n         .upload(filePath, file, {\n           cacheControl: '3600',\n           upsert: false\n         })\n       \n       if (uploadError) throw uploadError\n       \n       // Get public URL\n       const { data: { publicUrl } } = supabase.storage\n         .from('exercise-media')\n         .getPublicUrl(filePath)\n       \n       setProgress(100)\n       return publicUrl\n     } catch (err) {\n       setError(err instanceof Error ? err.message : 'Upload failed')\n       return null\n     } finally {\n       setUploading(false)\n     }\n   }\n2. Add progress simulation (Supabase doesn't provide native progress events):\n   - Use setInterval to increment progress from 0 to 90% during upload\n   - Set to 100% only after successful upload\n   - Clear interval on error or completion\n3. Create wrapper function that handles full upload flow:\n   const handleUpload = async () => {\n     const file = fileInputRef.current?.files?.[0]\n     if (!file) return\n     \n     const publicUrl = await uploadFile(file)\n     if (!publicUrl) return\n     \n     // Update exercise media_url in database\n     const { error: updateError } = await supabase\n       .from('exercises')\n       .update({ media_url: publicUrl })\n       .eq('id', exerciseId)\n     \n     if (updateError) {\n       setError('Upload succeeded but database update failed')\n       return\n     }\n     \n     // Call success callback\n     onUploadSuccess(publicUrl)\n     setPreviewUrl(publicUrl)\n   }\n4. Handle network errors gracefully:\n   - Catch network failures with try/catch\n   - Show user-friendly error messages (e.g., 'Network error, please check your connection')\n   - Retry logic for transient failures (optional enhancement)\n5. Handle quota exceeded errors from Supabase:\n   - Detect error.message containing 'quota' or 'storage limit'\n   - Display specific message: 'Storage quota exceeded, please delete old media'\n6. Add cleanup for object URLs to prevent memory leaks:\n   useEffect(() => {\n     return () => {\n       if (previewUrl && previewUrl.startsWith('blob:')) {\n         URL.revokeObjectURL(previewUrl)\n       }\n     }\n   }, [previewUrl])\n7. Implement error boundary for upload failures\n8. Add console logging for debugging upload flow\n9. Test upload with various file sizes to verify progress tracking\n10. Verify public URL format: https://xxxxx.supabase.co/storage/v1/object/public/exercise-media/{userId}/{exerciseId}/{filename}",
+            "status": "pending",
+            "testStrategy": "Test: Upload 5MB JPG successfully saves to Storage bucket, verify public URL is accessible in browser, check exercises.media_url updated in database with correct URL, progress bar increments from 0% to 100% during upload, network error shows 'Network error' message, invalid Storage bucket name shows error, verify object URL cleanup prevents memory leaks, test upload in offline mode shows appropriate error, retry upload after fixing network issue succeeds"
+          },
+          {
+            "id": 3,
+            "title": "Build UI with drag-and-drop zone and image/GIF preview display",
+            "description": "Create Tailwind-styled upload interface with drag-and-drop functionality, visual preview for uploaded media (supporting both static JPG and animated GIF), and responsive layout",
+            "dependencies": [
+              1
+            ],
+            "details": "1. Install react-dropzone for drag-and-drop: `npm install react-dropzone`\n2. Import useDropzone hook: import { useDropzone } from 'react-dropzone'\n3. Configure dropzone in component:\n   const { getRootProps, getInputProps, isDragActive } = useDropzone({\n     accept: { 'image/jpeg': ['.jpg', '.jpeg'], 'image/gif': ['.gif'] },\n     maxSize: 10 * 1024 * 1024,\n     multiple: false,\n     onDrop: (acceptedFiles) => {\n       if (acceptedFiles[0]) {\n         const file = acceptedFiles[0]\n         handleFileChange({ target: { files: [file] } } as any)\n       }\n     }\n   })\n4. Create drag-and-drop zone JSX with Tailwind classes:\n   <div\n     {...getRootProps()}\n     className={`\n       relative border-2 border-dashed rounded-lg p-8\n       transition-colors duration-200 cursor-pointer\n       ${isDragActive ? 'border-blue-500 bg-blue-500/10' : 'border-gray-600 hover:border-gray-500'}\n       ${uploading ? 'pointer-events-none opacity-50' : ''}\n     `}\n   >\n     <input {...getInputProps()} />\n     {!previewUrl && (\n       <div className=\"text-center\">\n         <p className=\"text-gray-400\">Drag & drop exercise media here</p>\n         <p className=\"text-sm text-gray-500 mt-2\">or click to select file</p>\n         <p className=\"text-xs text-gray-600 mt-1\">JPG or GIF, max 10MB</p>\n       </div>\n     )}\n   </div>\n5. Add image/GIF preview display:\n   {previewUrl && (\n     <div className=\"mt-4 relative\">\n       <img\n         src={previewUrl}\n         alt=\"Exercise preview\"\n         className=\"max-w-full max-h-96 mx-auto rounded-lg shadow-lg\"\n       />\n       {previewUrl.endsWith('.gif') && (\n         <span className=\"absolute top-2 left-2 bg-blue-500 text-white px-2 py-1 rounded text-xs font-semibold\">\n           GIF\n         </span>\n       )}\n     </div>\n   )}\n6. Add loading spinner overlay during upload:\n   {uploading && (\n     <div className=\"absolute inset-0 flex items-center justify-center bg-gray-900/50 rounded-lg\">\n       <div className=\"text-center\">\n         <div className=\"animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto\"></div>\n         <p className=\"text-white mt-2\">{progress}%</p>\n       </div>\n     </div>\n   )}\n7. Add error message display:\n   {error && (\n     <div className=\"mt-2 p-3 bg-red-500/10 border border-red-500 rounded text-red-400 text-sm\">\n       {error}\n     </div>\n   )}\n8. Add upload button (shown when preview exists):\n   {previewUrl && !currentMediaUrl && (\n     <button\n       onClick={handleUpload}\n       disabled={uploading}\n       className=\"mt-4 w-full bg-blue-500 hover:bg-blue-600 disabled:bg-gray-600 text-white font-semibold py-2 px-4 rounded transition-colors\"\n     >\n       {uploading ? 'Uploading...' : 'Upload Media'}\n     </button>\n   )}\n9. Style hover states with Tailwind: hover:bg-gray-800, hover:border-blue-400\n10. Ensure responsive design: use max-w-lg mx-auto for container, responsive padding classes",
+            "status": "pending",
+            "testStrategy": "Test: Drag JPG file over dropzone shows blue highlight, drop file loads preview, click dropzone opens file picker, uploaded JPG displays correctly in preview area, uploaded GIF animates in preview, 'GIF' badge appears on GIF files, loading spinner shows during upload with percentage, error messages display in red with proper styling, upload button disabled during upload, hover effects work on desktop, responsive layout works on mobile viewport (375px width)"
+          },
+          {
+            "id": 4,
+            "title": "Add delete media functionality with confirmation dialog",
+            "description": "Implement delete button for existing media, create confirmation modal to prevent accidental deletions, and handle deletion from both Storage bucket and database",
+            "dependencies": [
+              2,
+              3
+            ],
+            "details": "1. Add delete state management:\n   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)\n   const [deleting, setDeleting] = useState(false)\n2. Create deleteMedia function:\n   const deleteMedia = async () => {\n     try {\n       setDeleting(true)\n       setError(null)\n       \n       // Extract file path from currentMediaUrl\n       // Format: https://xxxxx.supabase.co/storage/v1/object/public/exercise-media/{userId}/{exerciseId}/{filename}\n       const urlParts = currentMediaUrl.split('/exercise-media/')\n       const filePath = urlParts[1] // userId/exerciseId/filename\n       \n       // Delete from Storage\n       const { error: deleteError } = await supabase.storage\n         .from('exercise-media')\n         .remove([filePath])\n       \n       if (deleteError) throw deleteError\n       \n       // Update database to clear media_url\n       const { error: updateError } = await supabase\n         .from('exercises')\n         .update({ media_url: null })\n         .eq('id', exerciseId)\n       \n       if (updateError) throw updateError\n       \n       // Clear preview and close confirmation\n       setPreviewUrl(null)\n       setShowDeleteConfirm(false)\n       onUploadSuccess(null) // Notify parent of deletion\n     } catch (err) {\n       setError(err instanceof Error ? err.message : 'Delete failed')\n     } finally {\n       setDeleting(false)\n     }\n   }\n3. Create confirmation modal component:\n   {showDeleteConfirm && (\n     <div className=\"fixed inset-0 bg-black/50 flex items-center justify-center z-50\">\n       <div className=\"bg-gray-800 rounded-lg p-6 max-w-sm mx-4\">\n         <h3 className=\"text-xl font-semibold text-white mb-2\">Delete Media?</h3>\n         <p className=\"text-gray-400 mb-4\">This action cannot be undone. The media file will be permanently deleted.</p>\n         <div className=\"flex gap-2\">\n           <button\n             onClick={() => setShowDeleteConfirm(false)}\n             disabled={deleting}\n             className=\"flex-1 bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded\"\n           >\n             Cancel\n           </button>\n           <button\n             onClick={deleteMedia}\n             disabled={deleting}\n             className=\"flex-1 bg-red-500 hover:bg-red-600 disabled:bg-gray-600 text-white font-semibold py-2 px-4 rounded\"\n           >\n             {deleting ? 'Deleting...' : 'Delete'}\n           </button>\n         </div>\n       </div>\n     </div>\n   )}\n4. Add delete button (shown when media exists):\n   {currentMediaUrl && previewUrl && (\n     <button\n       onClick={() => setShowDeleteConfirm(true)}\n       className=\"mt-2 w-full bg-red-500/10 hover:bg-red-500/20 border border-red-500 text-red-400 font-semibold py-2 px-4 rounded transition-colors\"\n     >\n       Delete Media\n     </button>\n   )}\n5. Handle edge case: file deleted from Storage but not database\n   - Check if file exists before attempting delete\n   - Clear media_url even if Storage delete fails (with warning)\n6. Add keyboard support for modal: ESC key closes confirmation\n   useEffect(() => {\n     const handleEsc = (e: KeyboardEvent) => {\n       if (e.key === 'Escape') setShowDeleteConfirm(false)\n     }\n     if (showDeleteConfirm) {\n       window.addEventListener('keydown', handleEsc)\n       return () => window.removeEventListener('keydown', handleEsc)\n     }\n   }, [showDeleteConfirm])\n7. Prevent body scroll when modal is open:\n   useEffect(() => {\n     if (showDeleteConfirm) {\n       document.body.style.overflow = 'hidden'\n       return () => { document.body.style.overflow = 'unset' }\n     }\n   }, [showDeleteConfirm])\n8. Add ARIA attributes for accessibility: aria-modal=\"true\", role=\"dialog\"\n9. Test deletion flow thoroughly to ensure no orphaned files\n10. Log deletion events for debugging",
+            "status": "pending",
+            "testStrategy": "Test: Click delete button shows confirmation modal, click Cancel closes modal without deleting, click Delete removes file from Storage bucket, verify exercises.media_url set to null in database, deleted media no longer appears in UI, ESC key closes modal, modal prevents background scrolling, delete button disabled during deletion, error handling shows message if Storage delete fails, verify delete works for both JPG and GIF files, test delete for non-existent file handles gracefully"
+          },
+          {
+            "id": 5,
+            "title": "Integrate MediaUpload component into exercise management workflow and add error handling",
+            "description": "Connect MediaUpload component to the routine/exercise editor pages, implement comprehensive error handling for offline scenarios and quota limits, and add usage documentation",
+            "dependencies": [
+              4
+            ],
+            "details": "1. Identify where MediaUpload should be integrated:\n   - Likely in src/pages/RoutineEditor.tsx or similar exercise edit view\n   - Should appear as a section within exercise edit form\n2. Import MediaUpload component:\n   import MediaUpload from '@/components/MediaUpload'\n3. Add MediaUpload to exercise edit form (example integration):\n   <div className=\"mb-6\">\n     <label className=\"block text-sm font-semibold text-gray-300 mb-2\">Exercise Media</label>\n     <MediaUpload\n       exerciseId={exercise.id}\n       userId={user.id}\n       currentMediaUrl={exercise.media_url}\n       onUploadSuccess={(url) => {\n         // Update local state\n         setExercise({ ...exercise, media_url: url })\n         // Optionally show toast notification\n         console.log('Media updated:', url)\n       }}\n     />\n   </div>\n4. Add offline detection and queue upload for later:\n   const [isOnline, setIsOnline] = useState(navigator.onLine)\n   useEffect(() => {\n     const handleOnline = () => setIsOnline(true)\n     const handleOffline = () => setIsOnline(false)\n     window.addEventListener('online', handleOnline)\n     window.addEventListener('offline', handleOffline)\n     return () => {\n       window.removeEventListener('online', handleOnline)\n       window.removeEventListener('offline', handleOffline)\n     }\n   }, [])\n   // Show warning banner when offline\n   {!isOnline && (\n     <div className=\"mb-4 p-3 bg-yellow-500/10 border border-yellow-500 rounded text-yellow-400 text-sm\">\n       You are offline. Uploads will be queued until connection is restored.\n     </div>\n   )}\n5. Implement upload queue using localStorage for offline resilience:\n   interface QueuedUpload {\n     file: File; // Note: Files can't be serialized, use FileReader to convert to base64\n     exerciseId: string;\n     userId: string;\n     timestamp: number;\n   }\n   // Store pending uploads in localStorage\n   // Process queue when back online\n6. Add quota limit detection and user-friendly messaging:\n   if (error.message.includes('quota') || error.message.includes('storage limit')) {\n     setError('Storage quota exceeded. Delete old media to free up space.')\n   } else if (error.message.includes('network') || error.message.includes('fetch')) {\n     setError('Network error. Check your connection and try again.')\n   } else if (error.message.includes('permission') || error.message.includes('policy')) {\n     setError('Permission denied. You may not have access to modify this exercise.')\n   } else {\n     setError('Upload failed. Please try again.')\n   }\n7. Add toast notifications for success/error (optional, install react-hot-toast: npm install react-hot-toast):\n   import toast from 'react-hot-toast'\n   // On success:\n   toast.success('Media uploaded successfully!')\n   // On error:\n   toast.error(error)\n8. Create TypeScript types file: src/types/media.types.ts\n   export interface MediaUploadProps {\n     exerciseId: string;\n     userId: string;\n     currentMediaUrl?: string | null;\n     onUploadSuccess: (url: string | null) => void;\n   }\n9. Add component documentation in JSDoc comments:\n   /**\n    * MediaUpload Component\n    * \n    * Handles uploading JPG/GIF exercise demonstration media to Supabase Storage.\n    * Features: drag-and-drop, file validation, progress tracking, preview, delete.\n    * \n    * @param exerciseId - ID of the exercise to attach media to\n    * @param userId - ID of authenticated user (for Storage path)\n    * @param currentMediaUrl - Existing media URL (if any)\n    * @param onUploadSuccess - Callback when upload/delete succeeds\n    */\n10. Add README section documenting MediaUpload usage for other developers",
+            "status": "pending",
+            "testStrategy": "Test: MediaUpload appears correctly in exercise editor page, upload updates exercise.media_url in parent component state, offline banner shows when network disconnected, queued uploads process when back online, quota exceeded error shows user-friendly message, network errors display appropriate message, toast notifications appear on success/error (if implemented), component TypeScript types work correctly, JSDoc documentation renders in IDE tooltips, verify integration doesn't break existing exercise edit functionality"
+          }
+        ]
       },
       {
         "id": 7,
@@ -88,7 +471,61 @@
           5
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create ExerciseLogger component with weight and reps input fields",
+            "description": "Build the ExerciseLogger.tsx component with controlled input fields for weight (number) and reps (number), including input validation to ensure positive values only",
+            "dependencies": [],
+            "details": "Create src/components/ExerciseLogger.tsx as a React functional component. Implement useState hooks for weight and reps state management. Add two number input fields with type='number', min='0', step='0.1' for weight (kg) and min='1' for reps. Include validation that prevents negative or zero values. Apply Tailwind CSS dark mode styling: bg-gray-800, text-gray-100, focus:ring-blue-500, border-gray-700. Add labels with text-lg font-bold for accessibility. Use controlled component pattern with onChange handlers. Set default placeholder values (e.g., 'Enter weight in kg', 'Enter reps').",
+            "status": "pending",
+            "testStrategy": "Test: Input fields accept only positive numbers, validation prevents negative/zero values, state updates correctly on user input, fields render with dark mode styling, placeholder text displays correctly"
+          },
+          {
+            "id": 2,
+            "title": "Add comment textarea and quick-adjust buttons to ExerciseLogger",
+            "description": "Implement textarea for user comments and quick-adjust increment/decrement buttons for weight (+/- 2.5kg) and reps (+/- 1)",
+            "dependencies": [
+              1
+            ],
+            "details": "Add a textarea element with id='user_comment', placeholder='Notes on today's performance, injuries, etc.', rows={4}, className='w-full bg-gray-800 text-gray-100 rounded-lg p-3 border border-gray-700 focus:ring-2 focus:ring-blue-500'. Implement quick-adjust buttons using button elements positioned next to weight and reps inputs. Create handleWeightAdjust(delta: number) and handleRepsAdjust(delta: number) functions that increment/decrement values safely (prevent going below minimums). Style buttons with bg-gray-700 hover:bg-gray-600, rounded-md, p-2, and use '+' and '-' symbols or icons. Ensure quick-adjust respects validation rules (weight >= 0, reps >= 1).",
+            "status": "pending",
+            "testStrategy": "Test: Textarea accepts multi-line text input and persists value, +2.5kg button increments weight correctly, -2.5kg button doesn't allow negative weight, +1/-1 rep buttons work correctly with minimum of 1 rep, quick-adjust buttons have proper hover states"
+          },
+          {
+            "id": 3,
+            "title": "Implement saveWorkoutLog function with Supabase integration",
+            "description": "Create saveWorkoutLog async function that inserts workout log data into Supabase workout_logs table with user_id, exercise_id, date, weight_used, reps_completed, and user_comment",
+            "dependencies": [
+              2
+            ],
+            "details": "Create src/services/workoutLogService.ts with async function saveWorkoutLog(userId: string, exerciseId: string, weight: number, reps: number, comment: string, date: Date = new Date()). Use Supabase client: import { supabase } from '@/lib/supabase'. Implement: const { data, error } = await supabase.from('workout_logs').insert({ user_id: userId, exercise_id: exerciseId, date: date.toISOString(), weight_used: weight, reps_completed: reps, user_comment: comment }).select().single(). Add error handling with try-catch block and return { success: boolean, data?, error? }. Include TypeScript types: type WorkoutLog = { user_id: string; exercise_id: string; date: string; weight_used: number; reps_completed: number; user_comment: string }.",
+            "status": "pending",
+            "testStrategy": "Test: saveWorkoutLog successfully inserts data into Supabase workout_logs table, user_id and exercise_id are correctly saved, date defaults to current date, weight and reps are stored as numbers, comment text persists in database, error handling returns appropriate error messages on failure"
+          },
+          {
+            "id": 4,
+            "title": "Implement optimistic UI updates with success animation",
+            "description": "Add optimistic UI updates that show data immediately upon save, implement background sync to Supabase, and create a checkmark success animation using Framer Motion",
+            "dependencies": [
+              3
+            ],
+            "details": "In ExerciseLogger component, create handleSave async function that: 1) Immediately updates local state with optimistic data, 2) Shows loading state (setIsSaving(true)), 3) Calls saveWorkoutLog in background, 4) On success: triggers checkmark animation using Framer Motion's <motion.div> with initial={{ scale: 0, opacity: 0 }}, animate={{ scale: 1, opacity: 1 }}, exit={{ scale: 0, opacity: 0 }}, transition={{ duration: 0.3 }}. Use a green checkmark SVG icon with AnimatePresence wrapper. 5) On error: revert optimistic update, show error toast. Add useState hooks for isSaving, showSuccess. Import { motion, AnimatePresence } from 'framer-motion'. Position checkmark overlay with absolute positioning, centered on screen with bg-black/50 backdrop.",
+            "status": "pending",
+            "testStrategy": "Test: Data displays immediately upon save action (before database confirmation), checkmark animation plays smoothly with Framer Motion, success indicator disappears after 1-2 seconds, error handling reverts optimistic updates on save failure, loading state prevents duplicate submissions"
+          },
+          {
+            "id": 5,
+            "title": "Add offline support with IndexedDB and background sync",
+            "description": "Implement offline storage using IndexedDB to queue workout logs when offline, and sync to Supabase when connection is restored using workbox-background-sync",
+            "dependencies": [
+              4
+            ],
+            "details": "Install dependencies: npm install idb workbox-background-sync. Create src/lib/offlineStorage.ts using idb library: import { openDB } from 'idb'. Initialize IndexedDB: const db = await openDB('workout-logs-db', 1, { upgrade(db) { db.createObjectStore('pending-logs', { keyPath: 'id', autoIncrement: true }); } }). Implement queueOfflineLog(log: WorkoutLog) to store logs in 'pending-logs' store. Create syncOfflineLogs() function that: 1) Checks navigator.onLine, 2) Retrieves all pending logs from IndexedDB, 3) Calls saveWorkoutLog for each, 4) Deletes from IndexedDB on success. Register service worker with Workbox for background sync. Add online/offline event listeners: window.addEventListener('online', syncOfflineLogs). Update ExerciseLogger to use offline queue when navigator.onLine === false. Add visual indicator for offline mode (orange badge) and sync status (spinning icon during sync).",
+            "status": "pending",
+            "testStrategy": "Test: Logs save to IndexedDB when offline (airplane mode), logs automatically sync to Supabase when connection restored, offline indicator displays correctly, no data loss during offline periods, duplicate prevention ensures logs sync only once, retry mechanism handles sync failures gracefully"
+          }
+        ]
       },
       {
         "id": 8,
@@ -101,7 +538,62 @@
           2
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create seedData.ts with typed interfaces and PRD workout data structures",
+            "description": "Define TypeScript interfaces for RoutineData and ExerciseData, and create the 4 workout routines array based on PRD specifications (Training 1-4)",
+            "dependencies": [],
+            "details": "1. Create src/data/seedData.ts file\n2. Define interface RoutineData with fields: name (string), description (string)\n3. Define interface ExerciseData with fields: name (string), muscle_group (string), machine_info (string), target_sets_reps (string)\n4. Create const WORKOUT_ROUTINES array containing 4 routines:\n   - Training 1: Brust & Bizeps with exercises like 'Flachbank LH', 'Schrägbank LH', 'Butterfly', 'Bizeps Curls KH', 'Bizeps Curls Maschine', 'Hammer Curls'\n   - Training 2: Beine & Schultern with exercises like 'Beinpresse', 'Beinstrecker', 'Beinbeuger', 'Waden', 'Schulterdrücken', 'Seitheben', 'Facepulls'\n   - Training 3: Rücken & Trizeps with exercises like 'Latzug', 'Rudern horizontal', 'Rudern vertikal', 'Trizeps Pushdown', 'Trizeps über Kopf'\n   - Training 4: Ganzkörper Bonus with compound exercises\n5. Each exercise object should include muscle_group (e.g., 'Brust', 'Bizeps', 'Beine') and target_sets_reps format like '12/10/8' or '3x12'\n6. Add optional machine_info field for equipment references (e.g., 'Gerät 41')\n7. Export WORKOUT_ROUTINES constant for use in import function",
+            "status": "pending",
+            "testStrategy": "Verify: TypeScript compiles without errors, WORKOUT_ROUTINES array contains exactly 4 routines, each routine has valid name and exercises array, each exercise has required fields (name, muscle_group, target_sets_reps), data structure matches PRD specification for Training 1-4"
+          },
+          {
+            "id": 2,
+            "title": "Implement importSeedData function with database insertion logic",
+            "description": "Create the core import function that inserts routines and exercises into Supabase with proper foreign key relationships and error handling",
+            "dependencies": [
+              1
+            ],
+            "details": "1. In seedData.ts, create async function importSeedData(userId: string) that accepts the authenticated user's ID\n2. First, check if user already has routines: const { data: existingRoutines } = await supabase.from('routines').select('id').eq('user_id', userId).limit(1)\n3. If existingRoutines.length > 0, return early with message 'User already has workout routines'\n4. Use batch insert for routines: const { data: insertedRoutines, error } = await supabase.from('routines').insert(WORKOUT_ROUTINES.map(r => ({ user_id: userId, name: r.name }))).select()\n5. Check for errors after routine insert and throw descriptive error if failed\n6. Map inserted routine IDs to exercise data and prepare exercises array with routine_id foreign keys\n7. Batch insert all exercises: await supabase.from('exercises').insert(exercisesWithRoutineIds)\n8. Implement try-catch block with rollback logic: if exercises insert fails, delete the inserted routines to maintain data consistency\n9. Return success object with counts: { routinesCreated: insertedRoutines.length, exercisesCreated: totalExercises }\n10. Add detailed error messages for common failures (network, RLS policy, foreign key constraint)",
+            "status": "pending",
+            "testStrategy": "Test: Function creates exactly 4 routines in database, all exercises have valid routine_id foreign keys, exercises are linked to correct parent routine, function returns early if user already has routines, rollback deletes routines if exercise insert fails, error handling provides user-friendly messages, verify with SELECT queries after import"
+          },
+          {
+            "id": 3,
+            "title": "Create ImportWorkoutsButton component with progress modal UI",
+            "description": "Build a React component with import button and modal that shows real-time progress during the data import process",
+            "dependencies": [
+              2
+            ],
+            "details": "1. Create src/components/ImportWorkoutsButton.tsx React component\n2. Add state for import status: useState<'idle' | 'importing' | 'success' | 'error'>('idle')\n3. Add state for progress tracking: useState<{ routines: number, exercises: number, total: number }>()\n4. Create handleImport async function that:\n   - Sets status to 'importing'\n   - Gets current user from Supabase auth\n   - Calls importSeedData(user.id)\n   - Updates progress state incrementally (show routine count, then exercise count)\n   - Sets status to 'success' or 'error' based on result\n5. Render primary button: 'Import Sample Workouts' disabled when status !== 'idle'\n6. Render modal dialog when status === 'importing' showing:\n   - Spinner/loading animation\n   - Progress text: 'Importing {X} of 4 routines...'\n   - Exercise count: '{Y} exercises imported'\n7. Show success modal with checkmark icon and summary when status === 'success'\n8. Show error modal with error message and retry button when status === 'error'\n9. Add onClick to button that triggers handleImport\n10. Style with Tailwind CSS dark mode classes for consistency",
+            "status": "pending",
+            "testStrategy": "Test: Button renders with correct text, button is disabled after first successful import, clicking button opens progress modal, modal shows real-time progress updates, success modal displays exercise count, error modal shows error message with retry button, component integrates with dark theme styling, works with Supabase auth context"
+          },
+          {
+            "id": 4,
+            "title": "Integrate ImportWorkoutsButton into settings/profile page UI",
+            "description": "Add the import button to the user settings or profile page with appropriate context and placement",
+            "dependencies": [
+              3
+            ],
+            "details": "1. Identify or create src/pages/SettingsPage.tsx or src/pages/ProfilePage.tsx component\n2. Import ImportWorkoutsButton component\n3. Add a section titled 'Workout Data' or 'Initial Setup' in the settings page\n4. Place ImportWorkoutsButton within this section with explanatory text:\n   - Heading: 'Sample Workout Routines'\n   - Description: 'Import 4 pre-configured workout routines based on a 3-day split plus full-body bonus (Brust & Bizeps, Beine & Schultern, Rücken & Trizeps, Ganzkörper)'\n   - Warning text: 'This will only work if you have no existing routines'\n5. Add conditional rendering: only show import section if user has 0 routines (check on page load)\n6. Ensure page is accessible from main navigation (bottom nav or settings menu)\n7. Add proper spacing and styling to match mobile-first design\n8. Consider adding a dismissible info banner at the top of the page explaining first-time setup\n9. Ensure authenticated users can access the page (add auth guard if needed)\n10. Test responsive layout for mobile devices",
+            "status": "pending",
+            "testStrategy": "Test: Settings page renders with import section visible, explanatory text is clear and accurate, import button appears when user has 0 routines, import button hidden after routines exist, page is accessible from app navigation, layout is mobile-optimized, auth guard prevents unauthenticated access, import process completes successfully from settings page"
+          },
+          {
+            "id": 5,
+            "title": "Add optional placeholder media URLs and implement import completion logging",
+            "description": "Enhance seed data with demo media URLs from public CDN and add timestamp logging for successful imports",
+            "dependencies": [
+              2,
+              3
+            ],
+            "details": "1. In seedData.ts, extend ExerciseData interface with optional media_url?: string field\n2. Research and select a public CDN or placeholder image service (e.g., Unsplash, Pexels, or fitness-specific stock photos)\n3. Add media_url values to select exercises in WORKOUT_ROUTINES array:\n   - Prioritize compound movements like 'Flachbank LH', 'Beinpresse', 'Latzug' for demo GIFs/images\n   - Use placeholder URLs or actual fitness demonstration images\n   - Ensure URLs are https and publicly accessible without authentication\n4. Update database insert logic to include media_url when present\n5. Add logging to importSeedData function:\n   - Log timestamp with new Date().toISOString() after successful import\n   - Store import_completed_at in user metadata or local storage\n   - Log summary: 'Seed data import completed: {routineCount} routines, {exerciseCount} exercises at {timestamp}'\n6. Optionally create a workout_imports table to track import history with columns: user_id, imported_at, routine_count, exercise_count\n7. Update ImportWorkoutsButton to display import timestamp in success modal\n8. Add console.log statements for debugging during development\n9. Ensure media_url field is nullable and import doesn't fail if URLs become unavailable\n10. Document the media URL strategy in code comments",
+            "status": "pending",
+            "testStrategy": "Test: Exercises with media_url display images correctly in exercise cards, import completion timestamp is logged accurately, timestamp appears in success modal, import history is trackable (in table or local storage), media URLs load successfully, import doesn't fail if media_url is null, logging provides useful debugging info, database media_url column accepts null values"
+          }
+        ]
       },
       {
         "id": 9,
@@ -114,7 +606,61 @@
           1
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Configure Tailwind CSS dark mode and create ThemeContext provider",
+            "description": "Set up Tailwind CSS darkMode: 'class' configuration and create a React Context to manage theme state with dark mode as default",
+            "dependencies": [],
+            "details": "1. Open or create tailwind.config.js and set darkMode: 'class' to enable class-based dark mode toggling\n2. Extend theme with custom dark color palette: colors: { background: { dark: '#111827', light: '#F9FAFB' }, surface: { dark: '#1F2937', light: '#FFFFFF' } }\n3. Create src/contexts/ThemeContext.tsx with React Context API\n4. Define ThemeContextType interface: { isDarkMode: boolean; toggleTheme: () => void }\n5. Implement ThemeProvider component with useState defaulting to dark mode (true)\n6. Use useEffect to persist theme preference to localStorage and apply 'dark' class to document.documentElement\n7. On mount, check localStorage for saved preference, default to dark if none exists\n8. Export useTheme custom hook for consuming theme context\n9. Wrap application root in ThemeProvider in main.tsx\n10. Add dark class to <html> element by default in index.html",
+            "status": "pending",
+            "testStrategy": "Verify tailwind.config.js has darkMode: 'class', ThemeContext initializes with dark mode true, 'dark' class is applied to document.documentElement on page load, localStorage stores theme preference, refreshing page maintains dark mode setting, useTheme hook returns correct values"
+          },
+          {
+            "id": 2,
+            "title": "Apply global dark theme styles and component styling patterns",
+            "description": "Implement consistent dark mode styling across all UI components including inputs, buttons, cards, and containers with high contrast for gym readability",
+            "dependencies": [
+              1
+            ],
+            "details": "1. Update src/index.css to set dark theme as base: body { @apply bg-gray-900 text-gray-100; }\n2. Create Tailwind component classes or utility patterns for reusable dark UI elements:\n   - Input fields: bg-gray-800 border-gray-700 focus:ring-blue-500 focus:border-blue-500 text-gray-100\n   - Primary buttons: bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white\n   - Secondary buttons: bg-gray-700 hover:bg-gray-600 text-gray-200\n   - Danger buttons: bg-red-600 hover:bg-red-700 text-white\n   - Cards: bg-gray-800 border-gray-700 shadow-lg rounded-lg\n   - Headers: bg-gray-800 border-b border-gray-700\n3. Set minimum font size of 16px for body text for gym readability: text-base or larger\n4. Use font-bold for headings with high contrast: text-white\n5. Apply border-gray-700 for dividers and separators throughout the app\n6. Configure focus states with visible ring for accessibility: focus:ring-2 focus:ring-blue-500\n7. Update existing placeholder components (Auth.tsx, Routines.tsx, etc.) to use dark theme classes\n8. Test contrast ratios meet WCAG AA standards (4.5:1 for normal text)",
+            "status": "pending",
+            "testStrategy": "Visually verify all components use dark theme colors consistently, test in low-light conditions for readability, verify input fields, buttons, and cards have correct styling, check that focus states are visible, verify text is at least 16px and headings are bold white, test contrast with browser accessibility tools"
+          },
+          {
+            "id": 3,
+            "title": "Implement bottom navigation bar with mobile-optimized touch targets",
+            "description": "Create a fixed bottom navigation component with large touch targets for primary app actions (Home, Routines, Profile) positioned in thumb-reachable zone",
+            "dependencies": [
+              2
+            ],
+            "details": "1. Create src/components/BottomNav.tsx component\n2. Apply fixed positioning: fixed bottom-0 left-0 right-0 for persistent visibility\n3. Set safe-area insets for notched devices: pb-safe (using safe-area-inset-bottom CSS)\n4. Implement navigation items array: [{ icon: HomeIcon, label: 'Home', path: '/' }, { icon: FolderIcon, label: 'Routines', path: '/routines' }, { icon: UserIcon, label: 'Profile', path: '/profile' }]\n5. Style with dark theme: bg-gray-800 border-t border-gray-700\n6. Set minimum touch target height: min-h-12 (48px) or larger h-16 for each nav item\n7. Use full-width layout with flex justify-around for even spacing\n8. Add active state indicator: text-blue-500 for current route, text-gray-400 for inactive\n9. Use useLocation() from react-router-dom to determine active route\n10. Add icons using emoji or simple SVG (keep lightweight for PWA)\n11. Ensure labels are visible and readable: text-xs font-medium\n12. Include in ProtectedRoute layout so it appears on all authenticated pages\n13. Add padding-bottom to main content area to prevent nav from overlapping content: pb-20",
+            "status": "pending",
+            "testStrategy": "Bottom nav is fixed at screen bottom on all devices, touch targets are at least 48px tall, active route shows blue highlight, tapping nav items navigates correctly, safe-area padding works on iPhone X and newer, no content is hidden behind nav bar, nav is not visible on Auth page"
+          },
+          {
+            "id": 4,
+            "title": "Optimize layout for one-handed thumb reach and mobile responsiveness",
+            "description": "Restructure component layouts to place primary action buttons in the bottom third of the screen and implement responsive breakpoints for various mobile screen sizes",
+            "dependencies": [
+              3
+            ],
+            "details": "1. Create mobile-first layout utility classes in index.css or as Tailwind @apply components\n2. Position primary action buttons in bottom third of screen using flex-col justify-end or fixed positioning\n3. Place secondary/cancel actions in top or middle areas, primary confirmations in bottom area\n4. Implement swipeable areas as full-width touchable zones for workout session slides\n5. Add responsive breakpoints for target devices:\n   - Base (320px - iPhone SE): single column, compact padding p-4\n   - sm (390px - iPhone 14): slight padding increase p-5\n   - md (428px - iPhone 14 Pro Max): comfortable padding p-6\n   - lg (768px+ - tablet): optional two-column layout consideration\n6. Create reusable ActionButtonContainer component that positions buttons at bottom: <div className=\"fixed bottom-20 left-0 right-0 px-4 pb-4 bg-gradient-to-t from-gray-900\">\n7. Use safe-area-inset-bottom for devices with home indicator\n8. Test thumb reachability by analyzing touch zones: primary actions should be in bottom 40% of screen\n9. Apply max-w-md mx-auto on larger screens to prevent overly wide layouts\n10. Ensure no horizontal scrolling occurs: overflow-x-hidden on body/main container",
+            "status": "pending",
+            "testStrategy": "Test on iPhone SE (320px), iPhone 14 (390px), iPhone 14 Pro Max (428px) simulators or devices, verify primary buttons are thumb-reachable without hand repositioning, no horizontal scrolling on any screen size, padding adjusts appropriately per breakpoint, action buttons have gradient background for visibility over content"
+          },
+          {
+            "id": 5,
+            "title": "Implement haptic feedback using Vibration API for touch interactions",
+            "description": "Add tactile haptic feedback on button taps, swipes, and key interactions using the Web Vibration API for enhanced mobile UX",
+            "dependencies": [
+              4
+            ],
+            "details": "1. Create src/utils/haptics.ts utility module for vibration functions\n2. Check for Vibration API support: const hasVibration = 'vibrate' in navigator\n3. Implement haptic patterns:\n   - lightTap(): navigator.vibrate(10) - for button taps\n   - mediumTap(): navigator.vibrate(20) - for confirming actions\n   - heavyTap(): navigator.vibrate([30, 50, 30]) - for completing workout\n   - swipeFeedback(): navigator.vibrate(5) - subtle feedback on slide change\n   - errorFeedback(): navigator.vibrate([50, 100, 50]) - for errors\n4. Create useHaptic custom hook that returns these functions with feature detection fallback (no-op if unsupported)\n5. Add haptic feedback to:\n   - All button onClick handlers (lightTap)\n   - Form submission success (mediumTap)\n   - Workout completion (heavyTap)\n   - Swiper onSlideChange event (swipeFeedback)\n   - Delete confirmations (mediumTap)\n   - Error states (errorFeedback)\n6. Wrap haptic calls in try-catch for robustness\n7. Consider adding user preference to disable haptics in settings (store in localStorage)\n8. Test that vibrations don't fire on desktop browsers (graceful degradation)\n9. Note: iOS Safari has limited Vibration API support - document this limitation\n10. Add TypeScript types for navigator.vibrate if needed",
+            "status": "pending",
+            "testStrategy": "Test on Android device - verify vibration occurs on button tap, test on iOS (expect no vibration due to limited support), verify no JavaScript errors on desktop browsers, haptic patterns feel distinct for different actions, vibration is not jarring or too long, error handling works if vibration fails, verify haptics can be conditionally disabled"
+          }
+        ]
       },
       {
         "id": 10,
@@ -129,7 +675,63 @@
           7
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Configure vite-plugin-pwa with Workbox caching strategies for offline support",
+            "description": "Set up comprehensive PWA service worker configuration with cache-first, network-first, and stale-while-revalidate strategies for different resource types",
+            "dependencies": [],
+            "details": "1. Install workbox dependencies: `npm install -D workbox-window workbox-core workbox-routing workbox-strategies workbox-expiration workbox-cacheable-response`\n2. Open vite.config.ts and enhance VitePWA configuration with workbox options\n3. Configure NetworkFirst strategy for Supabase API calls:\n   - Add runtimeCaching entry with urlPattern matching 'https://*.supabase.co/*'\n   - Set handler: 'NetworkFirst' with networkTimeoutSeconds: 10\n   - Configure cacheName: 'supabase-api-cache'\n   - Add expiration: maxEntries: 50, maxAgeSeconds: 86400 (24 hours)\n4. Configure CacheFirst strategy for static assets:\n   - urlPattern for images: /\\.(png|jpg|jpeg|svg|gif|webp|ico)$/\n   - handler: 'CacheFirst'\n   - cacheName: 'static-images-cache'\n   - Add cacheableResponse: { statuses: [0, 200] }\n   - expiration: maxEntries: 100, maxAgeSeconds: 2592000 (30 days)\n5. Configure CacheFirst for fonts:\n   - urlPattern: /\\.(woff|woff2|ttf|eot)$/\n   - handler: 'CacheFirst'\n   - cacheName: 'fonts-cache'\n   - expiration: maxEntries: 20, maxAgeSeconds: 31536000 (1 year)\n6. Configure StaleWhileRevalidate for exercise media from Supabase Storage:\n   - urlPattern: /https:\\/\\/.*\\.supabase\\.co\\/storage\\/v1\\/object\\/public\\/exercise-media\\/.*/\n   - handler: 'StaleWhileRevalidate'\n   - cacheName: 'exercise-media-cache'\n   - expiration: maxEntries: 200, maxAgeSeconds: 604800 (7 days)\n7. Add precaching configuration:\n   - workbox.globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}']\n   - workbox.cleanupOutdatedCaches: true\n8. Set registerType: 'autoUpdate' to auto-update service worker on changes\n9. Add devOptions: { enabled: true, type: 'module' } for testing in development\n10. Test service worker registration in browser DevTools > Application > Service Workers",
+            "status": "pending",
+            "testStrategy": "Run `npm run build` and serve dist folder, open DevTools > Application > Service Workers and verify service worker is active, check Cache Storage shows separate caches (supabase-api-cache, static-images-cache, fonts-cache, exercise-media-cache), disconnect internet and verify static assets load from cache, test API requests use NetworkFirst (tries network first), verify exercise media uses StaleWhileRevalidate (shows cached version immediately while updating), confirm precached assets appear in Workbox Precache"
+          },
+          {
+            "id": 2,
+            "title": "Implement background sync queue for workout_logs with workbox-background-sync",
+            "description": "Set up background sync to queue failed workout log submissions when offline and automatically retry when connection is restored",
+            "dependencies": [
+              1
+            ],
+            "details": "1. Install background sync dependency: `npm install workbox-background-sync`\n2. Create src/sw.ts custom service worker file for advanced sync logic\n3. Import workbox modules in sw.ts:\n   - import { BackgroundSyncPlugin } from 'workbox-background-sync'\n   - import { registerRoute } from 'workbox-routing'\n   - import { NetworkOnly } from 'workbox-strategies'\n4. Create BackgroundSyncPlugin instance for workout logs:\n   - const workoutLogsSyncPlugin = new BackgroundSyncPlugin('workout-logs-queue', { maxRetentionTime: 24 * 60 // Retry for 24 hours })\n5. Register route for workout_logs POST/PUT requests:\n   - registerRoute(\n       ({url, request}) => url.pathname.includes('/rest/v1/workout_logs') && (request.method === 'POST' || request.method === 'PATCH'),\n       new NetworkOnly({ plugins: [workoutLogsSyncPlugin] }),\n       'POST'\n     )\n6. Configure vite.config.ts to inject custom service worker:\n   - Add strategies: 'injectManifest' to VitePWA config\n   - Set srcDir: 'src', filename: 'sw.ts', and outDir: 'dist'\n7. Add sync event listener in sw.ts to handle background sync:\n   - self.addEventListener('sync', (event) => { if (event.tag === 'workout-logs-queue') { event.waitUntil(replaySyncQueue()) } })\n8. Create IndexedDB helper functions in src/utils/db.ts using idb library:\n   - Install: `npm install idb`\n   - Export functions: saveWorkoutLogLocally(), getQueuedLogs(), clearQueuedLog()\n9. Update workout logging service to queue locally when offline:\n   - Check navigator.onLine before submission\n   - If offline: saveWorkoutLogLocally() and show 'Queued for sync' message\n   - If online: POST to Supabase directly\n10. Add window listener for 'online' event to trigger manual sync as fallback",
+            "status": "pending",
+            "testStrategy": "Go offline (airplane mode), log a workout in the app, verify IndexedDB stores the pending log, verify UI shows 'Queued for sync' indicator, go back online, verify background sync fires automatically (check Network tab for POST request), verify queued log is cleared from IndexedDB after successful sync, verify no duplicate submissions occur, test maxRetentionTime by keeping app offline for extended period"
+          },
+          {
+            "id": 3,
+            "title": "Build offline indicator UI component with real-time connection status",
+            "description": "Create a visual component that displays online/offline status prominently and shows sync progress for queued operations",
+            "dependencies": [
+              2
+            ],
+            "details": "1. Create src/components/OfflineIndicator.tsx component\n2. Import dependencies: import { useEffect, useState } from 'react'; import { useOnlineStatus } from '@/hooks/useOnlineStatus'\n3. Create custom hook src/hooks/useOnlineStatus.ts:\n   - const [isOnline, setIsOnline] = useState(navigator.onLine)\n   - Add event listeners: window.addEventListener('online', () => setIsOnline(true))\n   - window.addEventListener('offline', () => setIsOnline(false))\n   - Return cleanup function to remove listeners\n4. Add sync queue status tracking:\n   - Query IndexedDB for queued logs count\n   - Update count in real-time when logs are queued or synced\n5. Design offline banner component:\n   - Fixed position at top: fixed top-0 left-0 right-0 z-50\n   - Show when offline: {!isOnline && <div className=\"bg-yellow-600 text-white px-4 py-2\">}\n   - Display icon: ⚠️ or offline SVG icon\n   - Message: 'You are offline. Changes will sync when connection is restored.'\n6. Add sync progress indicator when online but syncing:\n   - Show: {isOnline && queuedCount > 0 && <div className=\"bg-blue-600 text-white px-4 py-2\">Syncing {queuedCount} workout logs...</div>}\n7. Add success message after sync completes:\n   - Brief animation and checkmark: ✅ 'All changes synced'\n   - Auto-hide after 3 seconds\n8. Style with Tailwind transitions: transition-all duration-300 ease-in-out\n9. Add slide-down animation using Framer Motion (optional): `npm install framer-motion`\n10. Include OfflineIndicator in App.tsx or ProtectedRoute layout so it appears globally",
+            "status": "pending",
+            "testStrategy": "Toggle airplane mode on device/browser, verify offline banner appears immediately when connection lost, verify banner disappears when connection restored, log workout while offline and verify queued count shows in UI, go online and verify sync progress message appears, verify success message shows after sync completes and auto-hides, test that banner doesn't interfere with page content (no layout shift), verify animations are smooth"
+          },
+          {
+            "id": 4,
+            "title": "Set up IndexedDB for local data persistence with idb library and offline data access",
+            "description": "Implement comprehensive local database layer using IndexedDB to store routines, exercises, and workout logs for full offline functionality",
+            "dependencies": [
+              2
+            ],
+            "details": "1. Create src/utils/db.ts as the central IndexedDB management module\n2. Import idb library: import { openDB, DBSchema, IDBPDatabase } from 'idb'\n3. Define TypeScript database schema interface:\n   - interface WorkoutPlanDB extends DBSchema {\n       routines: { key: string; value: RoutineData; indexes: { 'by-user': string } }\n       exercises: { key: string; value: ExerciseData; indexes: { 'by-routine': string } }\n       workout_logs: { key: string; value: WorkoutLogData; indexes: { 'by-date': string; 'by-exercise': string } }\n       sync_queue: { key: number; value: SyncQueueItem; indexes: { 'by-status': string } }\n     }\n4. Implement database initialization function:\n   - export const initDB = async (): Promise<IDBPDatabase<WorkoutPlanDB>> => {\n   - openDB<WorkoutPlanDB>('workout-plan-db', 1, {\n       upgrade(db) {\n         const routinesStore = db.createObjectStore('routines', { keyPath: 'id' })\n         routinesStore.createIndex('by-user', 'user_id')\n         // Create other stores and indexes\n       }\n     })\n5. Create CRUD helper functions for each store:\n   - saveRoutineLocally(routine: RoutineData)\n   - getRoutinesByUser(userId: string)\n   - saveExerciseLocally(exercise: ExerciseData)\n   - getExercisesByRoutine(routineId: string)\n   - saveWorkoutLogLocally(log: WorkoutLogData)\n   - getWorkoutLogsByDate(date: string)\n6. Implement sync queue management:\n   - addToSyncQueue(operation: 'INSERT' | 'UPDATE' | 'DELETE', tableName: string, data: any)\n   - getSyncQueue(): Promise<SyncQueueItem[]>\n   - clearSyncQueueItem(id: number)\n7. Create sync reconciliation logic:\n   - syncLocalToRemote(): fetch from IndexedDB, POST to Supabase, handle conflicts\n   - syncRemoteToLocal(): fetch from Supabase, save to IndexedDB\n8. Update Supabase service functions (src/services/supabase.ts) to:\n   - Check navigator.onLine before operations\n   - If offline: save to IndexedDB and queue for sync\n   - If online: POST to Supabase then update IndexedDB as cache\n9. Add periodic sync check (every 5 minutes when online) using setInterval\n10. Handle data conflicts: use last-write-wins strategy with timestamp comparison",
+            "status": "pending",
+            "testStrategy": "Initialize app and verify 'workout-plan-db' database created in DevTools > Application > Storage > IndexedDB, go offline and create a routine, verify routine saved to IndexedDB 'routines' store, verify routine appears in UI from IndexedDB, add exercises to routine offline and verify in 'exercises' store, log workout offline and verify in 'workout_logs' and 'sync_queue' stores, go online and verify sync_queue items POST to Supabase successfully, verify data persists after app reload while offline, test conflict resolution by modifying same record on two devices"
+          },
+          {
+            "id": 5,
+            "title": "Deploy production build to Vercel with environment variables and PWA verification",
+            "description": "Configure Vercel deployment settings, set up environment variables securely, deploy the production build, and verify PWA installation works on mobile devices",
+            "dependencies": [
+              1,
+              3,
+              4
+            ],
+            "details": "1. Create Vercel account at vercel.com using GitHub authentication\n2. Install Vercel CLI globally: `npm install -g vercel`\n3. Login to Vercel CLI: `vercel login` and authenticate\n4. Create vercel.json in project root with build configuration:\n   {\n     \"buildCommand\": \"npm run build\",\n     \"outputDirectory\": \"dist\",\n     \"framework\": \"vite\",\n     \"rewrites\": [{ \"source\": \"/(.*)\", \"destination\": \"/index.html\" }]\n   }\n5. Link project to Vercel: `vercel link` and follow prompts to create new project or link existing\n6. Set environment variables in Vercel dashboard:\n   - Navigate to Project Settings > Environment Variables\n   - Add VITE_SUPABASE_URL (copy from .env.local)\n   - Add VITE_SUPABASE_ANON_KEY (copy from .env.local)\n   - Select 'Production', 'Preview', 'Development' scopes\n7. Configure HTTPS and headers in vercel.json:\n   - Add headers for PWA: { \"source\": \"/manifest.webmanifest\", \"headers\": [{ \"key\": \"Content-Type\", \"value\": \"application/manifest+json\" }] }\n   - Add service worker headers: { \"source\": \"/sw.js\", \"headers\": [{ \"key\": \"Service-Worker-Allowed\", \"value\": \"/\" }] }\n8. Deploy to production: `vercel --prod`\n9. Verify deployment:\n   - Access deployment URL (e.g., https://workout-plan-pwa.vercel.app)\n   - Open on mobile device (iOS Safari and Android Chrome)\n   - Verify HTTPS certificate is valid\n10. Test PWA installation:\n    - On iOS Safari: tap Share > Add to Home Screen\n    - On Android Chrome: tap menu > Install app / Add to Home Screen\n    - Verify app icon appears on home screen\n    - Launch app from home screen and verify standalone mode (no browser UI)\n11. Run Lighthouse PWA audit:\n    - Open DevTools > Lighthouse\n    - Select 'Progressive Web App' category\n    - Run audit and verify score > 90\n    - Fix any issues flagged (manifest, service worker, HTTPS, etc.)\n12. Optional: Configure custom domain in Vercel dashboard if available",
+            "status": "pending",
+            "testStrategy": "Access Vercel deployment URL and verify app loads correctly with HTTPS, verify environment variables are correctly injected (check Supabase connection works), test PWA installation on iPhone (iOS Safari) successfully adds app to home screen, test on Android device (Chrome) shows install prompt and installs correctly, launch PWA from home screen and verify it runs in standalone mode (no browser chrome), run Lighthouse audit and verify PWA score is 90+, test offline functionality on deployed app (disconnect internet and verify cached resources load), verify manifest.json accessible at /manifest.webmanifest, check service worker registers on production build"
+          }
+        ]
       }
     ],
     "metadata": {
