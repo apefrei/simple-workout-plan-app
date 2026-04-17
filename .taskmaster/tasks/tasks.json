@@ -3,418 +3,181 @@
     "tasks": [
       {
         "id": 1,
-        "title": "Initialize React + Vite project with TypeScript and Tailwind CSS",
-        "description": "Set up the foundational project with Vite, React 18, TypeScript, and Tailwind CSS. PWA configuration happens in Task 10.",
-        "details": "1. Initialize project with Vite React-TS template\n2. Install and configure Tailwind CSS with darkMode: 'class'\n3. Configure TypeScript strict mode and path aliases\n4. Set up ESLint + Prettier\n5. Create folder structure and clean up boilerplate",
-        "testStrategy": "Verify: dev server starts, Tailwind dark theme renders, TypeScript compiles, build succeeds",
+        "title": "Initialize React + Vite + TypeScript + Tailwind CSS",
+        "description": "PWA config in Task 10.",
+        "testStrategy": "dev server starts, Tailwind dark theme renders, TS compiles, build succeeds",
         "priority": "high",
         "dependencies": [],
         "status": "pending",
         "subtasks": [
-          {
-            "id": 1,
-            "title": "Initialize Vite project and install dependencies",
-            "description": "Run vite create with react-ts template. Install Tailwind CSS + PostCSS + Autoprefixer. Verify dev server starts.",
-            "dependencies": [],
-            "status": "pending"
-          },
-          {
-            "id": 2,
-            "title": "Configure Tailwind CSS with dark mode",
-            "description": "Configure tailwind.config.js (darkMode: 'class', content paths). Add Tailwind directives to index.css. Set global dark base styles. Delete App.css.",
-            "dependencies": [1],
-            "status": "pending"
-          },
-          {
-            "id": 3,
-            "title": "Configure TypeScript strict mode and ESLint + Prettier",
-            "description": "Enable strict TS options. Add path aliases (@/*) in tsconfig + vite.config. Install and configure ESLint + Prettier.",
-            "dependencies": [1],
-            "status": "pending"
-          },
-          {
-            "id": 4,
-            "title": "Create folder structure and clean up boilerplate",
-            "description": "Create src/{components, pages, hooks, services, types, utils, contexts, data}. Remove Vite template files. Create minimal App.tsx with dark theme.",
-            "dependencies": [2, 3],
-            "status": "pending"
-          }
+          { "id": 1, "title": "Init Vite project + install deps", "description": "Vite react-ts template. Tailwind + PostCSS + Autoprefixer.", "dependencies": [], "status": "pending" },
+          { "id": 2, "title": "Configure Tailwind dark mode", "description": "darkMode: 'class', content paths, directives in index.css, delete App.css.", "dependencies": [1], "status": "pending" },
+          { "id": 3, "title": "TypeScript strict + ESLint + Prettier", "description": "Strict TS, path aliases (@/*) in tsconfig + vite.config.", "dependencies": [1], "status": "pending" },
+          { "id": 4, "title": "Folder structure + cleanup", "description": "src/{components,pages,hooks,services,types,utils,contexts,data}. Minimal App.tsx.", "dependencies": [2, 3], "status": "pending" }
         ]
       },
       {
         "id": 2,
-        "title": "Configure Supabase backend with database schema",
-        "description": "Set up Supabase project, create database schema (routines, exercises, workout_logs), configure RLS and Storage bucket.",
-        "details": "1. Create Supabase project, install client, create .env.local and supabase.ts\n2. Create tables with foreign keys, constraints, and indexes\n3. Enable RLS: users can only access own data\n4. Create Storage bucket 'exercise-media' (public read, auth upload, 10MB, JPG/GIF)",
-        "testStrategy": "Verify: Client connects, tables exist, RLS blocks unauthorized access, Storage works",
+        "title": "Configure Supabase backend + DB schema",
+        "description": "Tables: routines, exercises, workout_logs. RLS + Storage bucket.",
+        "testStrategy": "Client connects, tables exist, RLS blocks unauthorized, Storage works",
         "priority": "high",
         "dependencies": [1],
         "status": "pending",
         "subtasks": [
-          {
-            "id": 1,
-            "title": "Create Supabase project and initialize client",
-            "description": "Create project on supabase.com. Install client packages. Create .env.local and src/services/supabase.ts with createClient().",
-            "dependencies": [],
-            "status": "pending"
-          },
-          {
-            "id": 2,
-            "title": "Create database schema",
-            "description": "Create tables: routines, exercises (with muscle_group CHECK constraint using English values), workout_logs. Add performance indexes.",
-            "dependencies": [1],
-            "status": "pending"
-          },
-          {
-            "id": 3,
-            "title": "Enable Row Level Security",
-            "description": "Enable RLS on all tables. Routines/workout_logs: auth.uid() = user_id. Exercises: via JOIN to routines.user_id.",
-            "dependencies": [2],
-            "status": "pending"
-          },
-          {
-            "id": 4,
-            "title": "Configure Storage bucket",
-            "description": "Create 'exercise-media' bucket (public, 10MB, JPG/GIF). Policies: auth upload, public read, owner delete.",
-            "dependencies": [1],
-            "status": "pending"
-          }
+          { "id": 1, "title": "Create Supabase project + client", "description": ".env.local + src/services/supabase.ts with createClient().", "dependencies": [], "status": "pending" },
+          { "id": 2, "title": "Create DB schema", "description": "Tables with FKs, muscle_group CHECK (English values), indexes.", "dependencies": [1], "status": "pending" },
+          { "id": 3, "title": "Enable RLS", "description": "auth.uid() = user_id on routines/workout_logs. Exercises via JOIN.", "dependencies": [2], "status": "pending" },
+          { "id": 4, "title": "Configure Storage bucket", "description": "exercise-media bucket: public read, auth upload, 10MB, JPG/PNG/GIF.", "dependencies": [1], "status": "pending" }
         ]
       },
       {
         "id": 3,
-        "title": "Implement authentication flow with Supabase Auth",
-        "description": "Create login/signup with email auth, protected routes, session management, and sign-out.",
-        "details": "1. Install react-router-dom, configure public and protected routes\n2. Create AuthContext with session state and onAuthStateChange\n3. Create Auth.tsx with Supabase Auth UI (dark theme, email only)\n4. Create ProtectedRoute and Header (with sign-out) components",
-        "testStrategy": "Verify: Sign up/login works, protected routes redirect, logout clears session, refresh maintains auth",
+        "title": "Authentication flow with Supabase Auth",
+        "description": "Email auth, protected routes, session management, sign-out.",
+        "testStrategy": "Sign up/login works, protected routes redirect, logout clears session, refresh maintains auth",
         "priority": "high",
         "dependencies": [2],
         "status": "pending",
         "subtasks": [
-          {
-            "id": 1,
-            "title": "Install react-router-dom and configure routes",
-            "description": "Define routes: /auth (public), /routines, /workout/:routineId, /routine/:routineId/edit (protected). Create placeholder pages.",
-            "dependencies": [],
-            "status": "pending"
-          },
-          {
-            "id": 2,
-            "title": "Create AuthContext with session management",
-            "description": "AuthContext with session/user/loading. Subscribe to onAuthStateChange. signOut function. useAuth hook. Wrap app with AuthProvider.",
-            "dependencies": [1],
-            "status": "pending"
-          },
-          {
-            "id": 3,
-            "title": "Build Auth page with Supabase Auth UI",
-            "description": "Auth.tsx with Supabase Auth UI (dark theme, email only). Redirect to /routines if authenticated.",
-            "dependencies": [2],
-            "status": "pending"
-          },
-          {
-            "id": 4,
-            "title": "Create ProtectedRoute and Header components",
-            "description": "ProtectedRoute: redirect to /auth if unauthenticated. Header: user email + sign-out button. Include Header in ProtectedRoute layout.",
-            "dependencies": [2],
-            "status": "pending"
-          }
+          { "id": 1, "title": "Install react-router-dom + routes", "description": "/auth (public), /routines, /workout/:routineId, /routine/:routineId/edit, /settings (protected).", "dependencies": [], "status": "pending" },
+          { "id": 2, "title": "AuthContext + session management", "description": "session/user/loading, onAuthStateChange, signOut, useAuth hook.", "dependencies": [1], "status": "pending" },
+          { "id": 3, "title": "Auth page with Supabase Auth UI", "description": "Dark theme, email only. Redirect if authenticated.", "dependencies": [2], "status": "pending" },
+          { "id": 4, "title": "ProtectedRoute + Header", "description": "Redirect to /auth if unauth. Header: email + sign-out.", "dependencies": [2], "status": "pending" }
         ]
       },
       {
         "id": 4,
-        "title": "Create routine management interface (CRUD)",
-        "description": "Build UI to create, view, edit, and delete routines with exercise lists and drag-and-drop reordering.",
-        "details": "1. Routines.tsx dashboard with grid layout and empty state\n2. RoutineCard component (name, exercise count, Start/Edit/Delete)\n3. Create routine modal (Headless UI + React Hook Form)\n4. RoutineEditor with dnd-kit drag-and-drop for exercises\n5. ExerciseForm and delete routine with confirmation",
-        "testStrategy": "Verify: CRUD routines, add exercises, drag-and-drop persists, cascade delete",
+        "title": "Routine management CRUD",
+        "description": "Create/view/edit/delete routines, exercise lists, drag-and-drop reorder.",
+        "testStrategy": "CRUD routines, add exercises, drag-and-drop persists, cascade delete",
         "priority": "high",
         "dependencies": [3],
         "status": "pending",
         "subtasks": [
-          {
-            "id": 1,
-            "title": "Create Routines dashboard",
-            "description": "Fetch routines with exercise count, render in responsive grid. Empty state with CTA.",
-            "dependencies": [],
-            "status": "pending"
-          },
-          {
-            "id": 2,
-            "title": "Build RoutineCard component",
-            "description": "Card: routine name, exercise count, date. Buttons: Start Workout, Edit, Delete.",
-            "dependencies": [1],
-            "status": "pending"
-          },
-          {
-            "id": 3,
-            "title": "Implement create routine modal",
-            "description": "Install @headlessui/react + react-hook-form. CreateRoutineModal with name input. createRoutine service function.",
-            "dependencies": [1],
-            "status": "pending"
-          },
-          {
-            "id": 4,
-            "title": "Create RoutineEditor with drag-and-drop",
-            "description": "Install @dnd-kit. RoutineEditor page: sortable exercise list, persist sort_order. \"Add Exercise\" button.",
-            "dependencies": [3],
-            "status": "pending"
-          },
-          {
-            "id": 5,
-            "title": "Build ExerciseForm and delete functionality",
-            "description": "ExerciseForm: name, muscle_group (English enum), machine_info, target_sets_reps. Create + edit mode. Delete routine with confirmation modal.",
-            "dependencies": [4],
-            "status": "pending"
-          }
+          { "id": 1, "title": "Routines dashboard", "description": "Fetch routines + exercise count, responsive grid, empty state.", "dependencies": [], "status": "pending" },
+          { "id": 2, "title": "RoutineCard component", "description": "Name, exercise count, date. Start/Edit/Delete buttons.", "dependencies": [1], "status": "pending" },
+          { "id": 3, "title": "Create routine modal", "description": "@headlessui/react + react-hook-form. Name input.", "dependencies": [1], "status": "pending" },
+          { "id": 4, "title": "RoutineEditor + drag-and-drop", "description": "@dnd-kit sortable exercise list, persist sort_order.", "dependencies": [3], "status": "pending" },
+          { "id": 5, "title": "ExerciseForm + delete", "description": "Fields: name, muscle_group (English enum), machine_info, target_sets_reps. Delete with confirmation.", "dependencies": [4], "status": "pending" }
         ]
       },
       {
         "id": 5,
-        "title": "Implement swipe-based workout session interface",
-        "description": "Mobile-first workout mode with Swiper for horizontal exercise navigation, weight/reps/comment inputs, save-on-slide-change.",
-        "details": "1. Install Swiper, create WorkoutSession.tsx with routineId param\n2. Fetch exercises by sort_order, pre-fill from last workout_logs\n3. Each slide: exercise info, media, weight/reps/comment inputs\n4. Save-on-slide-change (INSERT new, UPDATE revisited via Map<exerciseId, logId>)\n5. Progress indicator + \"Complete Workout\" button on last slide",
-        "testStrategy": "Verify: Swipe navigates, pre-fill works, slide-change saves, complete flushes and navigates",
+        "title": "Workout session with React Query mutations",
+        "description": "Swiper-based workout mode, save per slide, pre-fill from last log, quick-adjust buttons.",
+        "testStrategy": "Swipe navigates, pre-fill works, saves correctly via mutation, complete flushes + navigates",
         "priority": "high",
         "dependencies": [4],
         "status": "pending",
         "subtasks": [
-          {
-            "id": 1,
-            "title": "Set up WorkoutSession with Swiper",
-            "description": "Install Swiper. Create WorkoutSession.tsx with useParams. Basic layout with loading/error states.",
-            "dependencies": [],
-            "status": "pending"
-          },
-          {
-            "id": 2,
-            "title": "Fetch exercises and pre-fill from last workout",
-            "description": "Fetch exercises ordered by sort_order. For each, fetch last workout_log values. Promise.all for parallel fetch.",
-            "dependencies": [1],
-            "status": "pending"
-          },
-          {
-            "id": 3,
-            "title": "Render exercise slides with inputs",
-            "description": "SwiperSlides: exercise info, media, numeric weight/reps inputs, comment textarea. Mobile-first with large touch targets.",
-            "dependencies": [2],
-            "status": "pending"
-          },
-          {
-            "id": 4,
-            "title": "Implement save-on-slide-change",
-            "description": "onSlideChange: save previous slide. Track in Map<exerciseId, logId> (INSERT if new, UPDATE if revisited). Progress indicator.",
-            "dependencies": [3],
-            "status": "pending"
-          },
-          {
-            "id": 5,
-            "title": "Add \"Complete Workout\" button",
-            "description": "Last slide: flush all pending saves, navigate to /routines with success message. Error handling with retry.",
-            "dependencies": [4],
-            "status": "pending"
-          }
+          { "id": 1, "title": "WorkoutSession + Swiper setup", "description": "Swiper, useParams(routineId), loading/error states.", "dependencies": [], "status": "pending" },
+          { "id": 2, "title": "workoutLog API + React Query mutations", "description": "Setup useMutation for saveWorkoutLog (INSERT/UPDATE).", "dependencies": [], "status": "pending" },
+          { "id": 3, "title": "Fetch exercises + pre-fill", "description": "useQuery to fetch exercises by sort_order and last workout_log values.", "dependencies": [1], "status": "pending" },
+          { "id": 4, "title": "Exercise slides + quick-adjust", "description": "Weight/reps/comment inputs. +/-2.5kg, +/-1 rep. Min values. Large touch targets.", "dependencies": [3], "status": "pending" },
+          { "id": 5, "title": "Save-on-slide-change", "description": "onSlideChange trigger mutation. Track Map<exerciseId, logId> to determine INSERT or UPDATE.", "dependencies": [2, 4], "status": "pending" },
+          { "id": 6, "title": "Save animation", "description": "framer-motion checkmark, AnimatePresence, auto-hide 1.5s.", "dependencies": [5], "status": "pending" },
+          { "id": 7, "title": "Complete Workout button", "description": "Ensure mutations settle, navigate /routines, error retry.", "dependencies": [6], "status": "pending" }
         ]
       },
       {
         "id": 6,
-        "title": "Build exercise media upload system",
-        "description": "Upload JPG/GIF exercise media to Supabase Storage with preview, drag-and-drop, and delete.",
-        "details": "1. MediaUpload component: file input (JPG/GIF, max 10MB), validation, preview\n2. Upload to Supabase Storage, update exercises.media_url\n3. Drag-and-drop zone with react-dropzone\n4. Delete media (Storage + DB) with confirmation",
-        "testStrategy": "Verify: Upload works, preview displays, validation blocks invalid files, delete clears file and DB",
+        "title": "Exercise media upload",
+        "description": "Upload JPG/PNG/GIF to Supabase Storage, preview, drag-and-drop, delete.",
+        "testStrategy": "Upload works, preview displays, validation blocks invalid, delete clears file + DB",
         "priority": "medium",
         "dependencies": [4],
         "status": "pending",
         "subtasks": [
-          {
-            "id": 1,
-            "title": "Create MediaUpload component with validation",
-            "description": "MediaUpload.tsx: accept JPG/GIF, validate size (10MB max), generate local preview.",
-            "dependencies": [],
-            "status": "pending"
-          },
-          {
-            "id": 2,
-            "title": "Implement upload to Supabase Storage",
-            "description": "Upload to exercise-media/{user_id}/{exercise_id}/{timestamp.ext}. Get public URL, update media_url. Progress + error handling.",
-            "dependencies": [1],
-            "status": "pending"
-          },
-          {
-            "id": 3,
-            "title": "Build drag-and-drop UI with preview",
-            "description": "Install react-dropzone. Drag-and-drop zone, image preview, upload button, loading spinner, error display.",
-            "dependencies": [1],
-            "status": "pending"
-          },
-          {
-            "id": 4,
-            "title": "Add delete media functionality",
-            "description": "Delete with confirmation. Remove from Storage + clear media_url in DB.",
-            "dependencies": [2, 3],
-            "status": "pending"
-          }
+          { "id": 1, "title": "MediaUpload + validation", "description": "Accept JPG/PNG/GIF, 10MB max, local preview.", "dependencies": [], "status": "pending" },
+          { "id": 2, "title": "Upload to Supabase Storage", "description": "Path: exercise-media/{user_id}/{exercise_id}/{timestamp.ext}. Update media_url.", "dependencies": [1], "status": "pending" },
+          { "id": 3, "title": "Drag-and-drop UI", "description": "react-dropzone, preview, spinner, error display.", "dependencies": [1], "status": "pending" },
+          { "id": 4, "title": "Delete media", "description": "Confirmation, remove from Storage + clear media_url.", "dependencies": [2, 3], "status": "pending" }
         ]
       },
       {
         "id": 7,
-        "title": "Enhance workout session with service layer, quick-adjust, and offline sync",
-        "description": "Create saveWorkoutLog service, add +/- buttons for weight/reps, save animation, integrate offline utilities from Task 10.4.",
-        "details": "1. workoutLogService.ts with saveWorkoutLog() function\n2. Quick-adjust buttons: +/- 2.5kg weight, +/- 1 rep\n3. Input validation (weight >= 0, reps >= 1)\n4. Framer Motion save animation\n5. Offline routing: online -> Supabase, offline -> IndexedDB (Task 10.4)",
-        "testStrategy": "Verify: saveWorkoutLog works, quick-adjust buttons work, validation, animation, offline sync",
+        "title": "Integrate offline sync into workout session (React Query)",
+        "description": "Wire Task 5 mutations to Task 11 Persister. Visual feedback for queued mutations.",
+        "testStrategy": "Online -> Supabase, offline -> IndexedDB cache, reconnect auto-syncs, correct indicators",
         "priority": "high",
-        "dependencies": [5],
+        "dependencies": [5, 11],
         "status": "pending",
         "subtasks": [
-          {
-            "id": 1,
-            "title": "Create saveWorkoutLog service",
-            "description": "workoutLogService.ts: saveWorkoutLog(userId, exerciseId, weight, reps, comment, date). Date as 'YYYY-MM-DD'. Export WorkoutLog type.",
-            "dependencies": [],
-            "status": "pending"
-          },
-          {
-            "id": 2,
-            "title": "Add quick-adjust buttons and validation",
-            "description": "+/- 2.5kg around weight, +/- 1 around reps in WorkoutSession slides. Enforce min values. Large touch targets.",
-            "dependencies": [1],
-            "status": "pending"
-          },
-          {
-            "id": 3,
-            "title": "Add save animation",
-            "description": "Install framer-motion. Small \"Saved\" checkmark indicator with AnimatePresence. Auto-hide 1.5s. Red error on failure.",
-            "dependencies": [2],
-            "status": "pending"
-          },
-          {
-            "id": 4,
-            "title": "Integrate offline utilities",
-            "description": "Import from Task 10.4. Online -> saveWorkoutLog, offline -> saveWorkoutLogLocally. Sync on reconnect. \"Saved\" (green) vs \"Queued\" (yellow).",
-            "dependencies": [1, 3],
-            "status": "pending",
-            "note": "Requires Task 10.4 (IndexedDB data layer) to be completed first."
-          }
+          { "id": 1, "title": "Optimistic UI updates", "description": "Implement onMutate in useMutation for immediate UI feedback before network confirmation.", "dependencies": [], "status": "pending" },
+          { "id": 2, "title": "Sync-on-reconnect + visual feedback", "description": "Use network status and useIsMutating hook for Green 'Saved' / yellow 'Queued' indicators.", "dependencies": [1], "status": "pending" }
         ]
       },
       {
         "id": 8,
-        "title": "Import initial workout data from PRD",
-        "description": "Seed data with 4 routines (Brust & Bizeps, Beine & Schultern, Ruecken & Trizeps, Ganzkoerper) and import button.",
-        "details": "1. seedData.ts with typed interfaces and 4 routines (German names, English muscle_group enums)\n2. importSeedData(): check existing, batch insert routines + exercises\n3. ImportWorkoutsButton with progress modal, only shown if 0 routines",
-        "testStrategy": "Verify: 4 routines created correctly, English muscle_group values, blocked if routines exist",
+        "title": "Import seed workout data",
+        "description": "4 routines (German names, English muscle_group enums), import button.",
+        "testStrategy": "4 routines correct, English enums, blocked if exist, user_id assigned",
         "priority": "medium",
-        "dependencies": [2],
+        "dependencies": [2, 3],
         "status": "pending",
         "subtasks": [
-          {
-            "id": 1,
-            "title": "Create seed data structures",
-            "description": "seedData.ts: RoutineData/ExerciseData interfaces. WORKOUT_ROUTINES with 4 routines. muscle_group = English enum values. Names in German.",
-            "dependencies": [],
-            "status": "pending"
-          },
-          {
-            "id": 2,
-            "title": "Implement importSeedData function",
-            "description": "Check for existing routines. Batch insert routines, get IDs. Insert exercises with foreign keys. Rollback on failure.",
-            "dependencies": [1],
-            "status": "pending"
-          },
-          {
-            "id": 3,
-            "title": "Create ImportWorkoutsButton",
-            "description": "Button with idle/importing/success/error states. Progress modal. Place in settings page. Only show if 0 routines.",
-            "dependencies": [2],
-            "status": "pending"
-          }
+          { "id": 1, "title": "Seed data structures", "description": "seedData.ts: RoutineData/ExerciseData interfaces, WORKOUT_ROUTINES.", "dependencies": [], "status": "pending" },
+          { "id": 2, "title": "importSeedData function", "description": "Check existing, batch insert with auth.uid(), rollback on failure.", "dependencies": [1], "status": "pending" },
+          { "id": 3, "title": "ImportWorkoutsButton", "description": "State machine (idle/importing/success/error), progress modal, show if 0 routines.", "dependencies": [2], "status": "pending" }
         ]
       },
       {
         "id": 9,
-        "title": "Mobile-first responsive design with bottom navigation",
-        "description": "Dark theme component styles, bottom navigation bar, mobile optimization, haptic feedback.",
-        "details": "1. Reusable dark-themed component styles (inputs, buttons, cards) with high contrast\n2. Fixed bottom nav (Home, Routines, Profile) with safe-area insets\n3. Primary actions in bottom third for thumb reach, responsive breakpoints\n4. Haptic feedback via Vibration API",
-        "testStrategy": "Verify: Consistent dark theme, readable text, tappable buttons, bottom nav, responsive, no horizontal scroll",
+        "title": "Mobile-first responsive design + bottom nav",
+        "description": "Dark theme styles, bottom nav (Routines/Settings), Settings page, haptic feedback.",
+        "testStrategy": "Dark theme consistent, tappable buttons, bottom nav works, responsive, no horizontal scroll",
         "priority": "medium",
-        "dependencies": [3],
+        "dependencies": [3, 4],
         "status": "pending",
         "subtasks": [
-          {
-            "id": 1,
-            "title": "Apply global dark theme component styles",
-            "description": "Dark styles for inputs, buttons, cards, headers. Min 16px text. High contrast. Focus ring states.",
-            "dependencies": [],
-            "status": "pending"
-          },
-          {
-            "id": 2,
-            "title": "Build bottom navigation bar",
-            "description": "BottomNav.tsx: fixed bottom, safe-area insets. Home/Routines/Profile. Active state via useLocation(). In ProtectedRoute layout.",
-            "dependencies": [1],
-            "status": "pending"
-          },
-          {
-            "id": 3,
-            "title": "Optimize for mobile and thumb reach",
-            "description": "Actions in bottom third. Responsive breakpoints (320px-768px+). Max-w-md on large screens. No horizontal scroll.",
-            "dependencies": [2],
-            "status": "pending"
-          },
-          {
-            "id": 4,
-            "title": "Add haptic feedback",
-            "description": "haptics.ts: lightTap/mediumTap/heavyTap via Vibration API. Feature detection fallback. Graceful degradation.",
-            "dependencies": [2],
-            "status": "pending"
-          }
+          { "id": 1, "title": "Global dark theme styles", "description": "Inputs, buttons, cards. Min 16px text, high contrast, focus rings.", "dependencies": [], "status": "pending" },
+          { "id": 2, "title": "Bottom navigation bar", "description": "BottomNav.tsx: fixed bottom, safe-area insets, Routines/Settings, useLocation().", "dependencies": [1], "status": "pending" },
+          { "id": 3, "title": "Settings page", "description": "Email display, sign-out, placeholder for ImportWorkoutsButton.", "dependencies": [2], "status": "pending" },
+          { "id": 4, "title": "Mobile + thumb reach optimization", "description": "Actions in bottom third, breakpoints 320-768px+, max-w-md, no h-scroll.", "dependencies": [2], "status": "pending" },
+          { "id": 5, "title": "Haptic feedback", "description": "Vibration API with feature detection, CSS active-state fallback.", "dependencies": [2], "status": "pending" }
         ]
       },
       {
         "id": 10,
-        "title": "Configure PWA offline functionality and deploy to Vercel",
-        "description": "PWA service worker (Workbox), background sync for workout_logs, IndexedDB offline data layer (SINGLE SOURCE OF TRUTH), deploy to Vercel.",
-        "details": "1. vite-plugin-pwa with injectManifest, PWA manifest\n2. Custom service worker (src/sw.ts) with Workbox caching + background sync\n3. IndexedDB data layer (src/utils/db.ts) -- central for all tasks\n4. src/lib/offlineStorage.ts with sync functions\n5. OfflineIndicator global component\n6. Deploy to Vercel",
-        "testStrategy": "Verify: PWA installs, offline works, background sync, Lighthouse > 90, no duplicate offline logic",
+        "title": "PWA service worker + offline indicator",
+        "description": "Workbox caching for assets. Data-level sync in Task 11.",
+        "testStrategy": "PWA installs, service worker caches assets, offline indicator correct",
         "priority": "high",
         "dependencies": [1],
         "status": "pending",
         "subtasks": [
-          {
-            "id": 1,
-            "title": "Configure vite-plugin-pwa",
-            "description": "Install vite-plugin-pwa + workbox. injectManifest strategy with src/sw.ts. PWA manifest, placeholder icons, theme-color meta.",
-            "dependencies": [],
-            "status": "pending"
-          },
-          {
-            "id": 2,
-            "title": "Create service worker with caching and background sync",
-            "description": "src/sw.ts: precacheAndRoute, NetworkFirst (API), StaleWhileRevalidate (media), CacheFirst (static). BackgroundSyncPlugin for workout_logs (24h retry).",
-            "dependencies": [1],
-            "status": "pending"
-          },
-          {
-            "id": 3,
-            "title": "Build offline indicator",
-            "description": "OfflineIndicator.tsx + useOnlineStatus hook. Yellow offline banner, blue syncing, green success. Global in App.tsx.",
-            "dependencies": [2],
-            "status": "pending"
-          },
-          {
-            "id": 4,
-            "title": "Set up IndexedDB data layer (CENTRAL)",
-            "description": "Install idb. src/utils/db.ts: WorkoutPlanDB stores + CRUD exports. src/lib/offlineStorage.ts: queueOfflineLog, syncOfflineLogs. Online/offline routing. Last-write-wins.",
-            "dependencies": [2],
-            "status": "pending",
-            "note": "This subtask is the dependency for Task 7.4 (offline integration)."
-          },
-          {
-            "id": 5,
-            "title": "Deploy to Vercel",
-            "description": "Vercel CLI, vercel.json, env vars. Deploy. Test PWA install on iOS + Android. Verify HTTPS.",
-            "dependencies": [1],
-            "status": "pending"
-          }
+          { "id": 1, "title": "Configure vite-plugin-pwa", "description": "injectManifest with src/sw.ts, PWA manifest, icons, theme-color.", "dependencies": [], "status": "pending" },
+          { "id": 2, "title": "Service worker caching", "description": "precacheAndRoute, NetworkFirst (API), StaleWhileRevalidate (media), CacheFirst (static).", "dependencies": [1], "status": "pending" },
+          { "id": 3, "title": "Offline indicator", "description": "OfflineIndicator.tsx + useOnlineStatus. Yellow/blue/green banners. Global in App.tsx.", "dependencies": [2], "status": "pending" }
+        ]
+      },
+      {
+        "id": 11,
+        "title": "TanStack Query offline cache layer",
+        "description": "Central offline storage + sync using React Query Persister. Requires Auth (Task 3).",
+        "testStrategy": "Persister caches data in IndexedDB, offline mutations queue, reconnect triggers sync",
+        "priority": "high",
+        "dependencies": [2, 3],
+        "status": "pending",
+        "subtasks": [
+          { "id": 1, "title": "Install + configure TanStack Query", "description": "Install @tanstack/react-query, @tanstack/react-query-persist-client, and idb-keyval.", "dependencies": [], "status": "pending" },
+          { "id": 2, "title": "PersistQueryClientProvider setup", "description": "Create syncStoragePersister with IndexedDB. Wrap App, set staleTime and gcTime.", "dependencies": [1], "status": "pending" },
+          { "id": 3, "title": "Offline mutation configuration", "description": "Set defaultOptions mutations: { networkMode: 'offlineFirst' } and configure mutation retries.", "dependencies": [2], "status": "pending" }
+        ]
+      },
+      {
+        "id": 12,
+        "title": "Deploy to Vercel",
+        "description": "Deploy PWA, verify mobile install.",
+        "testStrategy": "Deploy succeeds, HTTPS, PWA installs iOS + Android, Lighthouse > 90",
+        "priority": "medium",
+        "dependencies": [5, 6, 7, 8, 9, 10, 11],
+        "status": "pending",
+        "subtasks": [
+          { "id": 1, "title": "Configure Vercel project", "description": "Vercel CLI, vercel.json with SPA rewrites, link Git repo.", "dependencies": [], "status": "pending" },
+          { "id": 2, "title": "Environment variables", "description": "VITE_SUPABASE_URL + VITE_SUPABASE_ANON_KEY on Vercel dashboard.", "dependencies": [1], "status": "pending" },
+          { "id": 3, "title": "Deploy + test PWA", "description": "Deploy, test install iOS Safari + Android Chrome, verify service worker + Lighthouse.", "dependencies": [2], "status": "pending" }
         ]
       }
     ]
