@@ -177,15 +177,16 @@
         "dependencies": [
           "3"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
             "title": "Routines dashboard",
             "description": "Fetch routines + exercise count, responsive grid, empty state.",
             "dependencies": [],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T20:42:04.078Z"
           },
           {
             "id": 2,
@@ -194,8 +195,9 @@
             "dependencies": [
               1
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T20:42:07.668Z"
           },
           {
             "id": 3,
@@ -204,8 +206,9 @@
             "dependencies": [
               1
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T20:42:11.309Z"
           },
           {
             "id": 4,
@@ -214,8 +217,9 @@
             "dependencies": [
               3
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T20:42:14.890Z"
           },
           {
             "id": 5,
@@ -224,10 +228,12 @@
             "dependencies": [
               4
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T20:42:18.481Z"
           }
-        ]
+        ],
+        "updatedAt": "2026-04-17T20:42:18.481Z"
       },
       {
         "id": "5",
@@ -630,9 +636,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-04-17T20:33:19.722Z",
+      "lastModified": "2026-04-17T20:42:18.481Z",
       "taskCount": 12,
-      "completedCount": 3,
+      "completedCount": 4,
       "tags": [
         "master"
       ]
