@@ -121,15 +121,16 @@
         "dependencies": [
           "2"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
             "title": "Install react-router-dom + routes",
             "description": "/auth (public), /routines, /workout/:routineId, /routine/:routineId/edit, /settings (protected).",
             "dependencies": [],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T20:33:08.847Z"
           },
           {
             "id": 2,
@@ -138,8 +139,9 @@
             "dependencies": [
               1
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T20:33:12.494Z"
           },
           {
             "id": 3,
@@ -148,8 +150,9 @@
             "dependencies": [
               2
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T20:33:16.078Z"
           },
           {
             "id": 4,
@@ -158,10 +161,12 @@
             "dependencies": [
               2
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T20:33:19.722Z"
           }
-        ]
+        ],
+        "updatedAt": "2026-04-17T20:33:19.722Z"
       },
       {
         "id": "4",
@@ -625,9 +630,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-04-17T20:11:39.924Z",
+      "lastModified": "2026-04-17T20:33:19.722Z",
       "taskCount": 12,
-      "completedCount": 2,
+      "completedCount": 3,
       "tags": [
         "master"
       ]
