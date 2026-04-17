@@ -2,184 +2,635 @@
   "master": {
     "tasks": [
       {
-        "id": 1,
+        "id": "1",
         "title": "Initialize React + Vite + TypeScript + Tailwind CSS",
         "description": "PWA config in Task 10.",
         "testStrategy": "dev server starts, Tailwind dark theme renders, TS compiles, build succeeds",
         "priority": "high",
         "dependencies": [],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
-          { "id": 1, "title": "Init Vite project + install deps", "description": "Vite react-ts template. Tailwind + PostCSS + Autoprefixer.", "dependencies": [], "status": "pending" },
-          { "id": 2, "title": "Configure Tailwind dark mode", "description": "darkMode: 'class', content paths, directives in index.css, delete App.css.", "dependencies": [1], "status": "pending" },
-          { "id": 3, "title": "TypeScript strict + ESLint + Prettier", "description": "Strict TS, path aliases (@/*) in tsconfig + vite.config.", "dependencies": [1], "status": "pending" },
-          { "id": 4, "title": "Folder structure + cleanup", "description": "src/{components,pages,hooks,services,types,utils,contexts,data}. Minimal App.tsx.", "dependencies": [2, 3], "status": "pending" }
-        ]
+          {
+            "id": 1,
+            "title": "Init Vite project + install deps",
+            "description": "Vite react-ts template. Tailwind + PostCSS + Autoprefixer.",
+            "dependencies": [],
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T15:15:41.810Z"
+          },
+          {
+            "id": 2,
+            "title": "Configure Tailwind dark mode",
+            "description": "darkMode: 'class', content paths, directives in index.css, delete App.css.",
+            "dependencies": [
+              1
+            ],
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T15:16:36.803Z"
+          },
+          {
+            "id": 3,
+            "title": "TypeScript strict + ESLint + Prettier",
+            "description": "Strict TS, path aliases (@/*) in tsconfig + vite.config.",
+            "dependencies": [
+              1
+            ],
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T15:17:09.945Z"
+          },
+          {
+            "id": 4,
+            "title": "Folder structure + cleanup",
+            "description": "src/{components,pages,hooks,services,types,utils,contexts,data}. Minimal App.tsx.",
+            "dependencies": [
+              2,
+              3
+            ],
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T15:18:13.477Z"
+          }
+        ],
+        "updatedAt": "2026-04-17T15:18:13.477Z"
       },
       {
-        "id": 2,
+        "id": "2",
         "title": "Configure Supabase backend + DB schema",
         "description": "Tables: routines, exercises, workout_logs. RLS + Storage bucket.",
         "testStrategy": "Client connects, tables exist, RLS blocks unauthorized, Storage works",
         "priority": "high",
-        "dependencies": [1],
-        "status": "pending",
+        "dependencies": [
+          "1"
+        ],
+        "status": "done",
         "subtasks": [
-          { "id": 1, "title": "Create Supabase project + client", "description": ".env.local + src/services/supabase.ts with createClient().", "dependencies": [], "status": "pending" },
-          { "id": 2, "title": "Create DB schema", "description": "Tables with FKs, muscle_group CHECK (English values), indexes.", "dependencies": [1], "status": "pending" },
-          { "id": 3, "title": "Enable RLS", "description": "auth.uid() = user_id on routines/workout_logs. Exercises via JOIN.", "dependencies": [2], "status": "pending" },
-          { "id": 4, "title": "Configure Storage bucket", "description": "exercise-media bucket: public read, auth upload, 10MB, JPG/PNG/GIF.", "dependencies": [1], "status": "pending" }
-        ]
+          {
+            "id": 1,
+            "title": "Create Supabase project + client",
+            "description": ".env.local + src/services/supabase.ts with createClient().",
+            "dependencies": [],
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T20:11:39.910Z"
+          },
+          {
+            "id": 2,
+            "title": "Create DB schema",
+            "description": "Tables with FKs, muscle_group CHECK (English values), indexes.",
+            "dependencies": [
+              1
+            ],
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T20:11:39.919Z"
+          },
+          {
+            "id": 3,
+            "title": "Enable RLS",
+            "description": "auth.uid() = user_id on routines/workout_logs. Exercises via JOIN.",
+            "dependencies": [
+              2
+            ],
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T20:11:39.922Z"
+          },
+          {
+            "id": 4,
+            "title": "Configure Storage bucket",
+            "description": "exercise-media bucket: public read, auth upload, 10MB, JPG/PNG/GIF.",
+            "dependencies": [
+              1
+            ],
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T20:11:39.924Z"
+          }
+        ],
+        "updatedAt": "2026-04-17T20:11:39.924Z"
       },
       {
-        "id": 3,
+        "id": "3",
         "title": "Authentication flow with Supabase Auth",
         "description": "Email auth, protected routes, session management, sign-out.",
         "testStrategy": "Sign up/login works, protected routes redirect, logout clears session, refresh maintains auth",
         "priority": "high",
-        "dependencies": [2],
+        "dependencies": [
+          "2"
+        ],
         "status": "pending",
         "subtasks": [
-          { "id": 1, "title": "Install react-router-dom + routes", "description": "/auth (public), /routines, /workout/:routineId, /routine/:routineId/edit, /settings (protected).", "dependencies": [], "status": "pending" },
-          { "id": 2, "title": "AuthContext + session management", "description": "session/user/loading, onAuthStateChange, signOut, useAuth hook.", "dependencies": [1], "status": "pending" },
-          { "id": 3, "title": "Auth page with Supabase Auth UI", "description": "Dark theme, email only. Redirect if authenticated.", "dependencies": [2], "status": "pending" },
-          { "id": 4, "title": "ProtectedRoute + Header", "description": "Redirect to /auth if unauth. Header: email + sign-out.", "dependencies": [2], "status": "pending" }
+          {
+            "id": 1,
+            "title": "Install react-router-dom + routes",
+            "description": "/auth (public), /routines, /workout/:routineId, /routine/:routineId/edit, /settings (protected).",
+            "dependencies": [],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "AuthContext + session management",
+            "description": "session/user/loading, onAuthStateChange, signOut, useAuth hook.",
+            "dependencies": [
+              1
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 3,
+            "title": "Auth page with Supabase Auth UI",
+            "description": "Dark theme, email only. Redirect if authenticated.",
+            "dependencies": [
+              2
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 4,
+            "title": "ProtectedRoute + Header",
+            "description": "Redirect to /auth if unauth. Header: email + sign-out.",
+            "dependencies": [
+              2
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          }
         ]
       },
       {
-        "id": 4,
+        "id": "4",
         "title": "Routine management CRUD",
         "description": "Create/view/edit/delete routines, exercise lists, drag-and-drop reorder.",
         "testStrategy": "CRUD routines, add exercises, drag-and-drop persists, cascade delete",
         "priority": "high",
-        "dependencies": [3],
+        "dependencies": [
+          "3"
+        ],
         "status": "pending",
         "subtasks": [
-          { "id": 1, "title": "Routines dashboard", "description": "Fetch routines + exercise count, responsive grid, empty state.", "dependencies": [], "status": "pending" },
-          { "id": 2, "title": "RoutineCard component", "description": "Name, exercise count, date. Start/Edit/Delete buttons.", "dependencies": [1], "status": "pending" },
-          { "id": 3, "title": "Create routine modal", "description": "@headlessui/react + react-hook-form. Name input.", "dependencies": [1], "status": "pending" },
-          { "id": 4, "title": "RoutineEditor + drag-and-drop", "description": "@dnd-kit sortable exercise list, persist sort_order.", "dependencies": [3], "status": "pending" },
-          { "id": 5, "title": "ExerciseForm + delete", "description": "Fields: name, muscle_group (English enum), machine_info, target_sets_reps. Delete with confirmation.", "dependencies": [4], "status": "pending" }
+          {
+            "id": 1,
+            "title": "Routines dashboard",
+            "description": "Fetch routines + exercise count, responsive grid, empty state.",
+            "dependencies": [],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "RoutineCard component",
+            "description": "Name, exercise count, date. Start/Edit/Delete buttons.",
+            "dependencies": [
+              1
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 3,
+            "title": "Create routine modal",
+            "description": "@headlessui/react + react-hook-form. Name input.",
+            "dependencies": [
+              1
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 4,
+            "title": "RoutineEditor + drag-and-drop",
+            "description": "@dnd-kit sortable exercise list, persist sort_order.",
+            "dependencies": [
+              3
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 5,
+            "title": "ExerciseForm + delete",
+            "description": "Fields: name, muscle_group (English enum), machine_info, target_sets_reps. Delete with confirmation.",
+            "dependencies": [
+              4
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          }
         ]
       },
       {
-        "id": 5,
+        "id": "5",
         "title": "Workout session with React Query mutations",
         "description": "Swiper-based workout mode, save per slide, pre-fill from last log, quick-adjust buttons.",
         "testStrategy": "Swipe navigates, pre-fill works, saves correctly via mutation, complete flushes + navigates",
         "priority": "high",
-        "dependencies": [4],
+        "dependencies": [
+          "4"
+        ],
         "status": "pending",
         "subtasks": [
-          { "id": 1, "title": "WorkoutSession + Swiper setup", "description": "Swiper, useParams(routineId), loading/error states.", "dependencies": [], "status": "pending" },
-          { "id": 2, "title": "workoutLog API + React Query mutations", "description": "Setup useMutation for saveWorkoutLog (INSERT/UPDATE).", "dependencies": [], "status": "pending" },
-          { "id": 3, "title": "Fetch exercises + pre-fill", "description": "useQuery to fetch exercises by sort_order and last workout_log values.", "dependencies": [1], "status": "pending" },
-          { "id": 4, "title": "Exercise slides + quick-adjust", "description": "Weight/reps/comment inputs. +/-2.5kg, +/-1 rep. Min values. Large touch targets.", "dependencies": [3], "status": "pending" },
-          { "id": 5, "title": "Save-on-slide-change", "description": "onSlideChange trigger mutation. Track Map<exerciseId, logId> to determine INSERT or UPDATE.", "dependencies": [2, 4], "status": "pending" },
-          { "id": 6, "title": "Save animation", "description": "framer-motion checkmark, AnimatePresence, auto-hide 1.5s.", "dependencies": [5], "status": "pending" },
-          { "id": 7, "title": "Complete Workout button", "description": "Ensure mutations settle, navigate /routines, error retry.", "dependencies": [6], "status": "pending" }
+          {
+            "id": 1,
+            "title": "WorkoutSession + Swiper setup",
+            "description": "Swiper, useParams(routineId), loading/error states.",
+            "dependencies": [],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "workoutLog API + React Query mutations",
+            "description": "Setup useMutation for saveWorkoutLog (INSERT/UPDATE).",
+            "dependencies": [],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 3,
+            "title": "Fetch exercises + pre-fill",
+            "description": "useQuery to fetch exercises by sort_order and last workout_log values.",
+            "dependencies": [
+              1
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 4,
+            "title": "Exercise slides + quick-adjust",
+            "description": "Weight/reps/comment inputs. +/-2.5kg, +/-1 rep. Min values. Large touch targets.",
+            "dependencies": [
+              3
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 5,
+            "title": "Save-on-slide-change",
+            "description": "onSlideChange trigger mutation. Track Map<exerciseId, logId> to determine INSERT or UPDATE.",
+            "dependencies": [
+              2,
+              4
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 6,
+            "title": "Save animation",
+            "description": "framer-motion checkmark, AnimatePresence, auto-hide 1.5s.",
+            "dependencies": [
+              5
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 7,
+            "title": "Complete Workout button",
+            "description": "Ensure mutations settle, navigate /routines, error retry.",
+            "dependencies": [
+              6
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          }
         ]
       },
       {
-        "id": 6,
+        "id": "6",
         "title": "Exercise media upload",
         "description": "Upload JPG/PNG/GIF to Supabase Storage, preview, drag-and-drop, delete.",
         "testStrategy": "Upload works, preview displays, validation blocks invalid, delete clears file + DB",
         "priority": "medium",
-        "dependencies": [4],
+        "dependencies": [
+          "4"
+        ],
         "status": "pending",
         "subtasks": [
-          { "id": 1, "title": "MediaUpload + validation", "description": "Accept JPG/PNG/GIF, 10MB max, local preview.", "dependencies": [], "status": "pending" },
-          { "id": 2, "title": "Upload to Supabase Storage", "description": "Path: exercise-media/{user_id}/{exercise_id}/{timestamp.ext}. Update media_url.", "dependencies": [1], "status": "pending" },
-          { "id": 3, "title": "Drag-and-drop UI", "description": "react-dropzone, preview, spinner, error display.", "dependencies": [1], "status": "pending" },
-          { "id": 4, "title": "Delete media", "description": "Confirmation, remove from Storage + clear media_url.", "dependencies": [2, 3], "status": "pending" }
+          {
+            "id": 1,
+            "title": "MediaUpload + validation",
+            "description": "Accept JPG/PNG/GIF, 10MB max, local preview.",
+            "dependencies": [],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Upload to Supabase Storage",
+            "description": "Path: exercise-media/{user_id}/{exercise_id}/{timestamp.ext}. Update media_url.",
+            "dependencies": [
+              1
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 3,
+            "title": "Drag-and-drop UI",
+            "description": "react-dropzone, preview, spinner, error display.",
+            "dependencies": [
+              1
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 4,
+            "title": "Delete media",
+            "description": "Confirmation, remove from Storage + clear media_url.",
+            "dependencies": [
+              2,
+              3
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          }
         ]
       },
       {
-        "id": 7,
+        "id": "7",
         "title": "Integrate offline sync into workout session (React Query)",
         "description": "Wire Task 5 mutations to Task 11 Persister. Visual feedback for queued mutations.",
         "testStrategy": "Online -> Supabase, offline -> IndexedDB cache, reconnect auto-syncs, correct indicators",
         "priority": "high",
-        "dependencies": [5, 11],
+        "dependencies": [
+          "5",
+          "11"
+        ],
         "status": "pending",
         "subtasks": [
-          { "id": 1, "title": "Optimistic UI updates", "description": "Implement onMutate in useMutation for immediate UI feedback before network confirmation.", "dependencies": [], "status": "pending" },
-          { "id": 2, "title": "Sync-on-reconnect + visual feedback", "description": "Use network status and useIsMutating hook for Green 'Saved' / yellow 'Queued' indicators.", "dependencies": [1], "status": "pending" }
+          {
+            "id": 1,
+            "title": "Optimistic UI updates",
+            "description": "Implement onMutate in useMutation for immediate UI feedback before network confirmation.",
+            "dependencies": [],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Sync-on-reconnect + visual feedback",
+            "description": "Use network status and useIsMutating hook for Green 'Saved' / yellow 'Queued' indicators.",
+            "dependencies": [
+              1
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          }
         ]
       },
       {
-        "id": 8,
+        "id": "8",
         "title": "Import seed workout data",
         "description": "4 routines (German names, English muscle_group enums), import button.",
         "testStrategy": "4 routines correct, English enums, blocked if exist, user_id assigned",
         "priority": "medium",
-        "dependencies": [2, 3],
+        "dependencies": [
+          "2",
+          "3"
+        ],
         "status": "pending",
         "subtasks": [
-          { "id": 1, "title": "Seed data structures", "description": "seedData.ts: RoutineData/ExerciseData interfaces, WORKOUT_ROUTINES.", "dependencies": [], "status": "pending" },
-          { "id": 2, "title": "importSeedData function", "description": "Check existing, batch insert with auth.uid(), rollback on failure.", "dependencies": [1], "status": "pending" },
-          { "id": 3, "title": "ImportWorkoutsButton", "description": "State machine (idle/importing/success/error), progress modal, show if 0 routines.", "dependencies": [2], "status": "pending" }
+          {
+            "id": 1,
+            "title": "Seed data structures",
+            "description": "seedData.ts: RoutineData/ExerciseData interfaces, WORKOUT_ROUTINES.",
+            "dependencies": [],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "importSeedData function",
+            "description": "Check existing, batch insert with auth.uid(), rollback on failure.",
+            "dependencies": [
+              1
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 3,
+            "title": "ImportWorkoutsButton",
+            "description": "State machine (idle/importing/success/error), progress modal, show if 0 routines.",
+            "dependencies": [
+              2
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          }
         ]
       },
       {
-        "id": 9,
+        "id": "9",
         "title": "Mobile-first responsive design + bottom nav",
         "description": "Dark theme styles, bottom nav (Routines/Settings), Settings page, haptic feedback.",
         "testStrategy": "Dark theme consistent, tappable buttons, bottom nav works, responsive, no horizontal scroll",
         "priority": "medium",
-        "dependencies": [3, 4],
+        "dependencies": [
+          "3",
+          "4"
+        ],
         "status": "pending",
         "subtasks": [
-          { "id": 1, "title": "Global dark theme styles", "description": "Inputs, buttons, cards. Min 16px text, high contrast, focus rings.", "dependencies": [], "status": "pending" },
-          { "id": 2, "title": "Bottom navigation bar", "description": "BottomNav.tsx: fixed bottom, safe-area insets, Routines/Settings, useLocation().", "dependencies": [1], "status": "pending" },
-          { "id": 3, "title": "Settings page", "description": "Email display, sign-out, placeholder for ImportWorkoutsButton.", "dependencies": [2], "status": "pending" },
-          { "id": 4, "title": "Mobile + thumb reach optimization", "description": "Actions in bottom third, breakpoints 320-768px+, max-w-md, no h-scroll.", "dependencies": [2], "status": "pending" },
-          { "id": 5, "title": "Haptic feedback", "description": "Vibration API with feature detection, CSS active-state fallback.", "dependencies": [2], "status": "pending" }
+          {
+            "id": 1,
+            "title": "Global dark theme styles",
+            "description": "Inputs, buttons, cards. Min 16px text, high contrast, focus rings.",
+            "dependencies": [],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Bottom navigation bar",
+            "description": "BottomNav.tsx: fixed bottom, safe-area insets, Routines/Settings, useLocation().",
+            "dependencies": [
+              1
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 3,
+            "title": "Settings page",
+            "description": "Email display, sign-out, placeholder for ImportWorkoutsButton.",
+            "dependencies": [
+              2
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 4,
+            "title": "Mobile + thumb reach optimization",
+            "description": "Actions in bottom third, breakpoints 320-768px+, max-w-md, no h-scroll.",
+            "dependencies": [
+              2
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 5,
+            "title": "Haptic feedback",
+            "description": "Vibration API with feature detection, CSS active-state fallback.",
+            "dependencies": [
+              2
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          }
         ]
       },
       {
-        "id": 10,
+        "id": "10",
         "title": "PWA service worker + offline indicator",
         "description": "Workbox caching for assets. Data-level sync in Task 11.",
         "testStrategy": "PWA installs, service worker caches assets, offline indicator correct",
         "priority": "high",
-        "dependencies": [1],
+        "dependencies": [
+          "1"
+        ],
         "status": "pending",
         "subtasks": [
-          { "id": 1, "title": "Configure vite-plugin-pwa", "description": "injectManifest with src/sw.ts, PWA manifest, icons, theme-color.", "dependencies": [], "status": "pending" },
-          { "id": 2, "title": "Service worker caching", "description": "precacheAndRoute, NetworkFirst (API), StaleWhileRevalidate (media), CacheFirst (static).", "dependencies": [1], "status": "pending" },
-          { "id": 3, "title": "Offline indicator", "description": "OfflineIndicator.tsx + useOnlineStatus. Yellow/blue/green banners. Global in App.tsx.", "dependencies": [2], "status": "pending" }
+          {
+            "id": 1,
+            "title": "Configure vite-plugin-pwa",
+            "description": "injectManifest with src/sw.ts, PWA manifest, icons, theme-color.",
+            "dependencies": [],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Service worker caching",
+            "description": "precacheAndRoute, NetworkFirst (API), StaleWhileRevalidate (media), CacheFirst (static).",
+            "dependencies": [
+              1
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 3,
+            "title": "Offline indicator",
+            "description": "OfflineIndicator.tsx + useOnlineStatus. Yellow/blue/green banners. Global in App.tsx.",
+            "dependencies": [
+              2
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          }
         ]
       },
       {
-        "id": 11,
+        "id": "11",
         "title": "TanStack Query offline cache layer",
         "description": "Central offline storage + sync using React Query Persister. Requires Auth (Task 3).",
         "testStrategy": "Persister caches data in IndexedDB, offline mutations queue, reconnect triggers sync",
         "priority": "high",
-        "dependencies": [2, 3],
+        "dependencies": [
+          "2",
+          "3"
+        ],
         "status": "pending",
         "subtasks": [
-          { "id": 1, "title": "Install + configure TanStack Query", "description": "Install @tanstack/react-query, @tanstack/react-query-persist-client, and idb-keyval.", "dependencies": [], "status": "pending" },
-          { "id": 2, "title": "PersistQueryClientProvider setup", "description": "Create syncStoragePersister with IndexedDB. Wrap App, set staleTime and gcTime.", "dependencies": [1], "status": "pending" },
-          { "id": 3, "title": "Offline mutation configuration", "description": "Set defaultOptions mutations: { networkMode: 'offlineFirst' } and configure mutation retries.", "dependencies": [2], "status": "pending" }
+          {
+            "id": 1,
+            "title": "Install + configure TanStack Query",
+            "description": "Install @tanstack/react-query, @tanstack/react-query-persist-client, and idb-keyval.",
+            "dependencies": [],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "PersistQueryClientProvider setup",
+            "description": "Create syncStoragePersister with IndexedDB. Wrap App, set staleTime and gcTime.",
+            "dependencies": [
+              1
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 3,
+            "title": "Offline mutation configuration",
+            "description": "Set defaultOptions mutations: { networkMode: 'offlineFirst' } and configure mutation retries.",
+            "dependencies": [
+              2
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          }
         ]
       },
       {
-        "id": 12,
+        "id": "12",
         "title": "Deploy to Vercel",
         "description": "Deploy PWA, verify mobile install.",
         "testStrategy": "Deploy succeeds, HTTPS, PWA installs iOS + Android, Lighthouse > 90",
         "priority": "medium",
-        "dependencies": [5, 6, 7, 8, 9, 10, 11],
+        "dependencies": [
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11"
+        ],
         "status": "pending",
         "subtasks": [
-          { "id": 1, "title": "Configure Vercel project", "description": "Vercel CLI, vercel.json with SPA rewrites, link Git repo.", "dependencies": [], "status": "pending" },
-          { "id": 2, "title": "Environment variables", "description": "VITE_SUPABASE_URL + VITE_SUPABASE_ANON_KEY on Vercel dashboard.", "dependencies": [1], "status": "pending" },
-          { "id": 3, "title": "Deploy + test PWA", "description": "Deploy, test install iOS Safari + Android Chrome, verify service worker + Lighthouse.", "dependencies": [2], "status": "pending" }
+          {
+            "id": 1,
+            "title": "Configure Vercel project",
+            "description": "Vercel CLI, vercel.json with SPA rewrites, link Git repo.",
+            "dependencies": [],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Environment variables",
+            "description": "VITE_SUPABASE_URL + VITE_SUPABASE_ANON_KEY on Vercel dashboard.",
+            "dependencies": [
+              1
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          },
+          {
+            "id": 3,
+            "title": "Deploy + test PWA",
+            "description": "Deploy, test install iOS Safari + Android Chrome, verify service worker + Lighthouse.",
+            "dependencies": [
+              2
+            ],
+            "status": "pending",
+            "parentId": "undefined"
+          }
         ]
       }
-    ]
+    ],
+    "metadata": {
+      "version": "1.0.0",
+      "lastModified": "2026-04-17T20:11:39.924Z",
+      "taskCount": 12,
+      "completedCount": 2,
+      "tags": [
+        "master"
+      ]
+    }
   }
 }
