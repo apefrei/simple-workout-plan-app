@@ -29,7 +29,7 @@ Verify: npm run dev starts development server successfully, Tailwind classes ren
 
 ## Subtasks
 
-### 1.6. Initialize Vite project with React-TypeScript template and install base dependencies
+### 1.1. Initialize Vite project with React-TypeScript template and install base dependencies
 
 **Status:** pending  
 **Dependencies:** None  
@@ -49,10 +49,10 @@ Bootstrap the foundational Vite + React + TypeScript project structure and insta
 9. Review tsconfig.json to ensure it has baseline TypeScript configuration (target: ES2020, useDefineForClassFields, lib, module, jsx, strict options)
 10. Confirm public/ directory exists for static assets (will hold PWA icons and manifest later)
 
-### 1.7. Install and configure Tailwind CSS with PostCSS and dark theme setup
+### 1.2. Install and configure Tailwind CSS with PostCSS and dark theme setup
 
 **Status:** pending  
-**Dependencies:** 1.6  
+**Dependencies:** 1.1  
 
 Set up Tailwind CSS with PostCSS configuration, initialize Tailwind config file with dark mode enabled, and integrate Tailwind directives into the application's main CSS file
 
@@ -77,10 +77,10 @@ Set up Tailwind CSS with PostCSS configuration, initialize Tailwind config file 
 9. Delete src/App.css file (no longer needed as Tailwind handles all styling)
 10. Test Tailwind by running `npm run dev` and verify dark background (bg-gray-900) and white text (text-white) render correctly in the browser
 
-### 1.8. Install vite-plugin-pwa and configure service worker with manifest for PWA capabilities
+### 1.3. Install vite-plugin-pwa and configure service worker with manifest for PWA capabilities
 
 **Status:** pending  
-**Dependencies:** 1.6  
+**Dependencies:** 1.1  
 
 Integrate the vite-plugin-pwa package, configure Workbox service worker strategies for offline caching, and set up the PWA manifest.json with app metadata and icons
 
@@ -117,10 +117,10 @@ Integrate the vite-plugin-pwa package, configure Workbox service worker strategi
 9. Test offline functionality by enabling offline mode in DevTools Network tab and verifying cached assets load
 10. Note: Full Workbox caching strategies will be enhanced in Task 10, this subtask sets up the foundation
 
-### 1.9. Configure TypeScript strict mode and install ESLint + Prettier for code quality
+### 1.4. Configure TypeScript strict mode and install ESLint + Prettier for code quality
 
 **Status:** pending  
-**Dependencies:** 1.6  
+**Dependencies:** 1.1  
 
 Enable TypeScript strict compiler options for enhanced type safety, set up ESLint with TypeScript and React plugins, and configure Prettier for consistent code formatting
 
@@ -171,10 +171,10 @@ Enable TypeScript strict compiler options for enhanced type safety, set up ESLin
    "format": "prettier --write \"src/**/*.{ts,tsx,css}\""
 10. Run `npm run lint` and `npm run format` to verify setup, fix any errors in default Vite template files
 
-### 1.10. Create organized project folder structure and clean up Vite template boilerplate
+### 1.5. Create organized project folder structure and clean up Vite template boilerplate
 
 **Status:** pending  
-**Dependencies:** 1.7, 1.9  
+**Dependencies:** 1.2, 1.4  
 
 Establish a scalable directory structure for components, pages, services, hooks, types, and utilities, then remove unnecessary Vite template boilerplate code
 

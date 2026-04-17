@@ -4,7 +4,7 @@
 
 **Status:** pending
 
-**Dependencies:** 1, 5, 7
+**Dependencies:** 1
 
 **Priority:** high
 
@@ -12,16 +12,16 @@
 
 **Details:**
 
-CONSOLIDATION NOTICE: This task is the central implementation for ALL offline functionality. Task 10.4 (IndexedDB) creates the CENTRAL offline data layer used by ALL components (workout logging in Task 5, exercise logger in Task 7, routine management). Task 10.2 (background sync) is the SINGLE implementation for syncing workout_logs - no other task should implement parallel sync logic. Other tasks should import utilities from src/utils/db.ts and src/lib/offlineStorage.ts.
+This task creates the PWA offline infrastructure and deploys to Vercel. It depends ONLY on Task 1 (project setup) so that the offline data layer (IndexedDB, background sync) is available for Task 5 and Task 7 to import.
 
 1. Configure vite-plugin-pwa with workbox strategies:
    - NetworkFirst for API calls (supabase.co/*)
    - CacheFirst for static assets (images, fonts)
    - StaleWhileRevalidate for exercise media
-2. Implement background sync queue for workout_logs using workbox-background-sync (SINGLE IMPLEMENTATION)
-3. Add offline indicator UI component showing connection status (GLOBAL COMPONENT)
+2. Implement background sync queue for workout_logs using workbox-background-sync
+3. Add offline indicator UI component showing connection status (global component)
 4. Create custom service worker logic in src/sw.ts for handling failed requests
-5. Set up IndexedDB for local data persistence using idb library: `npm install idb` (CENTRAL DATA LAYER - used by Task 5.4, Task 7.5)
+5. Set up IndexedDB for local data persistence using idb library: `npm install idb`
    - Create src/utils/db.ts with CRUD functions for routines, exercises, workout_logs
    - Create src/lib/offlineStorage.ts with queue management functions
    - Export functions: saveRoutineLocally(), saveExerciseLocally(), saveWorkoutLogLocally(), getQueuedLogs(), syncOfflineLogs()
@@ -33,10 +33,7 @@ CONSOLIDATION NOTICE: This task is the central implementation for ALL offline fu
 11. Test PWA 'Add to Home Screen' on iOS Safari and Android Chrome
 12. Configure custom domain if needed and enable HTTPS
 
-INTEGRATION POINTS:
-- Task 5.4 (workout session auto-save): Use saveWorkoutLogLocally() from src/utils/db.ts created in Task 10.4
-- Task 7.5 (exercise logger offline): Use saveWorkoutLogLocally() and syncOfflineLogs() from Task 10.4
-- Task 7 (general): Remove duplicate IndexedDB/offline implementation, import from Task 10
+NOTE: Task 5 and Task 7 depend on this task and import offline utilities from src/utils/db.ts and src/lib/offlineStorage.ts created here.
 
 **Test Strategy:**
 

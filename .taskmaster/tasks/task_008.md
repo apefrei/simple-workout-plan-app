@@ -18,7 +18,7 @@
    - Training 2: Beine & Schultern (exercises like 'Beinpresse', 'Beinstrecker', etc.)
    - Training 3: Rücken & Trizeps (exercises like 'Latzug', 'Rudern', etc.)
    - Training 4: Ganzkörper Bonus (compound exercises)
-3. For each exercise, include: name, muscle_group, machine_info, target_sets_reps (e.g. '12/10/8')
+3. For each exercise, include: name (German, user-facing), muscle_group (MUST be one of the English enum values: Chest, Back, Legs, Shoulders, Arms, Core, Full Body - German values will fail the DB CHECK constraint), machine_info, target_sets_reps (e.g. '12/10/8')
 4. Create importSeedData() function that checks if user already has routines, prompts before import
 5. Implement batch insert: await supabase.from('routines').insert(...).select() to get IDs, then insert exercises with routine_id foreign keys
 6. Add UI button in settings/profile page: 'Import Sample Workouts'
@@ -29,7 +29,7 @@
 
 **Test Strategy:**
 
-Test: Import creates exactly 4 routines in database, all exercises linked to correct routines, muscle_group and machine_info populated, target_sets_reps format correct, import button disabled after first use, error handling shows message if database unavailable
+Test: Import creates exactly 4 routines in database, all exercises linked to correct routines, muscle_group values match English enum constraint ('Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core', 'Full Body'), machine_info and target_sets_reps populated, import button disabled after first use, error handling shows message if database unavailable, CHECK constraint rejects invalid muscle_group values
 
 ## Subtasks
 
@@ -38,7 +38,7 @@ Test: Import creates exactly 4 routines in database, all exercises linked to cor
 **Status:** pending  
 **Dependencies:** None  
 
-Define TypeScript interfaces for RoutineData and ExerciseData, and create the 4 workout routines array based on PRD specifications (Training 1-4)
+Define TypeScript interfaces for RoutineData and ExerciseData, and create the 4 workout routines array based on PRD specifications (Training 1-4) with English muscle_group enum values
 
 **Details:**
 
@@ -50,9 +50,18 @@ Define TypeScript interfaces for RoutineData and ExerciseData, and create the 4 
    - Training 2: Beine & Schultern with exercises like 'Beinpresse', 'Beinstrecker', 'Beinbeuger', 'Waden', 'Schulterdrücken', 'Seitheben', 'Facepulls'
    - Training 3: Rücken & Trizeps with exercises like 'Latzug', 'Rudern horizontal', 'Rudern vertikal', 'Trizeps Pushdown', 'Trizeps über Kopf'
    - Training 4: Ganzkörper Bonus with compound exercises
-5. Each exercise object should include muscle_group (e.g., 'Brust', 'Bizeps', 'Beine') and target_sets_reps format like '12/10/8' or '3x12'
-6. Add optional machine_info field for equipment references (e.g., 'Gerät 41')
-7. Export WORKOUT_ROUTINES constant for use in import function
+5. CRITICAL: Each exercise object must include muscle_group using ONLY the English enum values from the database CHECK constraint: 'Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core', 'Full Body'. Correct mappings:
+   - 'Flachbank LH', 'Schrägbank LH', 'Butterfly' → muscle_group='Chest'
+   - 'Bizeps Curls KH', 'Bizeps Curls Maschine', 'Hammer Curls' → muscle_group='Arms'
+   - 'Beinpresse', 'Beinstrecker', 'Beinbeuger', 'Waden' → muscle_group='Legs'
+   - 'Schulterdrücken', 'Seitheben', 'Facepulls' → muscle_group='Shoulders'
+   - 'Latzug', 'Rudern horizontal', 'Rudern vertikal' → muscle_group='Back'
+   - 'Trizeps Pushdown', 'Trizeps über Kopf' → muscle_group='Arms'
+   - All compound exercises in Training 4 → muscle_group='Full Body'
+6. Add target_sets_reps format like '12/10/8' or '3x12'
+7. Add optional machine_info field for equipment references (e.g., 'Gerät 41')
+8. Export WORKOUT_ROUTINES constant for use in import function
+NOTE: Routine names and exercise names remain in German (user-facing), but muscle_group MUST be one of the 7 English enum values from the CHECK constraint defined in Task 2.3 (exercises table schema).
 
 ### 8.2. Implement importSeedData function with database insertion logic
 
@@ -72,7 +81,7 @@ Create the core import function that inserts routines and exercises into Supabas
 7. Batch insert all exercises: await supabase.from('exercises').insert(exercisesWithRoutineIds)
 8. Implement try-catch block with rollback logic: if exercises insert fails, delete the inserted routines to maintain data consistency
 9. Return success object with counts: { routinesCreated: insertedRoutines.length, exercisesCreated: totalExercises }
-10. Add detailed error messages for common failures (network, RLS policy, foreign key constraint)
+10. Add detailed error messages for common failures (network, RLS policy, foreign key constraint, CHECK constraint violation for invalid muscle_group values)
 
 ### 8.3. Create ImportWorkoutsButton component with progress modal UI
 
