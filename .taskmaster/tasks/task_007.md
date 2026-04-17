@@ -4,11 +4,11 @@
 
 **Status:** pending
 
-**Dependencies:** 5, 10
+**Dependencies:** 5, 10.4
 
 **Priority:** high
 
-**Description:** Create saveWorkoutLog service, add +/- buttons for weight/reps, save animation, integrate Task 10 offline utilities.
+**Description:** Create saveWorkoutLog service, add +/- buttons for weight/reps, save animation, integrate offline utilities from Task 10.4.
 
 **Details:**
 
@@ -16,7 +16,7 @@
 2. Quick-adjust buttons: +/- 2.5kg weight, +/- 1 rep
 3. Input validation (weight >= 0, reps >= 1)
 4. Framer Motion save animation
-5. Offline routing: online -> Supabase, offline -> IndexedDB (Task 10)
+5. Offline routing: online -> Supabase, offline -> IndexedDB (Task 10.4)
 
 **Test Strategy:**
 
@@ -45,9 +45,9 @@ workoutLogService.ts: saveWorkoutLog(userId, exerciseId, weight, reps, comment, 
 
 Install framer-motion. Small "Saved" checkmark indicator with AnimatePresence. Auto-hide 1.5s. Red error on failure.
 
-### 7.4. Integrate Task 10 offline utilities
+### 7.4. Integrate offline utilities
 
 **Status:** pending
 **Dependencies:** 7.1, 7.3
 
-Import from Task 10. Online -> saveWorkoutLog, offline -> saveWorkoutLogLocally. Sync on reconnect. "Saved" (green) vs "Queued" (yellow).
+Import from Task 10.4. Online -> saveWorkoutLog, offline -> saveWorkoutLogLocally. Sync on reconnect. "Saved" (green) vs "Queued" (yellow).
