@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import { useRoutines } from '../hooks/useRoutines'
 import RoutineCard from '../components/RoutineCard'
 import CreateRoutineModal from '../components/CreateRoutineModal'
+import ImportWorkoutsButton from '../components/ImportWorkoutsButton'
 
 export default function RoutinesPage() {
-  const { routines, loading, createRoutine, deleteRoutine } = useRoutines()
+  const { routines, loading, createRoutine, deleteRoutine, refetch } = useRoutines()
   const [showCreate, setShowCreate] = useState(false)
   const navigate = useNavigate()
 
@@ -38,6 +39,7 @@ export default function RoutinesPage() {
         <div className="mt-12 text-center text-gray-500 dark:text-gray-400">
           <p className="text-lg">No routines yet</p>
           <p className="mt-1 text-sm">Create your first workout routine to get started.</p>
+          <ImportWorkoutsButton onImported={refetch} />
         </div>
       ) : (
         <div className="mt-4 grid gap-3 sm:grid-cols-2">

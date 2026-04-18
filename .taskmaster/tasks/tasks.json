@@ -425,15 +425,16 @@
           "2",
           "3"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
             "title": "Seed data structures",
             "description": "seedData.ts: RoutineData/ExerciseData interfaces, WORKOUT_ROUTINES.",
             "dependencies": [],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-18T11:03:35.806Z"
           },
           {
             "id": 2,
@@ -442,8 +443,9 @@
             "dependencies": [
               1
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-18T11:03:39.487Z"
           },
           {
             "id": 3,
@@ -452,10 +454,12 @@
             "dependencies": [
               2
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-18T11:03:43.146Z"
           }
-        ]
+        ],
+        "updatedAt": "2026-04-18T11:03:43.146Z"
       },
       {
         "id": "9",
@@ -660,9 +664,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-04-18T07:07:28.906Z",
+      "lastModified": "2026-04-18T11:03:43.147Z",
       "taskCount": 12,
-      "completedCount": 9,
+      "completedCount": 10,
       "tags": [
         "master"
       ]
