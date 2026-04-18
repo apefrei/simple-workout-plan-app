@@ -48,6 +48,7 @@ export function useSaveLog() {
   const queryClient = useQueryClient()
 
   return useMutation({
+    mutationKey: ['saveLog'],
     mutationFn: async (log: { exercise_id: string; weight_kg: number; reps: number; comment?: string }) => {
       if (!user) throw new Error('Not authenticated')
 

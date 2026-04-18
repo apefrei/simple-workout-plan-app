@@ -566,15 +566,16 @@
           "2",
           "3"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
             "title": "Install + configure TanStack Query",
             "description": "Install @tanstack/react-query, @tanstack/react-query-persist-client, and idb-keyval.",
             "dependencies": [],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-18T06:51:14.962Z"
           },
           {
             "id": 2,
@@ -583,8 +584,9 @@
             "dependencies": [
               1
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-18T06:51:18.605Z"
           },
           {
             "id": 3,
@@ -593,10 +595,12 @@
             "dependencies": [
               2
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-18T06:51:22.249Z"
           }
-        ]
+        ],
+        "updatedAt": "2026-04-18T06:51:22.249Z"
       },
       {
         "id": "12",
@@ -648,9 +652,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-04-18T06:41:08.946Z",
+      "lastModified": "2026-04-18T06:51:22.250Z",
       "taskCount": 12,
-      "completedCount": 6,
+      "completedCount": 7,
       "tags": [
         "master"
       ]

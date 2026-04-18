@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
+import { queryClient, persister } from './lib/queryClient'
 import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import Header from './components/Header'
@@ -9,11 +10,12 @@ import RoutineEditorPage from './pages/RoutineEditorPage'
 import WorkoutSessionPage from './pages/WorkoutSessionPage'
 import OfflineIndicator from './components/OfflineIndicator'
 
-const queryClient = new QueryClient()
-
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{ persister }}
+    >
       <BrowserRouter>
         <AuthProvider>
           <OfflineIndicator />
@@ -37,7 +39,7 @@ function App() {
           </Routes>
         </AuthProvider>
       </BrowserRouter>
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   )
 }
 
