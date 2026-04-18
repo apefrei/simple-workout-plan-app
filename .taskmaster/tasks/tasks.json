@@ -520,15 +520,16 @@
         "dependencies": [
           "1"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
             "title": "Configure vite-plugin-pwa",
             "description": "injectManifest with src/sw.ts, PWA manifest, icons, theme-color.",
             "dependencies": [],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-18T06:41:01.670Z"
           },
           {
             "id": 2,
@@ -537,8 +538,9 @@
             "dependencies": [
               1
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-18T06:41:05.302Z"
           },
           {
             "id": 3,
@@ -547,10 +549,12 @@
             "dependencies": [
               2
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-18T06:41:08.945Z"
           }
-        ]
+        ],
+        "updatedAt": "2026-04-18T06:41:08.945Z"
       },
       {
         "id": "11",
@@ -644,9 +648,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-04-17T20:58:57.210Z",
+      "lastModified": "2026-04-18T06:41:08.946Z",
       "taskCount": 12,
-      "completedCount": 5,
+      "completedCount": 6,
       "tags": [
         "master"
       ]

@@ -7,6 +7,7 @@ import AuthPage from './pages/AuthPage'
 import RoutinesPage from './pages/RoutinesPage'
 import RoutineEditorPage from './pages/RoutineEditorPage'
 import WorkoutSessionPage from './pages/WorkoutSessionPage'
+import OfflineIndicator from './components/OfflineIndicator'
 
 const queryClient = new QueryClient()
 
@@ -15,6 +16,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AuthProvider>
+          <OfflineIndicator />
           <Routes>
             <Route path="/auth" element={<AuthPage />} />
             <Route
