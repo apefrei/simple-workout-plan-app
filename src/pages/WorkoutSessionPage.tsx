@@ -8,6 +8,7 @@ import 'swiper/css/pagination'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { useLatestLogs, useSaveLog } from '../hooks/useWorkoutLogs'
+import { triggerHaptic } from '../lib/haptics'
 import type { Exercise } from '../hooks/useRoutines'
 
 interface ExerciseEntry {
@@ -71,6 +72,7 @@ export default function WorkoutSessionPage() {
   }, [latestLogs, exercises])
 
   const updateEntry = useCallback((exerciseId: string, field: keyof ExerciseEntry, value: number | string) => {
+    triggerHaptic('light')
     setEntries((prev) => {
       const next = new Map(prev)
       const entry = next.get(exerciseId)
@@ -124,6 +126,7 @@ export default function WorkoutSessionPage() {
 
   // Save all dirty entries and navigate back
   const handleComplete = useCallback(async () => {
+    triggerHaptic('medium')
     const dirtyEntries = Array.from(entries.values()).filter((e) => e.dirty)
     await Promise.all(
       dirtyEntries.map((entry) =>
@@ -227,7 +230,7 @@ export default function WorkoutSessionPage() {
                   <div className="mt-1 flex items-center gap-2">
                     <button
                       onClick={() => updateEntry(exercise.id, 'weight_kg', Math.max(0, (entry?.weight_kg ?? 0) - 2.5))}
-                      className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-lg font-bold text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                      className="flex h-11 w-11 items-center justify-center rounded-lg bg-gray-100 text-lg font-bold text-gray-700 transition hover:bg-gray-200 active:scale-95 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
                     >
                       -
                     </button>
@@ -242,7 +245,7 @@ export default function WorkoutSessionPage() {
                     />
                     <button
                       onClick={() => updateEntry(exercise.id, 'weight_kg', (entry?.weight_kg ?? 0) + 2.5)}
-                      className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-lg font-bold text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                      className="flex h-11 w-11 items-center justify-center rounded-lg bg-gray-100 text-lg font-bold text-gray-700 transition hover:bg-gray-200 active:scale-95 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
                     >
                       +
                     </button>
@@ -255,7 +258,7 @@ export default function WorkoutSessionPage() {
                   <div className="mt-1 flex items-center gap-2">
                     <button
                       onClick={() => updateEntry(exercise.id, 'reps', Math.max(0, (entry?.reps ?? 0) - 1))}
-                      className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-lg font-bold text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                      className="flex h-11 w-11 items-center justify-center rounded-lg bg-gray-100 text-lg font-bold text-gray-700 transition hover:bg-gray-200 active:scale-95 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
                     >
                       -
                     </button>
@@ -270,7 +273,7 @@ export default function WorkoutSessionPage() {
                     />
                     <button
                       onClick={() => updateEntry(exercise.id, 'reps', (entry?.reps ?? 0) + 1)}
-                      className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-lg font-bold text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                      className="flex h-11 w-11 items-center justify-center rounded-lg bg-gray-100 text-lg font-bold text-gray-700 transition hover:bg-gray-200 active:scale-95 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
                     >
                       +
                     </button>

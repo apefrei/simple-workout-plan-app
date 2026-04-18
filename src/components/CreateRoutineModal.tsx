@@ -40,20 +40,20 @@ export default function CreateRoutineModal({ open, onClose, onCreate }: CreateRo
             onChange={(e) => setName(e.target.value)}
             placeholder="e.g. Push Day, Leg Day"
             autoFocus
-            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700"
+            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-3 text-base focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700"
           />
           <div className="mt-4 flex justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-md px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
+              className="rounded-lg px-4 py-2.5 text-base font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!name.trim() || saving}
-              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+              className="rounded-lg bg-blue-600 px-4 py-2.5 text-base font-medium text-white hover:bg-blue-700 disabled:opacity-50"
             >
               {saving ? 'Creating...' : 'Create'}
             </button>

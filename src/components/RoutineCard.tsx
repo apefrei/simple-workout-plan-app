@@ -25,7 +25,7 @@ export default function RoutineCard({ routine, onOpen, onDelete }: RoutineCardPr
 
   return (
     <div
-      className="cursor-pointer rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
+      className="cursor-pointer rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:shadow-md active:scale-[0.98] dark:border-gray-700 dark:bg-gray-800"
       onClick={() => onOpen(routine.id)}
     >
       <div className="flex items-start justify-between">
@@ -35,7 +35,7 @@ export default function RoutineCard({ routine, onOpen, onDelete }: RoutineCardPr
             e.stopPropagation()
             onDelete(routine.id)
           }}
-          className="rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/30"
+          className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/30"
           title="Delete routine"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

@@ -25,7 +25,7 @@ export default function OfflineIndicator() {
 
   return (
     <div
-      className={`fixed bottom-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-lg shadow-lg text-sm font-medium flex items-center gap-2 text-white ${
+      className={`fixed bottom-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-lg shadow-lg text-sm font-medium flex items-center gap-2 text-white ${
         isSyncing ? 'bg-blue-600' : isOnline ? 'bg-green-600' : 'bg-yellow-600'
       }`}
     >

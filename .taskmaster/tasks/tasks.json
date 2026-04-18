@@ -471,15 +471,16 @@
           "3",
           "4"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
             "title": "Global dark theme styles",
             "description": "Inputs, buttons, cards. Min 16px text, high contrast, focus rings.",
             "dependencies": [],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-18T11:14:27.523Z"
           },
           {
             "id": 2,
@@ -488,8 +489,9 @@
             "dependencies": [
               1
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-18T11:14:31.198Z"
           },
           {
             "id": 3,
@@ -498,8 +500,9 @@
             "dependencies": [
               2
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-18T11:14:34.863Z"
           },
           {
             "id": 4,
@@ -508,8 +511,9 @@
             "dependencies": [
               2
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-18T11:14:38.545Z"
           },
           {
             "id": 5,
@@ -518,10 +522,12 @@
             "dependencies": [
               2
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-18T11:14:42.208Z"
           }
-        ]
+        ],
+        "updatedAt": "2026-04-18T11:14:42.208Z"
       },
       {
         "id": "10",
@@ -664,9 +670,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-04-18T11:03:43.147Z",
+      "lastModified": "2026-04-18T11:14:42.209Z",
       "taskCount": 12,
-      "completedCount": 10,
+      "completedCount": 11,
       "tags": [
         "master"
       ]

@@ -4,11 +4,11 @@
 
 /* Swiper workout pagination */
 .workout-swiper .swiper-pagination-bullet {
-  background: #9ca3af;
+  background: #6b7280;
   opacity: 0.5;
 }
 .workout-swiper .swiper-pagination-bullet-active {
-  background: #2563eb;
+  background: #3b82f6;
   opacity: 1;
 }
 
@@ -22,4 +22,50 @@
   --color-gray-200: #e5e7eb;
   --color-gray-100: #f3f4f6;
   --color-gray-50: #f9fafb;
+}
+
+/* Global dark theme base */
+@layer base {
+  html.dark {
+    color-scheme: dark;
+    background-color: #111827;
+  }
+
+  /* Focus rings for accessibility */
+  *:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Minimum text size for readability */
+  html {
+    font-size: 16px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Safe area padding for notched devices */
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Dark theme input defaults */
+  .dark input,
+  .dark select,
+  .dark textarea {
+    color: #e5e7eb;
+  }
+
+  .dark input::placeholder,
+  .dark textarea::placeholder {
+    color: #6b7280;
+  }
 }

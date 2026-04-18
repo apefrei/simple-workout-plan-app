@@ -150,9 +150,12 @@ export default function RoutineEditorPage() {
     <div className="mx-auto max-w-3xl p-4">
       <button
         onClick={() => navigate('/')}
-        className="mb-4 text-sm text-blue-600 hover:underline dark:text-blue-400"
+        className="mb-4 inline-flex items-center gap-1 rounded-lg py-2 text-base text-blue-600 hover:underline dark:text-blue-400"
       >
-        &larr; Back to routines
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+        </svg>
+        Back to routines
       </button>
 
       {editingName ? (
@@ -237,7 +240,7 @@ export default function RoutineEditorPage() {
                       </div>
                       <button
                         onClick={() => deleteExercise(ex)}
-                        className="rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/30"
+                        className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/30"
                         title="Remove exercise"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
