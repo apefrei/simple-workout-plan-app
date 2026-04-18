@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
 import type { DropResult } from '@hello-pangea/dnd'
 import { supabase } from '../lib/supabase'
+import { uploadExerciseMedia, deleteExerciseMedia } from '../lib/storage'
 import { useAuth } from '../contexts/AuthContext'
 import type { MuscleGroup } from '../types/database'
 import type { Routine, Exercise } from '../hooks/useRoutines'
@@ -65,23 +66,60 @@ export default function RoutineEditorPage() {
     muscle_group: MuscleGroup
     machine_info?: string
     target_sets_reps?: string
+    mediaFile?: File
   }) => {
-    if (!routine) return false
-    const { error } = await supabase.from('exercises').insert({
-      routine_id: routine.id,
-      name: exercise.name,
-      muscle_group: exercise.muscle_group,
-      machine_info: exercise.machine_info ?? null,
-      target_sets_reps: exercise.target_sets_reps ?? null,
-      sort_order: exercises.length,
-    })
-    if (error) return false
+    if (!routine || !user) return false
+
+    // Insert the exercise first to get its ID
+    const { data: inserted, error } = await supabase
+      .from('exercises')
+      .insert({
+        routine_id: routine.id,
+        name: exercise.name,
+        muscle_group: exercise.muscle_group,
+        machine_info: exercise.machine_info ?? null,
+        target_sets_reps: exercise.target_sets_reps ?? null,
+        sort_order: exercises.length,
+      })
+      .select()
+      .single()
+
+    if (error || !inserted) return false
+
+    // Upload media if provided
+    if (exercise.mediaFile) {
+      try {
+        const mediaUrl = await uploadExerciseMedia(user.id, inserted.id, exercise.mediaFile)
+        await supabase
+          .from('exercises')
+          .update({ media_url: mediaUrl })
+          .eq('id', inserted.id)
+      } catch (err) {
+        console.error('media upload failed:', err)
+        // Exercise was still created, just without media
+      }
+    }
+
     await fetchRoutine()
     return true
   }
 
-  const deleteExercise = async (exerciseId: string) => {
-    await supabase.from('exercises').delete().eq('id', exerciseId)
+  const deleteMedia = async (exercise: Exercise) => {
+    if (!exercise.media_url) return
+    if (!confirm('Remove this image?')) return
+    await deleteExerciseMedia(exercise.media_url)
+    await supabase
+      .from('exercises')
+      .update({ media_url: null })
+      .eq('id', exercise.id)
+    await fetchRoutine()
+  }
+
+  const deleteExercise = async (exercise: Exercise) => {
+    if (exercise.media_url) {
+      await deleteExerciseMedia(exercise.media_url)
+    }
+    await supabase.from('exercises').delete().eq('id', exercise.id)
     await fetchRoutine()
   }
 
@@ -167,6 +205,24 @@ export default function RoutineEditorPage() {
                           <path d="M7 2a2 2 0 10.001 4.001A2 2 0 007 2zm0 6a2 2 0 10.001 4.001A2 2 0 007 8zm0 6a2 2 0 10.001 4.001A2 2 0 007 14zm6-8a2 2 0 10-.001-4.001A2 2 0 0013 6zm0 2a2 2 0 10.001 4.001A2 2 0 0013 8zm0 6a2 2 0 10.001 4.001A2 2 0 0013 14z" />
                         </svg>
                       </div>
+                      {ex.media_url && (
+                        <div className="group relative flex-shrink-0">
+                          <img
+                            src={ex.media_url}
+                            alt={ex.name}
+                            className="h-10 w-10 rounded object-cover"
+                          />
+                          <button
+                            onClick={() => deleteMedia(ex)}
+                            className="absolute -right-1 -top-1 hidden rounded-full bg-red-500 p-0.5 text-white shadow hover:bg-red-600 group-hover:block"
+                            title="Remove image"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                            </svg>
+                          </button>
+                        </div>
+                      )}
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
                           <span className="font-medium">{ex.name}</span>
@@ -180,7 +236,7 @@ export default function RoutineEditorPage() {
                         </div>
                       </div>
                       <button
-                        onClick={() => deleteExercise(ex.id)}
+                        onClick={() => deleteExercise(ex)}
                         className="rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/30"
                         title="Remove exercise"
                       >

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { MuscleGroup } from '../types/database'
+import MediaUpload from './MediaUpload'
 
 const MUSCLE_GROUPS: MuscleGroup[] = [
   'chest', 'back', 'shoulders', 'biceps', 'triceps',
@@ -12,6 +13,7 @@ interface ExerciseFormProps {
     muscle_group: MuscleGroup
     machine_info?: string
     target_sets_reps?: string
+    mediaFile?: File
   }) => Promise<boolean>
 }
 
@@ -20,6 +22,7 @@ export default function ExerciseForm({ onAdd }: ExerciseFormProps) {
   const [muscleGroup, setMuscleGroup] = useState<MuscleGroup>('chest')
   const [machineInfo, setMachineInfo] = useState('')
   const [targetSetsReps, setTargetSetsReps] = useState('')
+  const [mediaFile, setMediaFile] = useState<File | null>(null)
   const [saving, setSaving] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -32,11 +35,13 @@ export default function ExerciseForm({ onAdd }: ExerciseFormProps) {
       muscle_group: muscleGroup,
       machine_info: machineInfo.trim() || undefined,
       target_sets_reps: targetSetsReps.trim() || undefined,
+      mediaFile: mediaFile ?? undefined,
     })
     if (ok) {
       setName('')
       setMachineInfo('')
       setTargetSetsReps('')
+      setMediaFile(null)
     }
     setSaving(false)
   }
@@ -89,6 +94,13 @@ export default function ExerciseForm({ onAdd }: ExerciseFormProps) {
             className="mt-1 w-full rounded border border-gray-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700"
           />
         </div>
+      </div>
+      <div className="mt-3">
+        <MediaUpload
+          onFileSelected={setMediaFile}
+          onClear={() => setMediaFile(null)}
+          disabled={saving}
+        />
       </div>
       <div className="mt-3 flex justify-end">
         <button

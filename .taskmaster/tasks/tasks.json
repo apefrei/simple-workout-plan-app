@@ -332,15 +332,16 @@
         "dependencies": [
           "4"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
             "title": "MediaUpload + validation",
             "description": "Accept JPG/PNG/GIF, 10MB max, local preview.",
             "dependencies": [],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-18T07:04:55.009Z"
           },
           {
             "id": 2,
@@ -349,8 +350,9 @@
             "dependencies": [
               1
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-18T07:06:23.894Z"
           },
           {
             "id": 3,
@@ -359,8 +361,9 @@
             "dependencies": [
               1
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-18T07:06:27.529Z"
           },
           {
             "id": 4,
@@ -370,10 +373,12 @@
               2,
               3
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-18T07:07:28.905Z"
           }
-        ]
+        ],
+        "updatedAt": "2026-04-18T07:07:28.905Z"
       },
       {
         "id": "7",
@@ -655,9 +660,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-04-18T06:58:57.084Z",
+      "lastModified": "2026-04-18T07:07:28.906Z",
       "taskCount": 12,
-      "completedCount": 8,
+      "completedCount": 9,
       "tags": [
         "master"
       ]
