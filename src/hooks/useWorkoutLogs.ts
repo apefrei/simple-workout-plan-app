@@ -71,7 +71,46 @@ export function useSaveLog() {
       if (error) throw error
       return data as WorkoutLog
     },
-    onSuccess: () => {
+    onMutate: async (newLog) => {
+      // Cancel outgoing refetches so they don't overwrite our optimistic update
+      await queryClient.cancelQueries({ queryKey: ['latestLogs'] })
+
+      // Snapshot all matching latestLogs queries for rollback
+      const previousQueries = queryClient.getQueriesData<Map<string, WorkoutLog>>({
+        queryKey: ['latestLogs'],
+      })
+
+      // Optimistically update every latestLogs cache entry that contains this exercise
+      queryClient.setQueriesData<Map<string, WorkoutLog>>(
+        { queryKey: ['latestLogs'] },
+        (old) => {
+          if (!old) return old
+          const next = new Map(old)
+          const existing = next.get(newLog.exercise_id)
+          next.set(newLog.exercise_id, {
+            id: existing?.id ?? crypto.randomUUID(),
+            user_id: user?.id ?? '',
+            exercise_id: newLog.exercise_id,
+            weight_kg: newLog.weight_kg,
+            reps: newLog.reps,
+            comment: newLog.comment ?? null,
+            logged_at: new Date().toISOString(),
+          })
+          return next
+        },
+      )
+
+      return { previousQueries }
+    },
+    onError: (_err, _newLog, context) => {
+      // Roll back to the previous cache state
+      if (context?.previousQueries) {
+        for (const [queryKey, data] of context.previousQueries) {
+          queryClient.setQueryData(queryKey, data)
+        }
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['latestLogs'] })
     },
   })

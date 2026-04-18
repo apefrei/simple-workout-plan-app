@@ -385,15 +385,16 @@
           "5",
           "11"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
             "title": "Optimistic UI updates",
             "description": "Implement onMutate in useMutation for immediate UI feedback before network confirmation.",
             "dependencies": [],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-18T06:58:53.460Z"
           },
           {
             "id": 2,
@@ -402,10 +403,12 @@
             "dependencies": [
               1
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-18T06:58:57.083Z"
           }
-        ]
+        ],
+        "updatedAt": "2026-04-18T06:58:57.083Z"
       },
       {
         "id": "8",
@@ -652,9 +655,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-04-18T06:51:22.250Z",
+      "lastModified": "2026-04-18T06:58:57.084Z",
       "taskCount": 12,
-      "completedCount": 7,
+      "completedCount": 8,
       "tags": [
         "master"
       ]
