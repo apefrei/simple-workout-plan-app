@@ -2,6 +2,16 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Swiper workout pagination */
+.workout-swiper .swiper-pagination-bullet {
+  background: #9ca3af;
+  opacity: 0.5;
+}
+.workout-swiper .swiper-pagination-bullet-active {
+  background: #2563eb;
+  opacity: 1;
+}
+
 @theme {
   --color-gray-900: #111827;
   --color-gray-800: #1f2937;

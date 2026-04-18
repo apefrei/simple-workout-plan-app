@@ -201,6 +201,15 @@ export default function RoutineEditorPage() {
       <div className="mt-6">
         <ExerciseForm onAdd={addExercise} />
       </div>
+
+      {exercises.length > 0 && (
+        <button
+          onClick={() => navigate(`/routines/${id}/workout`)}
+          className="mt-6 w-full rounded-xl bg-green-600 py-3 text-lg font-semibold text-white shadow-md transition hover:bg-green-700"
+        >
+          Start Workout
+        </button>
+      )}
     </div>
   )
 }

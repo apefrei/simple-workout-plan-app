@@ -244,23 +244,25 @@
         "dependencies": [
           "4"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
             "title": "WorkoutSession + Swiper setup",
             "description": "Swiper, useParams(routineId), loading/error states.",
             "dependencies": [],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T20:58:35.456Z"
           },
           {
             "id": 2,
             "title": "workoutLog API + React Query mutations",
             "description": "Setup useMutation for saveWorkoutLog (INSERT/UPDATE).",
             "dependencies": [],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T20:58:39.094Z"
           },
           {
             "id": 3,
@@ -269,8 +271,9 @@
             "dependencies": [
               1
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T20:58:42.714Z"
           },
           {
             "id": 4,
@@ -279,8 +282,9 @@
             "dependencies": [
               3
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T20:58:46.320Z"
           },
           {
             "id": 5,
@@ -290,8 +294,9 @@
               2,
               4
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T20:58:49.941Z"
           },
           {
             "id": 6,
@@ -300,8 +305,9 @@
             "dependencies": [
               5
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T20:58:53.595Z"
           },
           {
             "id": 7,
@@ -310,10 +316,12 @@
             "dependencies": [
               6
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-17T20:58:57.209Z"
           }
-        ]
+        ],
+        "updatedAt": "2026-04-17T20:58:57.209Z"
       },
       {
         "id": "6",
@@ -636,9 +644,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-04-17T20:42:18.481Z",
+      "lastModified": "2026-04-17T20:58:57.210Z",
       "taskCount": 12,
-      "completedCount": 4,
+      "completedCount": 5,
       "tags": [
         "master"
       ]
