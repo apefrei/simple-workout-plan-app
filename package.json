@@ -12,8 +12,7 @@
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
-    "@supabase/auth-ui-react": "^0.4.7",
-    "@supabase/auth-ui-shared": "^0.1.8",
+    "@marsidev/react-turnstile": "^1.5.0",
     "@supabase/supabase-js": "^2.103.3",
     "@tanstack/query-persist-client-core": "^5.99.0",
     "@tanstack/react-query": "^5.99.0",
