@@ -2,7 +2,7 @@
   "master": {
     "tasks": [
       {
-        "id": "1",
+        "id": 1,
         "title": "Initialize React + Vite + TypeScript + Tailwind CSS",
         "description": "PWA config in Task 10.",
         "testStrategy": "dev server starts, Tailwind dark theme renders, TS compiles, build succeeds",
@@ -57,7 +57,7 @@
         "updatedAt": "2026-04-17T15:18:13.477Z"
       },
       {
-        "id": "2",
+        "id": 2,
         "title": "Configure Supabase backend + DB schema",
         "description": "Tables: routines, exercises, workout_logs. RLS + Storage bucket.",
         "testStrategy": "Client connects, tables exist, RLS blocks unauthorized, Storage works",
@@ -113,7 +113,7 @@
         "updatedAt": "2026-04-17T20:11:39.924Z"
       },
       {
-        "id": "3",
+        "id": 3,
         "title": "Authentication flow with Supabase Auth",
         "description": "Email auth, protected routes, session management, sign-out.",
         "testStrategy": "Sign up/login works, protected routes redirect, logout clears session, refresh maintains auth",
@@ -169,7 +169,7 @@
         "updatedAt": "2026-04-17T20:33:19.722Z"
       },
       {
-        "id": "4",
+        "id": 4,
         "title": "Routine management CRUD",
         "description": "Create/view/edit/delete routines, exercise lists, drag-and-drop reorder.",
         "testStrategy": "CRUD routines, add exercises, drag-and-drop persists, cascade delete",
@@ -236,7 +236,7 @@
         "updatedAt": "2026-04-17T20:42:18.481Z"
       },
       {
-        "id": "5",
+        "id": 5,
         "title": "Workout session with React Query mutations",
         "description": "Swiper-based workout mode, save per slide, pre-fill from last log, quick-adjust buttons.",
         "testStrategy": "Swipe navigates, pre-fill works, saves correctly via mutation, complete flushes + navigates",
@@ -324,7 +324,7 @@
         "updatedAt": "2026-04-17T20:58:57.209Z"
       },
       {
-        "id": "6",
+        "id": 6,
         "title": "Exercise media upload",
         "description": "Upload JPG/PNG/GIF to Supabase Storage, preview, drag-and-drop, delete.",
         "testStrategy": "Upload works, preview displays, validation blocks invalid, delete clears file + DB",
@@ -381,7 +381,7 @@
         "updatedAt": "2026-04-18T07:07:28.905Z"
       },
       {
-        "id": "7",
+        "id": 7,
         "title": "Integrate offline sync into workout session (React Query)",
         "description": "Wire Task 5 mutations to Task 11 Persister. Visual feedback for queued mutations.",
         "testStrategy": "Online -> Supabase, offline -> IndexedDB cache, reconnect auto-syncs, correct indicators",
@@ -416,7 +416,7 @@
         "updatedAt": "2026-04-18T06:58:57.083Z"
       },
       {
-        "id": "8",
+        "id": 8,
         "title": "Import seed workout data",
         "description": "4 routines (German names, English muscle_group enums), import button.",
         "testStrategy": "4 routines correct, English enums, blocked if exist, user_id assigned",
@@ -462,7 +462,7 @@
         "updatedAt": "2026-04-18T11:03:43.146Z"
       },
       {
-        "id": "9",
+        "id": 9,
         "title": "Mobile-first responsive design + bottom nav",
         "description": "Dark theme styles, bottom nav (Routines/Settings), Settings page, haptic feedback.",
         "testStrategy": "Dark theme consistent, tappable buttons, bottom nav works, responsive, no horizontal scroll",
@@ -530,7 +530,7 @@
         "updatedAt": "2026-04-18T11:14:42.208Z"
       },
       {
-        "id": "10",
+        "id": 10,
         "title": "PWA service worker + offline indicator",
         "description": "Workbox caching for assets. Data-level sync in Task 11.",
         "testStrategy": "PWA installs, service worker caches assets, offline indicator correct",
@@ -575,7 +575,7 @@
         "updatedAt": "2026-04-18T06:41:08.945Z"
       },
       {
-        "id": "11",
+        "id": 11,
         "title": "TanStack Query offline cache layer",
         "description": "Central offline storage + sync using React Query Persister. Requires Auth (Task 3).",
         "testStrategy": "Persister caches data in IndexedDB, offline mutations queue, reconnect triggers sync",
@@ -621,7 +621,7 @@
         "updatedAt": "2026-04-18T06:51:22.249Z"
       },
       {
-        "id": "12",
+        "id": 12,
         "title": "Deploy to Vercel",
         "description": "Deploy PWA, verify mobile install.",
         "testStrategy": "Deploy succeeds, HTTPS, PWA installs iOS + Android, Lighthouse > 90",
@@ -635,7 +635,7 @@
           "10",
           "11"
         ],
-        "status": "in-progress",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -653,8 +653,9 @@
             "dependencies": [
               1
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-22T19:49:19.799Z"
           },
           {
             "id": 3,
@@ -663,21 +664,60 @@
             "dependencies": [
               2
             ],
-            "status": "pending",
-            "parentId": "undefined"
+            "status": "done",
+            "parentId": "undefined",
+            "updatedAt": "2026-04-22T19:49:23.382Z"
           }
         ],
-        "updatedAt": "2026-04-18T12:02:54.522Z"
+        "updatedAt": "2026-04-22T19:49:23.382Z"
+      },
+      {
+        "id": 13,
+        "title": "Workout History & Statistics Page",
+        "description": "Build a comprehensive workout history page displaying workout logs in a spreadsheet-style table layout. Each routine section shows exercise name, equipment, target sets/reps, starting weight, and multiple log columns with recorded weights/reps from past sessions sorted by date. Users can track progression over time at a glance with horizontal scrolling for extensive log history. Accessible via bottom navigation with German labels.",
+        "details": "## Implementation Overview\n\nCreate a new page at `src/pages/WorkoutHistoryPage.tsx` that displays workout history in a spreadsheet-like table format with German labels.\n\n## Database Schema Understanding\n\nBased on the existing schema:\n- `routines` table: Contains training plans (e.g., \"Training 1: Brust & Bizeps\")\n- `exercises` table: Linked to routines, contains exercise details (name, muscle_group, machine_info, target_sets_reps)\n- `workout_logs` table: Contains individual workout entries (exercise_id, weight_kg, reps, logged_at, comment)\n\n## Data Fetching Strategy\n\n1. **Create new React Query hook** `src/hooks/useWorkoutHistory.ts`:\n   - Fetch all user's routines with exercises (similar to existing `useRoutines` pattern)\n   - For each exercise, fetch workout_logs ordered by `logged_at DESC`\n   - Group logs by exercise_id and routine_id\n   - Transform data into table-friendly structure\n\n2. **Query structure example**:\n```typescript\nexport interface WorkoutHistoryEntry {\n  routine: Routine\n  exercises: Array<{\n    exercise: Exercise\n    logs: WorkoutLog[]  // sorted by logged_at DESC\n    startingWeight: number | null\n  }>\n}\n\nexport function useWorkoutHistory() {\n  const { user } = useAuth()\n  return useQuery({\n    queryKey: ['workoutHistory', user?.id],\n    queryFn: async () => {\n      // Fetch routines + exercises\n      // Fetch all workout_logs for user\n      // Group and transform into WorkoutHistoryEntry[]\n    }\n  })\n}\n```\n\n## UI Components\n\n### Page Structure (src/pages/WorkoutHistoryPage.tsx)\n\n```typescript\nexport default function WorkoutHistoryPage() {\n  const { data: history, isLoading } = useWorkoutHistory()\n  \n  return (\n    <div className=\"mx-auto max-w-7xl px-4 py-6\">\n      <h1 className=\"text-2xl font-bold mb-6\">Trainingshistorie</h1>\n      {history?.map(routine => (\n        <RoutineHistoryTable key={routine.id} data={routine} />\n      ))}\n    </div>\n  )\n}\n```\n\n### Routine History Table Component\n\nCreate `src/components/RoutineHistoryTable.tsx`:\n\n**German Column Headers:**\n- Nr. (number/index)\n- Übung (exercise name)\n- Gerät/Info (equipment/info from machine_info)\n- Sätze/Wdh. (sets/reps from target_sets_reps)\n- Startgewicht (starting weight - first logged weight or user-configured)\n- Log columns: Display dates as column headers (e.g., \"15.04.26\", \"12.04.26\")\n\n**Table Layout:**\n```tsx\n<div className=\"mb-8\">\n  <h2 className=\"text-xl font-semibold mb-4\">{routine.name}</h2>\n  <div className=\"overflow-x-auto\">\n    <table className=\"min-w-full border-collapse border border-gray-300 dark:border-gray-700\">\n      <thead>\n        <tr className=\"bg-gray-100 dark:bg-gray-800\">\n          <th className=\"border px-2 py-2 text-left text-sm\">Nr.</th>\n          <th className=\"border px-3 py-2 text-left text-sm\">Übung</th>\n          <th className=\"border px-3 py-2 text-left text-sm\">Gerät/Info</th>\n          <th className=\"border px-3 py-2 text-left text-sm\">Sätze/Wdh.</th>\n          <th className=\"border px-3 py-2 text-left text-sm\">Startgewicht</th>\n          {logDates.map(date => (\n            <th key={date} className=\"border px-3 py-2 text-center text-sm whitespace-nowrap\">\n              {formatDate(date)}\n            </th>\n          ))}\n        </tr>\n      </thead>\n      <tbody>\n        {exercises.map((ex, idx) => (\n          <tr key={ex.id} className=\"hover:bg-gray-50 dark:hover:bg-gray-800\">\n            <td className=\"border px-2 py-2 text-sm\">{idx + 1}</td>\n            <td className=\"border px-3 py-2 text-sm font-medium\">{ex.name}</td>\n            <td className=\"border px-3 py-2 text-sm text-gray-600\">{ex.machine_info || '-'}</td>\n            <td className=\"border px-3 py-2 text-sm\">{ex.target_sets_reps || '-'}</td>\n            <td className=\"border px-3 py-2 text-sm\">{ex.startingWeight ? `${ex.startingWeight} kg` : '-'}</td>\n            {logDates.map(date => {\n              const log = findLogForDate(ex.logs, date)\n              return (\n                <td key={date} className=\"border px-3 py-2 text-center text-sm\">\n                  {log ? `${log.weight_kg}kg × ${log.reps}` : '-'}\n                </td>\n              )\n            })}\n          </tr>\n        ))}\n      </tbody>\n    </table>\n  </div>\n</div>\n```\n\n**Mobile Optimization:**\n- Use `overflow-x-auto` wrapper for horizontal scrolling\n- Sticky first columns (Nr., Übung) using `sticky left-0 bg-white dark:bg-gray-900` for better mobile UX\n- Compact padding and text sizing for mobile screens\n\n## Date Handling\n\n- Format dates using German locale: `new Date(logged_at).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: '2-digit' })`\n- Example: \"2026-04-22\" → \"22.04.26\"\n- Extract unique log dates across all exercises in a routine\n- Sort dates DESC (most recent first on the right, or left depending on UX preference)\n\n## Progression Indicators (Optional Enhancement)\n\nAdd visual indicators for weight progression:\n- Green highlight if weight increased from previous session\n- Red highlight if decreased\n- Neutral if same\n\n## Navigation Integration\n\nUpdate `src/components/BottomNav.tsx`:\n\n```typescript\nconst tabs = [\n  { path: '/', label: 'Routines', icon: routinesIcon },\n  { path: '/history', label: 'Historie', icon: historyIcon },  // NEW\n  { path: '/settings', label: 'Settings', icon: settingsIcon }\n]\n```\n\nAdd history icon (chart or calendar icon from Heroicons).\n\n## Router Integration\n\nUpdate `src/App.tsx`:\n\n```typescript\n<Route path=\"/history\" element={<WorkoutHistoryPage />} />\n```\n\n## Styling Considerations\n\n- Use Tailwind's responsive utilities: `text-xs sm:text-sm md:text-base`\n- Dark mode support throughout (dark:bg-gray-800, dark:text-gray-200)\n- Hover states on table rows for better interactivity\n- Consider max-height with vertical scroll if many exercises\n- Horizontal scroll indicator or shadow to show more columns available\n\n## Performance Optimization\n\n- Limit initial log columns to last 10 sessions, add \"Load More\" button if needed\n- Use React Query's staleTime and cacheTime for workout_logs\n- Consider virtualization (react-window) if user has 100+ exercises, but likely unnecessary for typical use\n\n## Empty State Handling\n\nIf no workout logs exist:\n```tsx\n<div className=\"text-center py-12 text-gray-500\">\n  <p>Noch keine Trainingseinträge vorhanden.</p>\n  <p className=\"text-sm mt-2\">Starte dein erstes Workout, um deine Historie aufzubauen!</p>\n</div>\n```\n\n## File Structure\n\n- `src/pages/WorkoutHistoryPage.tsx` - Main page component\n- `src/components/RoutineHistoryTable.tsx` - Table component for each routine\n- `src/hooks/useWorkoutHistory.ts` - Data fetching hook\n- Update `src/components/BottomNav.tsx` - Add navigation tab\n- Update `src/App.tsx` - Add route\n\n## Integration with Existing Patterns\n\n- Follow existing TanStack Query patterns from `useWorkoutLogs.ts` and `useRoutines.ts`\n- Reuse `Exercise`, `Routine`, `WorkoutLog` types from existing files\n- Match styling patterns from `WorkoutSessionPage.tsx` and `RoutinesPage.tsx`\n- Leverage existing `triggerHaptic` for button interactions\n- Use existing `AuthContext` for user authentication",
+        "testStrategy": "## Test Strategy\n\n### 1. Data Fetching Tests\n- **Verify React Query hook fetches correct data**: Open DevTools Network tab, confirm queries to routines, exercises, and workout_logs tables\n- **Check data transformation**: Console.log the transformed data structure, verify logs are grouped by exercise and sorted by date DESC\n- **Test with no workout logs**: Delete all workout_logs in Supabase, verify empty state renders correctly\n- **Test with multiple routines**: Ensure each routine renders its own table section\n\n### 2. Table Rendering Tests\n- **Verify German labels**: Check all column headers display correctly: \"Nr.\", \"Übung\", \"Gerät/Info\", \"Sätze/Wdh.\", \"Startgewicht\"\n- **Check date formatting**: Log dates should display in German format (DD.MM.YY)\n- **Verify log data display**: Each cell should show \"XXkg × YY\" format (e.g., \"50kg × 12\")\n- **Test with missing data**: Exercises without logs should show \"-\" in log columns\n- **Verify starting weight calculation**: Check first logged weight displays correctly or \"-\" if none\n\n### 3. Responsive & Layout Tests\n- **Mobile horizontal scroll**: On mobile viewport (375px width), verify table scrolls horizontally smoothly\n- **Sticky columns (if implemented)**: First columns should remain visible while scrolling horizontally\n- **Dark mode toggle**: Switch between light/dark mode in settings, verify table colors adapt correctly\n- **Multiple routines**: Add 3+ routines with exercises, verify each table section renders distinctly\n\n### 4. Navigation Tests\n- **Bottom nav integration**: Tap \"Historie\" tab in bottom navigation, verify page loads\n- **Active state**: Verify \"Historie\" tab shows active styling when on /history route\n- **Back navigation**: Navigate to history page, then to another page, confirm navigation works without errors\n\n### 5. Performance Tests\n- **Large dataset handling**: Create 10+ exercises with 20+ log entries each, verify page loads within 2 seconds\n- **Horizontal scroll performance**: Scroll through many log columns, ensure smooth 60fps scrolling\n- **React Query caching**: Navigate away and back to history page, verify data loads from cache instantly\n\n### 6. Edge Cases\n- **New user with no data**: Fresh account should show empty state with helpful message\n- **Single routine, no exercises**: Routine exists but no exercises added, verify graceful handling\n- **Exercise with one log entry**: Verify single log displays correctly\n- **Very long exercise names**: Test with 50+ character exercise name, ensure table cell handles overflow (truncate or wrap)\n- **Future-dated logs**: Create log with future `logged_at`, verify sorting still works correctly\n\n### 7. Integration Tests\n- **After completing workout**: Complete a workout session in WorkoutSessionPage, navigate to history, verify new logs appear immediately (React Query invalidation)\n- **Real-time sync**: Complete workout on one device/tab, refresh history page on another, verify updates appear\n- **Offline mode**: Go offline (dev tools Network throttling), verify cached history data still displays\n\n### 8. Accessibility Tests\n- **Keyboard navigation**: Tab through table, verify focus states visible\n- **Screen reader**: Use screen reader to verify table structure is semantic (<table>, <th>, <td> tags)\n- **Color contrast**: Use browser DevTools to verify text meets WCAG AA contrast ratios in both light/dark mode\n\n### 9. Visual Regression Tests\n- **Compare with existing pages**: History page should match design consistency with RoutinesPage and WorkoutSessionPage (spacing, colors, typography)\n- **Haptic feedback**: Verify bottom nav button triggers haptic feedback on tap (mobile devices)\n\n### 10. Acceptance Criteria\n- ✅ Page accessible via bottom nav with \"Historie\" label\n- ✅ German labels for all table columns\n- ✅ Each routine displays as separate table section with routine name header\n- ✅ Logs sorted by date DESC (most recent visible)\n- ✅ Horizontal scroll works smoothly on mobile\n- ✅ Empty state shows helpful message when no logs exist\n- ✅ Dark mode fully supported\n- ✅ No console errors or warnings\n- ✅ Page loads within 2 seconds with typical dataset (5 routines, 30 exercises, 200 logs)",
+        "status": "pending",
+        "dependencies": [
+          2,
+          3,
+          5,
+          9
+        ],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 14,
+        "title": "Editable Workout Plans",
+        "description": "Enable comprehensive inline editing of workout plans with mobile-first UX. Users can rename plans, add/remove/reorder exercises, edit exercise details (name, equipment, sets/reps, starting weight), and save changes with Supabase sync and offline support.",
+        "details": "## Implementation Overview\n\nRefactor `RoutineEditorPage.tsx` from add-only mode to full editing mode. The page already handles routine name editing (lines 54-62, 161-181), exercise deletion (lines 118-124), and drag-and-drop reordering (lines 126-137, 183-258) via `@hello-pangea/dnd`. Extend this pattern to enable inline editing of individual exercise fields.\n\n## Key Architecture Patterns to Follow\n\n**Existing patterns from codebase:**\n- **State management**: Currently uses `useState` + direct Supabase calls (no React Query mutations yet in RoutineEditorPage, unlike WorkoutSessionPage which uses React Query heavily per Task 5)\n- **Offline-first**: React Query configured with `networkMode: 'offlineFirst'` in `src/lib/queryClient.ts:28-32`\n- **Drag-and-drop**: Already implemented with `@hello-pangea/dnd` for exercise reordering (lines 183-258)\n- **Inline editing pattern**: Routine name already uses inline edit mode with input field + Save/Cancel buttons (lines 161-181)\n- **Data persistence**: Direct Supabase updates via `supabase.from('exercises').update()` pattern\n\n## Implementation Steps\n\n### 1. Add Exercise Editing State\n\nExtend state management in `RoutineEditorPage.tsx`:\n\n```tsx\nconst [editingExercise, setEditingExercise] = useState<string | null>(null)\nconst [exerciseEdits, setExerciseEdits] = useState<{\n  [id: string]: {\n    name?: string\n    machine_info?: string\n    target_sets_reps?: string\n    starting_weight_kg?: number\n  }\n}>({})\n```\n\n### 2. Create Inline Exercise Editor Component\n\nCreate `src/components/ExerciseItemEditor.tsx` to replace the read-only exercise display (current lines 190-250):\n\n```tsx\ninterface ExerciseItemEditorProps {\n  exercise: Exercise\n  isEditing: boolean\n  isDragging: boolean\n  dragHandleProps: any\n  onEdit: () => void\n  onSave: (updates: ExerciseUpdates) => Promise<void>\n  onCancel: () => void\n  onDelete: () => void\n  onDeleteMedia?: () => void\n}\n\nexport default function ExerciseItemEditor({\n  exercise,\n  isEditing,\n  isDragging,\n  dragHandleProps,\n  onEdit,\n  onSave,\n  onCancel,\n  onDelete,\n  onDeleteMedia\n}: ExerciseItemEditorProps) {\n  const [localName, setLocalName] = useState(exercise.name)\n  const [localMachineInfo, setLocalMachineInfo] = useState(exercise.machine_info ?? '')\n  const [localTargetSetsReps, setLocalTargetSetsReps] = useState(exercise.target_sets_reps ?? '')\n  \n  // Reset local state when switching to edit mode\n  useEffect(() => {\n    if (isEditing) {\n      setLocalName(exercise.name)\n      setLocalMachineInfo(exercise.machine_info ?? '')\n      setLocalTargetSetsReps(exercise.target_sets_reps ?? '')\n    }\n  }, [isEditing, exercise])\n\n  const handleSave = async () => {\n    await onSave({\n      name: localName.trim() || exercise.name,\n      machine_info: localMachineInfo.trim() || null,\n      target_sets_reps: localTargetSetsReps.trim() || null,\n    })\n  }\n\n  if (isEditing) {\n    return (\n      <div className={`rounded-lg border p-3 bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700`}>\n        <div className=\"space-y-2\">\n          <input\n            type=\"text\"\n            value={localName}\n            onChange={(e) => setLocalName(e.target.value)}\n            placeholder=\"Exercise name\"\n            className=\"w-full rounded border px-2 py-1 text-sm dark:bg-gray-700 dark:border-gray-600\"\n            autoFocus\n          />\n          <input\n            type=\"text\"\n            value={localMachineInfo}\n            onChange={(e) => setLocalMachineInfo(e.target.value)}\n            placeholder=\"Equipment/Machine info\"\n            className=\"w-full rounded border px-2 py-1 text-sm dark:bg-gray-700 dark:border-gray-600\"\n          />\n          <input\n            type=\"text\"\n            value={localTargetSetsReps}\n            onChange={(e) => setLocalTargetSetsReps(e.target.value)}\n            placeholder=\"Target sets/reps (e.g., 3x12)\"\n            className=\"w-full rounded border px-2 py-1 text-sm dark:bg-gray-700 dark:border-gray-600\"\n          />\n          <div className=\"flex gap-2 pt-1\">\n            <button onClick={handleSave} className=\"flex-1 rounded bg-green-600 px-3 py-1.5 text-sm text-white hover:bg-green-700\">\n              Save\n            </button>\n            <button onClick={onCancel} className=\"flex-1 rounded bg-gray-400 px-3 py-1.5 text-sm text-white hover:bg-gray-500\">\n              Cancel\n            </button>\n          </div>\n        </div>\n      </div>\n    )\n  }\n\n  // Read-only view (current implementation from RoutineEditorPage lines 193-250)\n  return (\n    <div className={`flex items-center gap-3 rounded-lg border bg-white p-3 dark:bg-gray-800 ${\n      isDragging ? 'border-blue-400 shadow-lg' : 'border-gray-200 dark:border-gray-700'\n    }`}>\n      <div {...dragHandleProps} className=\"cursor-grab text-gray-400 hover:text-gray-600\">\n        {/* Drag handle icon */}\n      </div>\n      {exercise.media_url && (\n        <div className=\"group relative\">\n          <img src={exercise.media_url} alt={exercise.name} className=\"h-10 w-10 rounded object-cover\" />\n          {onDeleteMedia && (\n            <button onClick={onDeleteMedia} className=\"absolute -right-1 -top-1 hidden group-hover:block rounded-full bg-red-500 p-0.5 text-white\">\n              {/* Delete icon */}\n            </button>\n          )}\n        </div>\n      )}\n      <div className=\"min-w-0 flex-1\" onClick={onEdit}>\n        <div className=\"flex items-center gap-2\">\n          <span className=\"font-medium\">{exercise.name}</span>\n          <span className=\"rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600 dark:bg-gray-700 dark:text-gray-400\">\n            {exercise.muscle_group.replace('_', ' ')}\n          </span>\n        </div>\n        <div className=\"mt-0.5 flex gap-3 text-xs text-gray-500 dark:text-gray-400\">\n          {exercise.target_sets_reps && <span>{exercise.target_sets_reps}</span>}\n          {exercise.machine_info && <span>{exercise.machine_info}</span>}\n        </div>\n      </div>\n      <button onClick={onDelete} className=\"rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-500\">\n        {/* Delete icon */}\n      </button>\n    </div>\n  )\n}\n```\n\n### 3. Update RoutineEditorPage to Use Editor Component\n\nReplace the exercise list rendering (lines 190-252) with:\n\n```tsx\n{exercises.map((ex, index) => (\n  <Draggable key={ex.id} draggableId={ex.id} index={index}>\n    {(prov, snapshot) => (\n      <div ref={prov.innerRef} {...prov.draggableProps}>\n        <ExerciseItemEditor\n          exercise={ex}\n          isEditing={editingExercise === ex.id}\n          isDragging={snapshot.isDragging}\n          dragHandleProps={prov.dragHandleProps}\n          onEdit={() => setEditingExercise(ex.id)}\n          onSave={async (updates) => {\n            await supabase\n              .from('exercises')\n              .update(updates)\n              .eq('id', ex.id)\n            setEditingExercise(null)\n            await fetchRoutine()\n          }}\n          onCancel={() => setEditingExercise(null)}\n          onDelete={() => deleteExercise(ex)}\n          onDeleteMedia={ex.media_url ? () => deleteMedia(ex) : undefined}\n        />\n      </div>\n    )}\n  </Draggable>\n))}\n```\n\n### 4. Add Starting Weight Field to Exercise Schema\n\nCurrently, the `exercises` table doesn't have a `starting_weight_kg` field (per `src/types/database.ts:40-74`). Add this field via Supabase migration:\n\n```sql\nALTER TABLE exercises \nADD COLUMN starting_weight_kg NUMERIC(5,2) DEFAULT NULL;\n```\n\nUpdate TypeScript types in `src/types/database.ts`:\n\n```typescript\nexport interface Exercise {\n  // ... existing fields\n  starting_weight_kg: number | null\n}\n```\n\n### 5. Integrate Starting Weight into Editor\n\nAdd to `ExerciseItemEditor`:\n\n```tsx\nconst [localStartingWeight, setLocalStartingWeight] = useState(\n  exercise.starting_weight_kg?.toString() ?? ''\n)\n\n// In edit mode UI:\n<input\n  type=\"number\"\n  step=\"0.5\"\n  value={localStartingWeight}\n  onChange={(e) => setLocalStartingWeight(e.target.value)}\n  placeholder=\"Starting weight (kg)\"\n  className=\"w-full rounded border px-2 py-1 text-sm dark:bg-gray-700 dark:border-gray-600\"\n/>\n\n// In handleSave:\nstarting_weight_kg: localStartingWeight ? parseFloat(localStartingWeight) : null\n```\n\n### 6. Mobile UX Enhancements\n\n- **Tap-to-edit**: Entire exercise card becomes tappable to enter edit mode (already implemented via `onClick={onEdit}` in read-only view)\n- **Haptic feedback**: Use existing `src/lib/haptics.ts` for edit mode entry/exit:\n\n```tsx\nimport { triggerHaptic } from '../lib/haptics'\n\nconst handleEdit = () => {\n  triggerHaptic('light')\n  setEditingExercise(ex.id)\n}\n```\n\n- **Visual feedback**: Blue border/background in edit mode to distinguish from read-only state\n- **Large touch targets**: Buttons sized for 44px minimum (current buttons are `py-1.5` ≈ 32px, increase to `py-2.5`)\n\n### 7. Offline Sync Integration\n\nThe existing offline setup (Task 11) uses React Query Persister with IndexedDB (`src/lib/queryClient.ts`). Current implementation in RoutineEditorPage uses direct Supabase calls without React Query mutations.\n\n**Options:**\n\n**Option A (Minimal change)**: Keep direct Supabase calls, rely on React Query's offline-first mode for queries only. Mutations will fail offline but queue via service worker.\n\n**Option B (Recommended)**: Migrate to React Query mutations pattern from `WorkoutSessionPage` (Task 5):\n\n```tsx\nimport { useMutation, useQueryClient } from '@tanstack/react-query'\n\nconst queryClient = useQueryClient()\n\nconst updateExerciseMutation = useMutation({\n  mutationFn: async ({ id, updates }: { id: string; updates: ExerciseUpdates }) => {\n    const { error } = await supabase.from('exercises').update(updates).eq('id', id)\n    if (error) throw error\n  },\n  onSuccess: () => {\n    queryClient.invalidateQueries({ queryKey: ['routine', id] })\n  },\n})\n\n// In save handler:\nawait updateExerciseMutation.mutateAsync({ id: ex.id, updates })\n```\n\nThis ensures mutations queue properly when offline and sync when back online (per Task 11's offline cache layer).\n\n### 8. Data Consistency\n\n- **Optimistic updates**: Update local state immediately, revert on error\n- **Conflict resolution**: Last-write-wins (Supabase default behavior via `updated_at` timestamp)\n- **Validation**: Ensure exercise name is required (non-empty), other fields optional\n\n## File Changes Summary\n\n1. **New file**: `src/components/ExerciseItemEditor.tsx` (~150 lines)\n2. **Modify**: `src/pages/RoutineEditorPage.tsx` (refactor exercise rendering, add edit state)\n3. **Modify**: `src/types/database.ts` (add `starting_weight_kg` field)\n4. **Modify**: `src/hooks/useRoutines.ts` (update Exercise interface, add starting_weight to updateExercise)\n5. **Database migration**: Add `starting_weight_kg` column to `exercises` table\n\n## Dependencies\n\n- **@hello-pangea/dnd**: Already installed (package.json line 14), used for drag-and-drop\n- **React Query**: Already configured with offline support (Task 11)\n- **Supabase**: Existing setup\n- **Haptics**: Already implemented (Task 9)",
+        "testStrategy": "## Test Strategy\n\n### 1. Routine Title Editing (Already Implemented)\n- **Test**: Tap routine title, edit name, press Save\n- **Expected**: Title updates in UI and Supabase `routines` table, `updated_at` timestamp changes\n- **Test**: Press Cancel without saving\n- **Expected**: Original name restored, no database update\n- **Verify**: Check DevTools Network tab for `PATCH` request to Supabase\n\n### 2. Exercise Inline Editing\n- **Test**: Tap any exercise card to enter edit mode\n- **Expected**: Card background changes to blue, input fields appear, haptic feedback triggers (light vibration on mobile)\n- **Test**: Edit exercise name, machine info, sets/reps, and starting weight\n- **Expected**: All fields update in real-time in input boxes\n- **Test**: Press Save\n- **Expected**: Exercise card returns to read-only view, updated data persists to Supabase `exercises` table\n- **Verify**: Open Supabase Table Editor, confirm `name`, `machine_info`, `target_sets_reps`, `starting_weight_kg` updated\n- **Test**: Press Cancel mid-edit\n- **Expected**: All changes discarded, original values restored\n\n### 3. Starting Weight Field\n- **Test**: Set starting weight to `20.5` (decimal value)\n- **Expected**: Value saves as `20.5` in database (numeric type, 2 decimal places)\n- **Test**: Leave starting weight empty\n- **Expected**: Saves as `null` in database (optional field)\n- **Test**: Enter invalid value like `abc`\n- **Expected**: Browser validation prevents submission (type=\"number\" constraint)\n\n### 4. Exercise Deletion\n- **Test**: Press delete button (trash icon) on exercise\n- **Expected**: Confirmation dialog appears (\"Remove this exercise?\")\n- **Test**: Confirm deletion\n- **Expected**: Exercise removed from UI and Supabase, media file deleted from Storage if present (current lines 118-124)\n- **Verify**: Check Supabase Storage bucket, confirm file removed\n\n### 5. Drag-and-Drop Reordering (Already Implemented)\n- **Test**: Drag exercise card to new position\n- **Expected**: Visual feedback during drag (blue border), card moves to new position\n- **Test**: Release drag\n- **Expected**: `sort_order` field updates in database for all affected exercises\n- **Verify**: Refresh page, confirm order persists\n\n### 6. Media Upload/Deletion (Already Implemented)\n- **Test**: Upload image via ExerciseForm (current Task 6 implementation)\n- **Expected**: Image displays in exercise card thumbnail\n- **Test**: Hover over image, press delete button (X icon)\n- **Expected**: Confirmation dialog, image removed from card and Storage\n- **Verify**: Check Supabase Storage, confirm deletion\n\n### 7. Add New Exercise (Already Implemented)\n- **Test**: Use ExerciseForm at bottom of page to add exercise\n- **Expected**: New exercise appears at bottom of list with `sort_order` = current count\n- **Test**: Add exercise with media file\n- **Expected**: Image uploads successfully, displays in card\n- **Verify**: Check `exercises` table for new row, `media_url` populated\n\n### 8. Offline Sync\n- **Test**: Open DevTools, set Network to \"Offline\"\n- **Test**: Edit exercise name and save\n- **Expected**: UI updates optimistically, mutation queues in IndexedDB (React Query Persister)\n- **Test**: Restore network connectivity\n- **Expected**: Queued mutation syncs to Supabase automatically, DevTools shows delayed `PATCH` request\n- **Verify**: Check Supabase table, confirm update applied\n- **Test**: Edit exercise while offline, close tab before reconnecting\n- **Expected**: On next app load, pending mutation from IndexedDB syncs when online\n\n### 9. Mobile Touch Targets\n- **Test on mobile device**: Tap exercise card to edit\n- **Expected**: Edit mode activates without accidental drags\n- **Test**: Press Save/Cancel buttons\n- **Expected**: Buttons respond to first tap (no double-tap needed), haptic feedback on tap\n- **Measure**: Use browser dev tools to verify button height ≥ 44px (accessibility guideline)\n\n### 10. Validation\n- **Test**: Clear exercise name field and save\n- **Expected**: Save fails gracefully, error message shows \"Exercise name is required\"\n- **Test**: Enter extremely long name (>200 chars)\n- **Expected**: Input truncates or validation prevents save (Supabase varchar limit)\n\n### 11. Concurrent Edits\n- **Test**: Edit routine name and exercise simultaneously\n- **Expected**: Both edit modes can be active, saves independent\n- **Test**: Edit two different exercises in sequence\n- **Expected**: Saving first exercise closes its edit mode, second exercise remains editable\n\n### 12. React Query Cache Invalidation\n- **Test**: Edit exercise, save, navigate away, return to editor\n- **Expected**: Updated data displays immediately (React Query cache invalidated on mutation success)\n- **Verify**: DevTools React Query tab shows cache state updates\n\n### 13. German Labels (Task 9 Compatibility)\n- **Test**: Navigate to workout history page via bottom nav\n- **Expected**: German label \"Verlauf\" displays (existing Task 9/13 implementation)\n- **Test**: Return to RoutinesPage\n- **Expected**: \"Routinen\" label shows in bottom nav (verify editing doesn't break navigation)\n\n### 14. Integration with Workout Session (Task 5)\n- **Test**: Edit exercise starting weight, save, start workout\n- **Expected**: WorkoutSessionPage pre-fills exercise with new starting weight\n- **Verify**: Check `WorkoutSessionPage.tsx` logic for weight pre-fill from exercise data\n\n### 15. Responsive Design\n- **Test on 375px viewport (iPhone SE)**: Edit exercise\n- **Expected**: All input fields visible, no horizontal scroll, buttons stack vertically if needed\n- **Test on 768px viewport (tablet)**: Edit exercise\n- **Expected**: Layout adapts, input fields expand horizontally\n\n### 16. Performance\n- **Test with 20+ exercises in routine**: Edit exercise at bottom of list\n- **Expected**: No lag entering edit mode, save completes in <1s on 4G connection\n- **Measure**: Use React DevTools Profiler, confirm re-renders limited to edited exercise component",
+        "status": "pending",
+        "dependencies": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          9,
+          11
+        ],
+        "priority": "medium",
+        "subtasks": []
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-04-18T12:02:54.522Z",
+      "lastModified": "2026-04-22T19:49:23.382Z",
       "taskCount": 12,
-      "completedCount": 11,
+      "completedCount": 12,
       "tags": [
         "master"
-      ]
+      ],
+      "created": "2026-04-22T19:57:01.104Z",
+      "description": "Tasks for master context",
+      "updated": "2026-04-22T20:01:15.682Z"
     }
   }
 }
