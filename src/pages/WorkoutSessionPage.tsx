@@ -105,7 +105,7 @@ export default function WorkoutSessionPage() {
         setSaveFlash(exerciseId)
         setTimeout(() => setSaveFlash(null), 800)
       } catch (err) {
-        console.error('Save failed:', err)
+        if (import.meta.env.DEV) console.error('Save failed:', err)
       }
     },
     [entries, saveLog],
@@ -222,6 +222,13 @@ export default function WorkoutSessionPage() {
                 </div>
                 {exercise.target_sets_reps && (
                   <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Target: {exercise.target_sets_reps}</p>
+                )}
+                {exercise.media_url && (
+                  <img
+                    src={exercise.media_url}
+                    alt={exercise.name}
+                    className="mt-3 h-40 w-full rounded-lg object-cover"
+                  />
                 )}
 
                 {/* Weight input */}
