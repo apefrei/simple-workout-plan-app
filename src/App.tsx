@@ -10,6 +10,7 @@ import RoutinesPage from './pages/RoutinesPage'
 import RoutineEditorPage from './pages/RoutineEditorPage'
 import WorkoutSessionPage from './pages/WorkoutSessionPage'
 import SettingsPage from './pages/SettingsPage'
+import WorkoutHistoryPage from './pages/WorkoutHistoryPage'
 import OfflineIndicator from './components/OfflineIndicator'
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
                         <Route path="/" element={<RoutinesPage />} />
                         <Route path="/routines/:id" element={<RoutineEditorPage />} />
                         <Route path="/routines/:id/workout" element={<WorkoutSessionPage />} />
+                        <Route path="/history" element={<WorkoutHistoryPage />} />
                         <Route path="/settings" element={<SettingsPage />} />
                       </Routes>
                     </main>
