@@ -107,17 +107,6 @@ export default function RoutineEditorPage() {
     return true
   }
 
-  const deleteMedia = async (exercise: Exercise) => {
-    if (!exercise.media_url) return
-    if (!confirm('Remove this image?')) return
-    await deleteExerciseMedia(exercise.media_url)
-    await supabase
-      .from('exercises')
-      .update({ media_url: null })
-      .eq('id', exercise.id)
-    await fetchRoutine()
-  }
-
   const deleteExercise = async (exercise: Exercise) => {
     if (exercise.media_url) {
       await deleteExerciseMedia(exercise.media_url)
@@ -201,16 +190,35 @@ export default function RoutineEditorPage() {
                         dragHandleProps={prov.dragHandleProps}
                         onEdit={() => setEditingExercise(ex.id)}
                         onSave={async (updates) => {
-                          await supabase
-                            .from('exercises')
-                            .update(updates)
-                            .eq('id', ex.id)
+                          const { mediaFile, removeMedia, ...dbUpdates } = updates
+                          // Handle media removal
+                          if (removeMedia && ex.media_url) {
+                            await deleteExerciseMedia(ex.media_url)
+                            await supabase
+                              .from('exercises')
+                              .update({ ...dbUpdates, media_url: null })
+                              .eq('id', ex.id)
+                          } else if (mediaFile && user) {
+                            // Handle new media upload (replaces old if exists)
+                            if (ex.media_url) {
+                              await deleteExerciseMedia(ex.media_url)
+                            }
+                            const mediaUrl = await uploadExerciseMedia(user.id, ex.id, mediaFile)
+                            await supabase
+                              .from('exercises')
+                              .update({ ...dbUpdates, media_url: mediaUrl })
+                              .eq('id', ex.id)
+                          } else {
+                            await supabase
+                              .from('exercises')
+                              .update(dbUpdates)
+                              .eq('id', ex.id)
+                          }
                           setEditingExercise(null)
                           await fetchRoutine()
                         }}
                         onCancel={() => setEditingExercise(null)}
                         onDelete={() => deleteExercise(ex)}
-                        onDeleteMedia={ex.media_url ? () => deleteMedia(ex) : undefined}
                       />
                     </div>
                   )}

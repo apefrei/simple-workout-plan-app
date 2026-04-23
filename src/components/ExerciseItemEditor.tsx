@@ -2,12 +2,15 @@ import { useState, useEffect } from 'react'
 import type { DraggableProvidedDragHandleProps } from '@hello-pangea/dnd'
 import type { Exercise } from '../hooks/useRoutines'
 import { triggerHaptic } from '../lib/haptics'
+import MediaUpload from './MediaUpload'
 
 interface ExerciseUpdates {
   name: string
   machine_info: string | null
   target_sets_reps: string | null
   starting_weight_kg: number | null
+  mediaFile?: File
+  removeMedia?: boolean
 }
 
 interface ExerciseItemEditorProps {
@@ -19,7 +22,6 @@ interface ExerciseItemEditorProps {
   onSave: (updates: ExerciseUpdates) => Promise<void>
   onCancel: () => void
   onDelete: () => void
-  onDeleteMedia?: () => void
 }
 
 export default function ExerciseItemEditor({
@@ -31,12 +33,13 @@ export default function ExerciseItemEditor({
   onSave,
   onCancel,
   onDelete,
-  onDeleteMedia,
 }: ExerciseItemEditorProps) {
   const [localName, setLocalName] = useState(exercise.name)
   const [localMachineInfo, setLocalMachineInfo] = useState(exercise.machine_info ?? '')
   const [localTargetSetsReps, setLocalTargetSetsReps] = useState(exercise.target_sets_reps ?? '')
   const [localStartingWeight, setLocalStartingWeight] = useState(exercise.starting_weight_kg?.toString() ?? '')
+  const [localMediaFile, setLocalMediaFile] = useState<File | null>(null)
+  const [removeMedia, setRemoveMedia] = useState(false)
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
@@ -45,6 +48,8 @@ export default function ExerciseItemEditor({
       setLocalMachineInfo(exercise.machine_info ?? '')
       setLocalTargetSetsReps(exercise.target_sets_reps ?? '')
       setLocalStartingWeight(exercise.starting_weight_kg?.toString() ?? '')
+      setLocalMediaFile(null)
+      setRemoveMedia(false)
     }
   }, [isEditing, exercise])
 
@@ -55,6 +60,8 @@ export default function ExerciseItemEditor({
       machine_info: localMachineInfo.trim() || null,
       target_sets_reps: localTargetSetsReps.trim() || null,
       starting_weight_kg: localStartingWeight ? parseFloat(localStartingWeight) : null,
+      mediaFile: localMediaFile ?? undefined,
+      removeMedia,
     })
     setSaving(false)
   }
@@ -95,6 +102,12 @@ export default function ExerciseItemEditor({
             placeholder="Startgewicht (kg)"
             className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
           />
+          <MediaUpload
+            currentUrl={removeMedia ? null : exercise.media_url}
+            onFileSelected={(file) => { setLocalMediaFile(file); setRemoveMedia(false) }}
+            onClear={() => { setLocalMediaFile(null); setRemoveMedia(true) }}
+            disabled={saving}
+          />
           <div className="flex gap-2 pt-1">
             <button
               onClick={handleSave}
@@ -133,23 +146,12 @@ export default function ExerciseItemEditor({
         </svg>
       </div>
       {exercise.media_url && (
-        <div className="group relative flex-shrink-0">
+        <div className="flex-shrink-0">
           <img
             src={exercise.media_url}
             alt={exercise.name}
             className="h-10 w-10 rounded object-cover"
           />
-          {onDeleteMedia && (
-            <button
-              onClick={(e) => { e.stopPropagation(); onDeleteMedia() }}
-              className="absolute -right-1 -top-1 hidden rounded-full bg-red-500 p-0.5 text-white shadow hover:bg-red-600 group-hover:block"
-              title="Remove image"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-              </svg>
-            </button>
-          )}
         </div>
       )}
       <div
