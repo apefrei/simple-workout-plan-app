@@ -6,6 +6,7 @@ interface ExerciseUpdates {
   name: string
   machine_info: string | null
   target_sets_reps: string | null
+  starting_weight_kg: number | null
 }
 
 interface ExerciseItemEditorProps {
@@ -34,6 +35,7 @@ export default function ExerciseItemEditor({
   const [localName, setLocalName] = useState(exercise.name)
   const [localMachineInfo, setLocalMachineInfo] = useState(exercise.machine_info ?? '')
   const [localTargetSetsReps, setLocalTargetSetsReps] = useState(exercise.target_sets_reps ?? '')
+  const [localStartingWeight, setLocalStartingWeight] = useState(exercise.starting_weight_kg?.toString() ?? '')
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
@@ -41,6 +43,7 @@ export default function ExerciseItemEditor({
       setLocalName(exercise.name)
       setLocalMachineInfo(exercise.machine_info ?? '')
       setLocalTargetSetsReps(exercise.target_sets_reps ?? '')
+      setLocalStartingWeight(exercise.starting_weight_kg?.toString() ?? '')
     }
   }, [isEditing, exercise])
 
@@ -50,6 +53,7 @@ export default function ExerciseItemEditor({
       name: localName.trim() || exercise.name,
       machine_info: localMachineInfo.trim() || null,
       target_sets_reps: localTargetSetsReps.trim() || null,
+      starting_weight_kg: localStartingWeight ? parseFloat(localStartingWeight) : null,
     })
     setSaving(false)
   }
@@ -78,6 +82,16 @@ export default function ExerciseItemEditor({
             onChange={(e) => setLocalTargetSetsReps(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSave()}
             placeholder="Sätze/Wdh. (z.B. 3×12)"
+            className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
+          />
+          <input
+            type="number"
+            step="0.5"
+            min="0"
+            value={localStartingWeight}
+            onChange={(e) => setLocalStartingWeight(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSave()}
+            placeholder="Startgewicht (kg)"
             className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
           />
           <div className="flex gap-2 pt-1">
@@ -151,6 +165,7 @@ export default function ExerciseItemEditor({
         <div className="mt-0.5 flex gap-3 text-xs text-gray-500 dark:text-gray-400">
           {exercise.target_sets_reps && <span>{exercise.target_sets_reps}</span>}
           {exercise.machine_info && <span>{exercise.machine_info}</span>}
+          {exercise.starting_weight_kg != null && <span>{exercise.starting_weight_kg} kg</span>}
         </div>
       </div>
       <button

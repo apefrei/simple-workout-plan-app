@@ -32,6 +32,9 @@ export default function RoutineHistoryTable({ routine, exercises, logDates }: Ro
               <th className="px-2 py-2 text-left font-medium text-gray-600 dark:text-gray-400">
                 Sätze/Wdh.
               </th>
+              <th className="px-2 py-2 text-left font-medium text-gray-600 dark:text-gray-400">
+                Startgewicht
+              </th>
               {logDates.map((date) => (
                 <th
                   key={date}
@@ -59,6 +62,9 @@ export default function RoutineHistoryTable({ routine, exercises, logDates }: Ro
                 </td>
                 <td className="px-2 py-2 text-gray-600 dark:text-gray-400">
                   {ew.exercise.target_sets_reps || '-'}
+                </td>
+                <td className="px-2 py-2 text-gray-600 dark:text-gray-400">
+                  {ew.exercise.starting_weight_kg != null ? `${ew.exercise.starting_weight_kg} kg` : '-'}
                 </td>
                 {logDates.map((date) => {
                   const log = findLogForDate(ew.logs, date)

@@ -46,6 +46,7 @@ export interface Database {
           machine_info: string | null
           target_sets_reps: string | null
           media_url: string | null
+          starting_weight_kg: number | null
           sort_order: number
           created_at: string
         }
@@ -57,6 +58,7 @@ export interface Database {
           machine_info?: string | null
           target_sets_reps?: string | null
           media_url?: string | null
+          starting_weight_kg?: number | null
           sort_order: number
           created_at?: string
         }
@@ -68,6 +70,7 @@ export interface Database {
           machine_info?: string | null
           target_sets_reps?: string | null
           media_url?: string | null
+          starting_weight_kg?: number | null
           sort_order?: number
           created_at?: string
         }
