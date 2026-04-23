@@ -21,6 +21,7 @@ export default function RoutineEditorPage() {
   const [editingName, setEditingName] = useState(false)
   const [nameInput, setNameInput] = useState('')
   const [editingExercise, setEditingExercise] = useState<string | null>(null)
+  const [showAddForm, setShowAddForm] = useState(false)
 
   const fetchRoutine = useCallback(async () => {
     if (!id || !user) return
@@ -97,7 +98,7 @@ export default function RoutineEditorPage() {
           .update({ media_url: mediaUrl })
           .eq('id', inserted.id)
       } catch (err) {
-        console.error('media upload failed:', err)
+        if (import.meta.env.DEV) console.error('media upload failed:', err)
         // Exercise was still created, just without media
       }
     }
@@ -222,7 +223,28 @@ export default function RoutineEditorPage() {
       </DragDropContext>
 
       <div className="mt-6">
-        <ExerciseForm onAdd={addExercise} />
+        {showAddForm ? (
+          <div>
+            <ExerciseForm onAdd={async (exercise) => {
+              const ok = await addExercise(exercise)
+              if (ok) setShowAddForm(false)
+              return ok
+            }} />
+            <button
+              onClick={() => setShowAddForm(false)}
+              className="mt-2 w-full text-center text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setShowAddForm(true)}
+            className="w-full rounded-xl border-2 border-dashed border-gray-300 py-3 text-base font-medium text-gray-500 transition hover:border-blue-400 hover:text-blue-600 dark:border-gray-600 dark:text-gray-400 dark:hover:border-blue-500 dark:hover:text-blue-400"
+          >
+            + Add Exercise
+          </button>
+        )}
       </div>
 
       {exercises.length > 0 && (
