@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import type { DraggableProvidedDragHandleProps } from '@hello-pangea/dnd'
 import type { Exercise } from '../hooks/useRoutines'
 import { triggerHaptic } from '../lib/haptics'
 
@@ -13,7 +14,7 @@ interface ExerciseItemEditorProps {
   exercise: Exercise
   isEditing: boolean
   isDragging: boolean
-  dragHandleProps: Record<string, unknown> | null | undefined
+  dragHandleProps: DraggableProvidedDragHandleProps | null | undefined
   onEdit: () => void
   onSave: (updates: ExerciseUpdates) => Promise<void>
   onCancel: () => void
