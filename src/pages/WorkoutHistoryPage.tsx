@@ -31,17 +31,22 @@ export default function WorkoutHistoryPage() {
         </div>
       ) : (
         <div className="space-y-6">
-          {history?.map((routineHistory) => {
-            if (routineHistory.logDates.length === 0) return null
-            return (
-              <div
-                key={routineHistory.routine.id}
-                className="overflow-hidden rounded-xl bg-white shadow dark:bg-gray-800"
-              >
-                <RoutineHistoryTable {...routineHistory} />
-              </div>
-            )
-          })}
+          {history?.reduce<{ elements: React.ReactNode[]; colorIdx: number }>(
+            (acc, routineHistory) => {
+              if (routineHistory.logDates.length === 0) return acc
+              acc.elements.push(
+                <div
+                  key={routineHistory.routine.id}
+                  className="overflow-hidden rounded-xl bg-white shadow dark:bg-gray-800"
+                >
+                  <RoutineHistoryTable {...routineHistory} colorIndex={acc.colorIdx} />
+                </div>
+              )
+              acc.colorIdx++
+              return acc
+            },
+            { elements: [], colorIdx: 0 },
+          ).elements}
         </div>
       )}
     </div>
