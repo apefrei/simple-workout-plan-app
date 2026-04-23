@@ -54,17 +54,14 @@ export function useSaveLog() {
 
       const { data, error } = await supabase
         .from('workout_logs')
-        .upsert(
-          {
-            user_id: user.id,
-            exercise_id: log.exercise_id,
-            weight_kg: log.weight_kg,
-            reps: log.reps,
-            comment: log.comment ?? null,
-            logged_at: new Date().toISOString(),
-          },
-          { onConflict: 'user_id,exercise_id,logged_at' },
-        )
+        .insert({
+          user_id: user.id,
+          exercise_id: log.exercise_id,
+          weight_kg: log.weight_kg,
+          reps: log.reps,
+          comment: log.comment ?? null,
+          logged_at: new Date().toISOString(),
+        })
         .select()
         .single()
 
@@ -112,6 +109,7 @@ export function useSaveLog() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['latestLogs'] })
+      queryClient.invalidateQueries({ queryKey: ['workoutHistory'] })
     },
   })
 }
