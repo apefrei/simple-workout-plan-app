@@ -16,6 +16,7 @@ export default function AuthPage() {
   const [otpLeft, setOtpLeft] = useState('')
   const [otpRight, setOtpRight] = useState('')
   const [error, setError] = useState('')
+  const [info, setInfo] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const turnstileRef = useRef<TurnstileInstance>(null)
@@ -58,7 +59,8 @@ export default function AuthPage() {
       resetCaptcha()
 
       if (signUpError) {
-        setError(signUpError.message)
+        // Generic message to prevent user enumeration
+        setError('Registrierung fehlgeschlagen. Bitte versuche es erneut.')
         return
       }
 
@@ -89,7 +91,7 @@ export default function AuthPage() {
       })
 
       if (verifyError) {
-        setError(verifyError.message)
+        setError('Ungültiger oder abgelaufener Code. Bitte versuche es erneut.')
         return
       }
       // Session is set automatically via onAuthStateChange
@@ -121,11 +123,9 @@ export default function AuthPage() {
 
       if (signInError) {
         if (signInError.message === 'Email not confirmed') {
-          setError('E-Mail noch nicht bestätigt. Bitte gib den Code aus deiner E-Mail ein.')
           setView('verify')
-          return
         }
-        setError(signInError.message)
+        setError('E-Mail oder Passwort ist falsch.')
         return
       }
     } catch {
@@ -153,13 +153,11 @@ export default function AuthPage() {
 
       resetCaptcha()
 
-      if (resetError) {
-        setError(resetError.message)
-        return
-      }
+      // Always show success to prevent user enumeration
+      if (resetError) { /* ignore */ }
       setError('')
-      alert('Falls ein Konto existiert, wurde eine E-Mail zum Zurücksetzen gesendet.')
       setView('login')
+      setInfo('Falls ein Konto existiert, wurde eine E-Mail zum Zurücksetzen gesendet.')
     } catch {
       setError('Ein Fehler ist aufgetreten.')
     } finally {
@@ -209,6 +207,12 @@ export default function AuthPage() {
           </div>
         )}
 
+        {info && (
+          <div className="mb-4 rounded-lg border border-blue-300 bg-blue-50 px-4 py-3 text-sm text-blue-700 dark:border-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+            {info}
+          </div>
+        )}
+
         {/* --- Register --- */}
         {view === 'register' && (
           <form onSubmit={handleRegister} className="space-y-4">
@@ -225,11 +229,11 @@ export default function AuthPage() {
             />
             <input
               type="password"
-              placeholder="Passwort (mind. 6 Zeichen)"
+              placeholder="Passwort (mind. 8 Zeichen)"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              minLength={6}
+              minLength={8}
               className={inputClass}
             />
             <Turnstile
@@ -245,7 +249,7 @@ export default function AuthPage() {
             </button>
             <p className="text-center text-sm text-gray-500 dark:text-gray-400">
               Bereits ein Konto?{' '}
-              <button type="button" onClick={() => { setView('login'); setError('') }} className={linkClass}>
+              <button type="button" onClick={() => { setView('login'); setError(''); setInfo('') }} className={linkClass}>
                 Anmelden
               </button>
             </p>
@@ -291,7 +295,7 @@ export default function AuthPage() {
             <p className="text-center text-sm text-gray-500 dark:text-gray-400">
               <button
                 type="button"
-                onClick={() => { setView('login'); setError('') }}
+                onClick={() => { setView('login'); setError(''); setInfo('') }}
                 className={linkClass}
               >
                 Zurück zur Anmeldung
@@ -336,14 +340,14 @@ export default function AuthPage() {
             <div className="flex items-center justify-between">
               <button
                 type="button"
-                onClick={() => { setView('forgot'); setError('') }}
+                onClick={() => { setView('forgot'); setError(''); setInfo('') }}
                 className={linkClass}
               >
                 Passwort vergessen?
               </button>
               <button
                 type="button"
-                onClick={() => { setView('register'); setError('') }}
+                onClick={() => { setView('register'); setError(''); setInfo('') }}
                 className={linkClass}
               >
                 Konto erstellen
@@ -380,7 +384,7 @@ export default function AuthPage() {
             <p className="text-center text-sm text-gray-500 dark:text-gray-400">
               <button
                 type="button"
-                onClick={() => { setView('login'); setError('') }}
+                onClick={() => { setView('login'); setError(''); setInfo('') }}
                 className={linkClass}
               >
                 Zurück zur Anmeldung

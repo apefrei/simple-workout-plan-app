@@ -34,6 +34,6 @@ export async function deleteExerciseMedia(mediaUrl: string): Promise<void> {
   const path = mediaUrl.slice(idx + marker.length)
   const { error } = await supabase.storage.from(BUCKET).remove([path])
   if (error) {
-    console.error('delete media:', error)
+    if (import.meta.env.DEV) console.error('delete media:', error)
   }
 }

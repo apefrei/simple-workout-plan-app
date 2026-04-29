@@ -160,7 +160,9 @@ values (
   array['image/jpeg', 'image/png', 'image/gif']
 );
 
--- Public read access
+-- SECURITY NOTE: This bucket is public — anyone with the URL can view uploaded images.
+-- If exercise images become sensitive, switch to a private bucket with signed URLs.
+-- See: https://supabase.com/docs/guides/storage/security/access-control
 create policy "Public read access for exercise media"
   on storage.objects for select
   using (bucket_id = 'exercise-media');

@@ -42,7 +42,7 @@ export function useRoutines() {
       .order('created_at', { ascending: false })
 
     if (rErr) {
-      console.error('fetch routines:', rErr)
+      if (import.meta.env.DEV) console.error('fetch routines:', rErr)
       setLoading(false)
       return
     }
@@ -63,7 +63,7 @@ export function useRoutines() {
       .order('sort_order', { ascending: true })
 
     if (eErr) {
-      console.error('fetch exercises:', eErr)
+      if (import.meta.env.DEV) console.error('fetch exercises:', eErr)
     }
 
     const exercisesByRoutine = new Map<string, Exercise[]>()
@@ -94,7 +94,7 @@ export function useRoutines() {
       .select()
       .single()
     if (error) {
-      console.error('create routine:', error)
+      if (import.meta.env.DEV) console.error('create routine:', error)
       return null
     }
     await fetchRoutines()
@@ -107,7 +107,7 @@ export function useRoutines() {
       .update({ name, updated_at: new Date().toISOString() })
       .eq('id', id)
     if (error) {
-      console.error('update routine:', error)
+      if (import.meta.env.DEV) console.error('update routine:', error)
       return false
     }
     await fetchRoutines()
@@ -117,7 +117,7 @@ export function useRoutines() {
   const deleteRoutine = async (id: string) => {
     const { error } = await supabase.from('routines').delete().eq('id', id)
     if (error) {
-      console.error('delete routine:', error)
+      if (import.meta.env.DEV) console.error('delete routine:', error)
       return false
     }
     await fetchRoutines()
@@ -145,7 +145,7 @@ export function useRoutines() {
       sort_order: sortOrder,
     })
     if (error) {
-      console.error('add exercise:', error)
+      if (import.meta.env.DEV) console.error('add exercise:', error)
       return false
     }
     await fetchRoutines()
@@ -166,7 +166,7 @@ export function useRoutines() {
       .update(updates)
       .eq('id', id)
     if (error) {
-      console.error('update exercise:', error)
+      if (import.meta.env.DEV) console.error('update exercise:', error)
       return false
     }
     await fetchRoutines()
@@ -176,7 +176,7 @@ export function useRoutines() {
   const deleteExercise = async (id: string) => {
     const { error } = await supabase.from('exercises').delete().eq('id', id)
     if (error) {
-      console.error('delete exercise:', error)
+      if (import.meta.env.DEV) console.error('delete exercise:', error)
       return false
     }
     await fetchRoutines()
@@ -190,7 +190,7 @@ export function useRoutines() {
     const results = await Promise.all(updates)
     const failed = results.find((r) => r.error)
     if (failed?.error) {
-      console.error('reorder exercises:', failed.error)
+      if (import.meta.env.DEV) console.error('reorder exercises:', failed.error)
       return false
     }
     await fetchRoutines()
