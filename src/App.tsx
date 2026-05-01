@@ -11,7 +11,9 @@ import RoutineEditorPage from './pages/RoutineEditorPage'
 import WorkoutSessionPage from './pages/WorkoutSessionPage'
 import SettingsPage from './pages/SettingsPage'
 import WorkoutHistoryPage from './pages/WorkoutHistoryPage'
+import AIChatPage from './pages/AIChatPage'
 import OfflineIndicator from './components/OfflineIndicator'
+import { ToastProvider } from './components/Toast'
 
 function App() {
   return (
@@ -21,6 +23,7 @@ function App() {
     >
       <BrowserRouter>
         <AuthProvider>
+          <ToastProvider>
           <OfflineIndicator />
           <Routes>
             <Route path="/auth" element={<AuthPage />} />
@@ -36,6 +39,7 @@ function App() {
                         <Route path="/routines/:id" element={<RoutineEditorPage />} />
                         <Route path="/routines/:id/workout" element={<WorkoutSessionPage />} />
                         <Route path="/history" element={<WorkoutHistoryPage />} />
+                        <Route path="/ai-chat" element={<AIChatPage />} />
                         <Route path="/settings" element={<SettingsPage />} />
                       </Routes>
                     </main>
@@ -45,6 +49,7 @@ function App() {
               }
             />
           </Routes>
+        </ToastProvider>
         </AuthProvider>
       </BrowserRouter>
     </PersistQueryClientProvider>
