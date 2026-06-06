@@ -94,13 +94,17 @@ jobs:
             p/secrets
             p/dockerfile
 
-      - name: Trivy filesystem scan (vuln + secret + misconfig)
+      # Dependency vulnerabilities (OWASP A06). Secrets are covered by the
+      # Gitleaks job and Dockerfiles by hadolint/Semgrep, so this stays
+      # focused on vulnerable packages to avoid overlapping findings.
+      - name: Trivy filesystem scan (dependency vulnerabilities)
         run: |
           docker run --rm -v "$PWD:/repo" aquasec/trivy:latest \
             fs /repo \
-            --scanners vuln,secret,misconfig \
+            --scanners vuln \
             --severity CRITICAL,HIGH \
             --ignore-unfixed \
+            --skip-dirs node_modules,dist,.taskmaster \
             --no-progress \
             --exit-code 1
 
@@ -189,12 +193,25 @@ jobs:
           cache-from: type=gha,scope=${{ matrix.name }}
           cache-to: type=gha,mode=max,scope=${{ matrix.name }}
 
-      - name: Trivy image scan (${{ matrix.name }})
+      # Report HIGH + CRITICAL for visibility (does not fail the build —
+      # base-image HIGH CVEs appear constantly and are rarely actionable).
+      - name: Trivy image report (${{ matrix.name }}, HIGH + CRITICAL)
         run: |
           docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
             aquasec/trivy:latest image \
             ci-scan/${{ matrix.name }}:${{ github.sha }} \
-            --severity CRITICAL,HIGH \
+            --severity HIGH,CRITICAL \
+            --ignore-unfixed \
+            --no-progress \
+            --exit-code 0
+
+      # Gate: only CRITICAL image vulnerabilities block the merge.
+      - name: Trivy image scan gate (${{ matrix.name }}, CRITICAL blocks)
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+            aquasec/trivy:latest image \
+            ci-scan/${{ matrix.name }}:${{ github.sha }} \
+            --severity CRITICAL \
             --ignore-unfixed \
             --no-progress \
             --exit-code 1

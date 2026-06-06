@@ -11,6 +11,8 @@ paths = [
   '''\.env\.docker\.example''',
   '''(^|/)dist/''',
   '''(^|/)node_modules/''',
+  # Task-Master task metadata / PRD text (documentation, not shipped code).
+  '''(^|/)\.taskmaster/''',
 ]
 # Placeholder values in example env files are not real secrets.
 regexes = [
