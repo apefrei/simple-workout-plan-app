@@ -58,7 +58,7 @@ app.use('/api/exercises', apiLimiter, exercisesRoutes)
 app.use('/api/workout-logs', apiLimiter, workoutLogsRoutes)
 app.use('/api/upload', apiLimiter, uploadRoutes)
 
-app.get('/health', async (_req, res) => {
+app.get('/health', apiLimiter, async (_req, res) => {
   try {
     await pool.query('SELECT 1')
     res.json({ status: 'healthy', database: 'connected' })
