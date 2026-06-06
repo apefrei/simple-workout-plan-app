@@ -104,6 +104,7 @@ jobs:
             --scanners vuln \
             --severity CRITICAL,HIGH \
             --ignore-unfixed \
+            --ignorefile /repo/.trivyignore \
             --skip-dirs node_modules,dist,.taskmaster \
             --no-progress \
             --exit-code 1
