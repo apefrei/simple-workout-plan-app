@@ -95,14 +95,14 @@ jobs:
             p/dockerfile
 
       - name: Trivy filesystem scan (vuln + secret + misconfig)
-        uses: aquasecurity/trivy-action@v0.30.0
-        with:
-          scan-type: fs
-          scan-ref: .
-          scanners: vuln,secret,misconfig
-          severity: CRITICAL,HIGH
-          ignore-unfixed: true
-          exit-code: '1'
+        run: |
+          docker run --rm -v "$PWD:/repo" aquasec/trivy:latest \
+            fs /repo \
+            --scanners vuln,secret,misconfig \
+            --severity CRITICAL,HIGH \
+            --ignore-unfixed \
+            --no-progress \
+            --exit-code 1
 
   # ---------------------------------------------------------------------------
   # Workflow lint — actionlint validates the GitHub Actions YAML themselves.
@@ -190,10 +190,11 @@ jobs:
           cache-to: type=gha,mode=max,scope=${{ matrix.name }}
 
       - name: Trivy image scan (${{ matrix.name }})
-        uses: aquasecurity/trivy-action@v0.30.0
-        with:
-          scan-type: image
-          image-ref: ci-scan/${{ matrix.name }}:${{ github.sha }}
-          severity: CRITICAL,HIGH
-          ignore-unfixed: true
-          exit-code: '1'
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+            aquasec/trivy:latest image \
+            ci-scan/${{ matrix.name }}:${{ github.sha }} \
+            --severity CRITICAL,HIGH \
+            --ignore-unfixed \
+            --no-progress \
+            --exit-code 1
