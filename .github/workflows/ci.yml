@@ -1,0 +1,193 @@
+name: CI Checks
+
+# Quality & security gate. Runs on every PR targeting main and on every
+# push to a non-main branch. Branch protection makes these jobs required,
+# so nothing reaches main unless all of them pass.
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches-ignore:
+      - main
+
+# Cancel superseded runs on the same ref to save CI minutes.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # 1) Secret Detection — Gitleaks
+  # ---------------------------------------------------------------------------
+  secret-detection:
+    name: Secret Detection (Gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks
+        run: |
+          docker run --rm -v "$PWD:/repo" \
+            zricethezav/gitleaks:latest \
+            detect --source=/repo --no-banner --redact --verbose \
+            --config=/repo/.gitleaks.toml
+
+  # ---------------------------------------------------------------------------
+  # 2) Syntax Check — TypeScript type-check, ESLint (frontend) + node --check (API)
+  # ---------------------------------------------------------------------------
+  syntax-check:
+    name: Syntax Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install frontend dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: TypeScript type-check (frontend)
+        run: npx tsc -b
+
+      - name: ESLint (frontend)
+        run: npm run lint
+
+      - name: Prettier format check (frontend)
+        run: npx prettier --check "src/**/*.{ts,tsx,css}"
+
+      - name: Install API dependencies
+        working-directory: api
+        run: npm ci --no-audit --no-fund
+
+      - name: Node syntax check (API)
+        run: find api/src -name '*.js' -print0 | xargs -0 -n1 node --check
+
+  # ---------------------------------------------------------------------------
+  # 3) SAST — Semgrep (OWASP) + Trivy filesystem scan
+  # ---------------------------------------------------------------------------
+  sast:
+    name: SAST (Semgrep + Trivy FS)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Semgrep (OWASP Top Ten + JS/TS + React)
+        uses: semgrep/semgrep-action@v1
+        with:
+          config: >-
+            p/owasp-top-ten
+            p/javascript
+            p/typescript
+            p/react
+            p/secrets
+            p/dockerfile
+
+      - name: Trivy filesystem scan (vuln + secret + misconfig)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          scanners: vuln,secret,misconfig
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: '1'
+
+  # ---------------------------------------------------------------------------
+  # Workflow lint — actionlint validates the GitHub Actions YAML themselves.
+  # ---------------------------------------------------------------------------
+  workflow-lint:
+    name: Workflow Lint (actionlint)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: actionlint
+        run: |
+          docker run --rm -v "$PWD:/repo" --workdir /repo \
+            rhysd/actionlint:latest -color
+
+  # ---------------------------------------------------------------------------
+  # Dependency Review — blocks PRs that introduce vulnerable or
+  # license-incompatible dependencies. Only runs on pull_request events.
+  # ---------------------------------------------------------------------------
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: on-failure
+
+  # ---------------------------------------------------------------------------
+  # 4) Dockerfile Lint + Build + Image Scan (frontend + API)
+  # ---------------------------------------------------------------------------
+  docker:
+    name: Dockerfile Lint + Build + Image Scan
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        name: [frontend, api]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve build context
+        id: ctx
+        run: |
+          if [ "${{ matrix.name }}" = "api" ]; then
+            echo "context=./api" >> "$GITHUB_OUTPUT"
+            echo "dockerfile=./api/Dockerfile" >> "$GITHUB_OUTPUT"
+          else
+            echo "context=." >> "$GITHUB_OUTPUT"
+            echo "dockerfile=./Dockerfile" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Hadolint (${{ matrix.name }} Dockerfile)
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ${{ steps.ctx.outputs.dockerfile }}
+          config: .hadolint.yaml
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image (${{ matrix.name }})
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ steps.ctx.outputs.context }}
+          file: ${{ steps.ctx.outputs.dockerfile }}
+          push: false
+          load: true
+          tags: ci-scan/${{ matrix.name }}:${{ github.sha }}
+          cache-from: type=gha,scope=${{ matrix.name }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.name }}
+
+      - name: Trivy image scan (${{ matrix.name }})
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: image
+          image-ref: ci-scan/${{ matrix.name }}:${{ github.sha }}
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          vuln-type: os,library
+          exit-code: '1'
