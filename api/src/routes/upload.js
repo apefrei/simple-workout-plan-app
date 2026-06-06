@@ -23,7 +23,8 @@ if (!fs.existsSync(UPLOADS_DIR)) {
 
 const storage = multer.diskStorage({
   destination: (req, _file, cb) => {
-    const dir = path.join(UPLOADS_DIR, req.userId)
+    // path.basename strips any traversal sequences from the JWT sub claim.
+    const dir = path.join(UPLOADS_DIR, path.basename(req.userId))
     fs.mkdirSync(dir, { recursive: true })
     cb(null, dir)
   },
@@ -50,22 +51,34 @@ const upload = multer({
 router.post('/', upload.single('file'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' })
 
-  const relativePath = `${req.userId}/${req.file.filename}`
+  const safeUserId = path.basename(req.userId)
+  const relativePath = `${safeUserId}/${req.file.filename}`
   const publicUrl = `${process.env.API_PUBLIC_URL || ''}/api/uploads/${relativePath}`
   res.json({ url: publicUrl })
 })
 
-// DELETE /api/upload — deletes a file by its relative path
+// DELETE /api/upload — deletes a file by filename within the caller's upload directory
 router.delete('/', (req, res) => {
   const { filePath } = req.body
-  if (!filePath) return res.status(400).json({ error: 'filePath required' })
+  if (!filePath || typeof filePath !== 'string') {
+    return res.status(400).json({ error: 'filePath required' })
+  }
 
-  // Resolve and verify the path stays within the user's own subdirectory
-  const userDir = path.join(UPLOADS_DIR, req.userId)
-  const fullPath = path.resolve(userDir, filePath.replace(/^[^/]+\//, ''))
-  if (!fullPath.startsWith(userDir + path.sep) && fullPath !== userDir) {
+  // Accept only a bare filename — path.basename strips all directory components,
+  // preventing traversal regardless of what the client sends.
+  const filename = path.basename(filePath)
+  if (!filename || filename === '.' || filename === '..') {
+    return res.status(400).json({ error: 'Invalid filePath' })
+  }
+
+  const userDir = path.join(UPLOADS_DIR, path.basename(req.userId))
+  const fullPath = path.join(userDir, filename)
+
+  // Redundant guard: ensure resolution stayed inside the user's directory.
+  if (!fullPath.startsWith(userDir + path.sep)) {
     return res.status(403).json({ error: 'Forbidden' })
   }
+
   try {
     if (fs.existsSync(fullPath)) {
       fs.unlinkSync(fullPath)
