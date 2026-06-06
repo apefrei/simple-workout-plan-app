@@ -34,7 +34,7 @@ jobs:
       - name: Run Gitleaks
         run: |
           docker run --rm -v "$PWD:/repo" \
-            zricethezav/gitleaks:latest \
+            ghcr.io/gitleaks/gitleaks:latest \
             detect --source=/repo --no-banner --redact --verbose \
             --config=/repo/.gitleaks.toml
 
@@ -95,7 +95,7 @@ jobs:
             p/dockerfile
 
       - name: Trivy filesystem scan (vuln + secret + misconfig)
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.30.0
         with:
           scan-type: fs
           scan-ref: .
@@ -120,8 +120,14 @@ jobs:
             rhysd/actionlint:latest -color
 
   # ---------------------------------------------------------------------------
-  # Dependency Review — blocks PRs that introduce vulnerable or
+  # Dependency Review — flags PRs that introduce vulnerable or
   # license-incompatible dependencies. Only runs on pull_request events.
+  #
+  # NOTE: Requires the repository "Dependency graph" feature to be enabled
+  # (Settings → Code security and analysis). Until then the action errors out,
+  # so this job is non-blocking (continue-on-error) and is NOT a required
+  # status check. Once the dependency graph is enabled, drop continue-on-error
+  # and add "Dependency Review" back to the branch protection required checks.
   # ---------------------------------------------------------------------------
   dependency-review:
     name: Dependency Review
@@ -132,6 +138,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Dependency Review
+        continue-on-error: true
         uses: actions/dependency-review-action@v4
         with:
           fail-on-severity: high
@@ -183,11 +190,10 @@ jobs:
           cache-to: type=gha,mode=max,scope=${{ matrix.name }}
 
       - name: Trivy image scan (${{ matrix.name }})
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.30.0
         with:
           scan-type: image
           image-ref: ci-scan/${{ matrix.name }}:${{ github.sha }}
           severity: CRITICAL,HIGH
           ignore-unfixed: true
-          vuln-type: os,library
           exit-code: '1'
