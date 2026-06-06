@@ -1,15 +1,15 @@
-import type { MuscleGroup } from '../types/database'
+import type { MuscleGroup } from '../types/database';
 
 interface SeedExercise {
-  name: string
-  muscle_group: MuscleGroup
-  machine_info?: string
-  target_sets_reps?: string
+  name: string;
+  muscle_group: MuscleGroup;
+  machine_info?: string;
+  target_sets_reps?: string;
 }
 
 interface SeedRoutine {
-  name: string
-  exercises: SeedExercise[]
+  name: string;
+  exercises: SeedExercise[];
 }
 
 export const seedRoutines: SeedRoutine[] = [
@@ -149,4 +149,4 @@ export const seedRoutines: SeedRoutine[] = [
       },
     ],
   },
-]
+];

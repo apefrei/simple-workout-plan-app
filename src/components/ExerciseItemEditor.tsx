@@ -1,27 +1,27 @@
-import { useState, useEffect } from 'react'
-import type { DraggableProvidedDragHandleProps } from '@hello-pangea/dnd'
-import type { Exercise } from '../hooks/useRoutines'
-import { triggerHaptic } from '../lib/haptics'
-import MediaUpload from './MediaUpload'
+import { useState, useEffect } from 'react';
+import type { DraggableProvidedDragHandleProps } from '@hello-pangea/dnd';
+import type { Exercise } from '../hooks/useRoutines';
+import { triggerHaptic } from '../lib/haptics';
+import MediaUpload from './MediaUpload';
 
 interface ExerciseUpdates {
-  name: string
-  machine_info: string | null
-  target_sets_reps: string | null
-  starting_weight_kg: number | null
-  mediaFile?: File
-  removeMedia?: boolean
+  name: string;
+  machine_info: string | null;
+  target_sets_reps: string | null;
+  starting_weight_kg: number | null;
+  mediaFile?: File;
+  removeMedia?: boolean;
 }
 
 interface ExerciseItemEditorProps {
-  exercise: Exercise
-  isEditing: boolean
-  isDragging: boolean
-  dragHandleProps: DraggableProvidedDragHandleProps | null | undefined
-  onEdit: () => void
-  onSave: (updates: ExerciseUpdates) => Promise<void>
-  onCancel: () => void
-  onDelete: () => void
+  exercise: Exercise;
+  isEditing: boolean;
+  isDragging: boolean;
+  dragHandleProps: DraggableProvidedDragHandleProps | null | undefined;
+  onEdit: () => void;
+  onSave: (updates: ExerciseUpdates) => Promise<void>;
+  onCancel: () => void;
+  onDelete: () => void;
 }
 
 export default function ExerciseItemEditor({
@@ -34,27 +34,31 @@ export default function ExerciseItemEditor({
   onCancel,
   onDelete,
 }: ExerciseItemEditorProps) {
-  const [localName, setLocalName] = useState(exercise.name)
-  const [localMachineInfo, setLocalMachineInfo] = useState(exercise.machine_info ?? '')
-  const [localTargetSetsReps, setLocalTargetSetsReps] = useState(exercise.target_sets_reps ?? '')
-  const [localStartingWeight, setLocalStartingWeight] = useState(exercise.starting_weight_kg?.toString() ?? '')
-  const [localMediaFile, setLocalMediaFile] = useState<File | null>(null)
-  const [removeMedia, setRemoveMedia] = useState(false)
-  const [saving, setSaving] = useState(false)
+  const [localName, setLocalName] = useState(exercise.name);
+  const [localMachineInfo, setLocalMachineInfo] = useState(exercise.machine_info ?? '');
+  const [localTargetSetsReps, setLocalTargetSetsReps] = useState(exercise.target_sets_reps ?? '');
+  const [localStartingWeight, setLocalStartingWeight] = useState(
+    exercise.starting_weight_kg?.toString() ?? ''
+  );
+  const [localMediaFile, setLocalMediaFile] = useState<File | null>(null);
+  const [removeMedia, setRemoveMedia] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (isEditing) {
-      setLocalName(exercise.name)
-      setLocalMachineInfo(exercise.machine_info ?? '')
-      setLocalTargetSetsReps(exercise.target_sets_reps ?? '')
-      setLocalStartingWeight(exercise.starting_weight_kg?.toString() ?? '')
-      setLocalMediaFile(null)
-      setRemoveMedia(false)
+      // Intentional prop→state sync: reset local form fields when (re)entering edit mode.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setLocalName(exercise.name);
+      setLocalMachineInfo(exercise.machine_info ?? '');
+      setLocalTargetSetsReps(exercise.target_sets_reps ?? '');
+      setLocalStartingWeight(exercise.starting_weight_kg?.toString() ?? '');
+      setLocalMediaFile(null);
+      setRemoveMedia(false);
     }
-  }, [isEditing, exercise])
+  }, [isEditing, exercise]);
 
   const handleSave = async () => {
-    setSaving(true)
+    setSaving(true);
     await onSave({
       name: localName.trim() || exercise.name,
       machine_info: localMachineInfo.trim() || null,
@@ -62,9 +66,9 @@ export default function ExerciseItemEditor({
       starting_weight_kg: localStartingWeight ? parseFloat(localStartingWeight) : null,
       mediaFile: localMediaFile ?? undefined,
       removeMedia,
-    })
-    setSaving(false)
-  }
+    });
+    setSaving(false);
+  };
 
   if (isEditing) {
     return (
@@ -104,8 +108,14 @@ export default function ExerciseItemEditor({
           />
           <MediaUpload
             currentUrl={removeMedia ? null : exercise.media_url}
-            onFileSelected={(file) => { setLocalMediaFile(file); setRemoveMedia(false) }}
-            onClear={() => { setLocalMediaFile(null); setRemoveMedia(true) }}
+            onFileSelected={(file) => {
+              setLocalMediaFile(file);
+              setRemoveMedia(false);
+            }}
+            onClear={() => {
+              setLocalMediaFile(null);
+              setRemoveMedia(true);
+            }}
             disabled={saving}
           />
           <div className="flex gap-2 pt-1">
@@ -125,15 +135,13 @@ export default function ExerciseItemEditor({
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div
       className={`flex items-center gap-3 rounded-lg border bg-white p-3 dark:bg-gray-800 ${
-        isDragging
-          ? 'border-blue-400 shadow-lg'
-          : 'border-gray-200 dark:border-gray-700'
+        isDragging ? 'border-blue-400 shadow-lg' : 'border-gray-200 dark:border-gray-700'
       }`}
     >
       <div
@@ -141,7 +149,12 @@ export default function ExerciseItemEditor({
         className="cursor-grab text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
         title="Drag to reorder"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
           <path d="M7 2a2 2 0 10.001 4.001A2 2 0 007 2zm0 6a2 2 0 10.001 4.001A2 2 0 007 8zm0 6a2 2 0 10.001 4.001A2 2 0 007 14zm6-8a2 2 0 10-.001-4.001A2 2 0 0013 6zm0 2a2 2 0 10.001 4.001A2 2 0 0013 8zm0 6a2 2 0 10.001 4.001A2 2 0 0013 14z" />
         </svg>
       </div>
@@ -156,7 +169,10 @@ export default function ExerciseItemEditor({
       )}
       <div
         className="min-w-0 flex-1 cursor-pointer"
-        onClick={() => { triggerHaptic('light'); onEdit() }}
+        onClick={() => {
+          triggerHaptic('light');
+          onEdit();
+        }}
         title="Tippen zum Bearbeiten"
       >
         <div className="flex items-center gap-2">
@@ -172,14 +188,26 @@ export default function ExerciseItemEditor({
         </div>
       </div>
       <button
-        onClick={(e) => { e.stopPropagation(); onDelete() }}
+        onClick={(e) => {
+          e.stopPropagation();
+          onDelete();
+        }}
         className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/30"
         title="Remove exercise"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-          <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-4 w-4"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fillRule="evenodd"
+            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+            clipRule="evenodd"
+          />
         </svg>
       </button>
     </div>
-  )
+  );
 }

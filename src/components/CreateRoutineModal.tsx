@@ -1,30 +1,33 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
 interface CreateRoutineModalProps {
-  open: boolean
-  onClose: () => void
-  onCreate: (name: string) => Promise<unknown>
+  open: boolean;
+  onClose: () => void;
+  onCreate: (name: string) => Promise<unknown>;
 }
 
 export default function CreateRoutineModal({ open, onClose, onCreate }: CreateRoutineModalProps) {
-  const [name, setName] = useState('')
-  const [saving, setSaving] = useState(false)
+  const [name, setName] = useState('');
+  const [saving, setSaving] = useState(false);
 
-  if (!open) return null
+  if (!open) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const trimmed = name.trim()
-    if (!trimmed) return
-    setSaving(true)
-    await onCreate(trimmed)
-    setSaving(false)
-    setName('')
-    onClose()
-  }
+    e.preventDefault();
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    setSaving(true);
+    await onCreate(trimmed);
+    setSaving(false);
+    setName('');
+    onClose();
+  };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      onClick={onClose}
+    >
       <div
         className="mx-4 w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800"
         onClick={(e) => e.stopPropagation()}
@@ -61,5 +64,5 @@ export default function CreateRoutineModal({ open, onClose, onCreate }: CreateRo
         </form>
       </div>
     </div>
-  )
+  );
 }

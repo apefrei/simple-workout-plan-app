@@ -1,30 +1,66 @@
-import type { RoutineHistory } from '../hooks/useWorkoutHistory'
-import type { WorkoutLog } from '../hooks/useWorkoutLogs'
+import type { RoutineHistory } from '../hooks/useWorkoutHistory';
+import type { WorkoutLog } from '../hooks/useWorkoutLogs';
 
 const COLOR_THEMES = [
-  { accent: 'bg-blue-500', accentLight: 'bg-blue-50 dark:bg-blue-900/20', text: 'text-blue-700 dark:text-blue-300', headerBg: 'bg-blue-50 dark:bg-blue-900/30', badge: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' },
-  { accent: 'bg-emerald-500', accentLight: 'bg-emerald-50 dark:bg-emerald-900/20', text: 'text-emerald-700 dark:text-emerald-300', headerBg: 'bg-emerald-50 dark:bg-emerald-900/30', badge: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300' },
-  { accent: 'bg-purple-500', accentLight: 'bg-purple-50 dark:bg-purple-900/20', text: 'text-purple-700 dark:text-purple-300', headerBg: 'bg-purple-50 dark:bg-purple-900/30', badge: 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300' },
-  { accent: 'bg-amber-500', accentLight: 'bg-amber-50 dark:bg-amber-900/20', text: 'text-amber-700 dark:text-amber-300', headerBg: 'bg-amber-50 dark:bg-amber-900/30', badge: 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300' },
-  { accent: 'bg-rose-500', accentLight: 'bg-rose-50 dark:bg-rose-900/20', text: 'text-rose-700 dark:text-rose-300', headerBg: 'bg-rose-50 dark:bg-rose-900/30', badge: 'bg-rose-100 text-rose-700 dark:bg-rose-900 dark:text-rose-300' },
-  { accent: 'bg-cyan-500', accentLight: 'bg-cyan-50 dark:bg-cyan-900/20', text: 'text-cyan-700 dark:text-cyan-300', headerBg: 'bg-cyan-50 dark:bg-cyan-900/30', badge: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900 dark:text-cyan-300' },
-]
+  {
+    accent: 'bg-blue-500',
+    accentLight: 'bg-blue-50 dark:bg-blue-900/20',
+    text: 'text-blue-700 dark:text-blue-300',
+    headerBg: 'bg-blue-50 dark:bg-blue-900/30',
+    badge: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
+  },
+  {
+    accent: 'bg-emerald-500',
+    accentLight: 'bg-emerald-50 dark:bg-emerald-900/20',
+    text: 'text-emerald-700 dark:text-emerald-300',
+    headerBg: 'bg-emerald-50 dark:bg-emerald-900/30',
+    badge: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300',
+  },
+  {
+    accent: 'bg-purple-500',
+    accentLight: 'bg-purple-50 dark:bg-purple-900/20',
+    text: 'text-purple-700 dark:text-purple-300',
+    headerBg: 'bg-purple-50 dark:bg-purple-900/30',
+    badge: 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300',
+  },
+  {
+    accent: 'bg-amber-500',
+    accentLight: 'bg-amber-50 dark:bg-amber-900/20',
+    text: 'text-amber-700 dark:text-amber-300',
+    headerBg: 'bg-amber-50 dark:bg-amber-900/30',
+    badge: 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300',
+  },
+  {
+    accent: 'bg-rose-500',
+    accentLight: 'bg-rose-50 dark:bg-rose-900/20',
+    text: 'text-rose-700 dark:text-rose-300',
+    headerBg: 'bg-rose-50 dark:bg-rose-900/30',
+    badge: 'bg-rose-100 text-rose-700 dark:bg-rose-900 dark:text-rose-300',
+  },
+  {
+    accent: 'bg-cyan-500',
+    accentLight: 'bg-cyan-50 dark:bg-cyan-900/20',
+    text: 'text-cyan-700 dark:text-cyan-300',
+    headerBg: 'bg-cyan-50 dark:bg-cyan-900/30',
+    badge: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900 dark:text-cyan-300',
+  },
+];
 
 function formatDate(dateStr: string): string {
-  const [year, month, day] = dateStr.split('-')
-  return `${day}.${month}.${year.slice(2)}`
+  const [year, month, day] = dateStr.split('-');
+  return `${day}.${month}.${year.slice(2)}`;
 }
 
 function findLogForDate(logs: WorkoutLog[], date: string): WorkoutLog | undefined {
-  return logs.find((log) => log.logged_at.startsWith(date))
+  return logs.find((log) => log.logged_at.startsWith(date));
 }
 
 interface Props extends RoutineHistory {
-  colorIndex: number
+  colorIndex: number;
 }
 
 export default function RoutineHistoryTable({ routine, exercises, logDates, colorIndex }: Props) {
-  const theme = COLOR_THEMES[colorIndex % COLOR_THEMES.length]
+  const theme = COLOR_THEMES[colorIndex % COLOR_THEMES.length];
 
   return (
     <div>
@@ -34,7 +70,8 @@ export default function RoutineHistoryTable({ routine, exercises, logDates, colo
         <div className="flex-1">
           <h2 className={`text-lg font-bold ${theme.text}`}>{routine.name}</h2>
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            {exercises.length} {exercises.length === 1 ? 'Übung' : 'Übungen'} &middot; {logDates.length} {logDates.length === 1 ? 'Eintrag' : 'Einträge'}
+            {exercises.length} {exercises.length === 1 ? 'Übung' : 'Übungen'} &middot;{' '}
+            {logDates.length} {logDates.length === 1 ? 'Eintrag' : 'Einträge'}
           </p>
         </div>
       </div>
@@ -73,12 +110,16 @@ export default function RoutineHistoryTable({ routine, exercises, logDates, colo
                     {ew.exercise.name}
                   </div>
                   {ew.exercise.machine_info && (
-                    <div className="text-[10px] text-gray-400 dark:text-gray-500">{ew.exercise.machine_info}</div>
+                    <div className="text-[10px] text-gray-400 dark:text-gray-500">
+                      {ew.exercise.machine_info}
+                    </div>
                   )}
                 </td>
                 <td className="px-3 py-2.5">
                   {ew.exercise.target_sets_reps ? (
-                    <span className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${theme.badge}`}>
+                    <span
+                      className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${theme.badge}`}
+                    >
                       {ew.exercise.target_sets_reps}
                     </span>
                   ) : (
@@ -86,15 +127,14 @@ export default function RoutineHistoryTable({ routine, exercises, logDates, colo
                   )}
                 </td>
                 {logDates.map((date) => {
-                  const log = findLogForDate(ew.logs, date)
+                  const log = findLogForDate(ew.logs, date);
                   return (
-                    <td
-                      key={date}
-                      className="whitespace-nowrap px-3 py-2.5 text-center"
-                    >
+                    <td key={date} className="whitespace-nowrap px-3 py-2.5 text-center">
                       {log ? (
                         <div>
-                          <span className="font-semibold text-gray-800 dark:text-gray-200">{log.weight_kg}kg</span>
+                          <span className="font-semibold text-gray-800 dark:text-gray-200">
+                            {log.weight_kg}kg
+                          </span>
                           <span className="text-gray-400 dark:text-gray-500"> x </span>
                           <span className="text-gray-600 dark:text-gray-300">{log.reps}</span>
                         </div>
@@ -102,7 +142,7 @@ export default function RoutineHistoryTable({ routine, exercises, logDates, colo
                         <span className="text-gray-300 dark:text-gray-600">-</span>
                       )}
                     </td>
-                  )
+                  );
                 })}
               </tr>
             ))}
@@ -110,5 +150,5 @@ export default function RoutineHistoryTable({ routine, exercises, logDates, colo
         </table>
       </div>
     </div>
-  )
+  );
 }

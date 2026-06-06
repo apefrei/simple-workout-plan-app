@@ -13,6 +13,10 @@ node_modules/
 .env
 .env.local
 .env.*.local
+.env.docker
+
+# Docker migration scripts (generated, not committed)
+db/init/*.sql
 
 # Editor directories and files
 .idea
@@ -28,3 +32,6 @@ dist/
 
 # OS specific
 .DS_Store
+
+# Claude Code local settings
+.claude/settings.local.json

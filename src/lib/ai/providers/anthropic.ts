@@ -75,7 +75,7 @@ export class AnthropicProvider implements AIProvider {
   }
 
   private formatContent(
-    content: string | ContentPart[],
+    content: string | ContentPart[]
   ): string | Array<Anthropic.TextBlockParam | Anthropic.ImageBlockParam> {
     if (typeof content === 'string') return content;
     return content.map((part) => {
@@ -86,7 +86,11 @@ export class AnthropicProvider implements AIProvider {
         type: 'image' as const,
         source: {
           type: 'base64' as const,
-          media_type: (part.mimeType ?? 'image/jpeg') as 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp',
+          media_type: (part.mimeType ?? 'image/jpeg') as
+            | 'image/jpeg'
+            | 'image/png'
+            | 'image/gif'
+            | 'image/webp',
           data: part.imageData ?? '',
         },
       };

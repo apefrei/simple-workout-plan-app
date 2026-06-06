@@ -1,27 +1,27 @@
-import { useSyncExternalStore } from 'react'
-import { useIsMutating } from '@tanstack/react-query'
-import { usePendingMutations } from '../hooks/usePendingMutations'
+import { useSyncExternalStore } from 'react';
+import { useIsMutating } from '@tanstack/react-query';
+import { usePendingMutations } from '../hooks/usePendingMutations';
 
 function subscribe(callback: () => void) {
-  window.addEventListener('online', callback)
-  window.addEventListener('offline', callback)
+  window.addEventListener('online', callback);
+  window.addEventListener('offline', callback);
   return () => {
-    window.removeEventListener('online', callback)
-    window.removeEventListener('offline', callback)
-  }
+    window.removeEventListener('online', callback);
+    window.removeEventListener('offline', callback);
+  };
 }
 
 function getSnapshot() {
-  return navigator.onLine
+  return navigator.onLine;
 }
 
 export default function OfflineIndicator() {
-  const isOnline = useSyncExternalStore(subscribe, getSnapshot)
-  const pendingCount = usePendingMutations()
-  const isSyncing = useIsMutating() > 0 && isOnline && pendingCount > 0
+  const isOnline = useSyncExternalStore(subscribe, getSnapshot);
+  const pendingCount = usePendingMutations();
+  const isSyncing = useIsMutating() > 0 && isOnline && pendingCount > 0;
 
   // Nothing to show
-  if (isOnline && pendingCount === 0) return null
+  if (isOnline && pendingCount === 0) return null;
 
   return (
     <div
@@ -54,5 +54,5 @@ export default function OfflineIndicator() {
         </>
       )}
     </div>
-  )
+  );
 }
