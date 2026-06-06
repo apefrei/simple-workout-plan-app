@@ -72,6 +72,8 @@ router.delete('/', (req, res) => {
   }
 
   const userDir = path.join(UPLOADS_DIR, path.basename(req.userId))
+  // nosemgrep: javascript.express.security.audit.express-path-join-resolve-traversal.express-path-join-resolve-traversal
+  // `filename` is the output of path.basename() above — all directory components stripped.
   const fullPath = path.join(userDir, filename)
 
   // Redundant guard: ensure resolution stayed inside the user's directory.
