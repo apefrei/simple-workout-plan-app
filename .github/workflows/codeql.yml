@@ -1,0 +1,40 @@
+name: CodeQL
+
+# GitHub-native SAST for JavaScript/TypeScript (frontend + API).
+# Complements Semgrep with deeper dataflow analysis.
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches-ignore:
+      - main
+  schedule:
+    # Weekly full scan to catch newly published query updates.
+    - cron: '27 3 * * 1'
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: CodeQL Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: javascript-typescript
+          queries: security-extended
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: '/language:javascript-typescript'

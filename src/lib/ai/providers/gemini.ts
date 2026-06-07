@@ -48,7 +48,10 @@ export class GeminiProvider implements AIProvider {
       return {
         content: text,
         usage: usage
-          ? { inputTokens: usage.promptTokenCount ?? 0, outputTokens: usage.candidatesTokenCount ?? 0 }
+          ? {
+              inputTokens: usage.promptTokenCount ?? 0,
+              outputTokens: usage.candidatesTokenCount ?? 0,
+            }
           : undefined,
       };
     } catch (error) {
@@ -56,7 +59,10 @@ export class GeminiProvider implements AIProvider {
     }
   }
 
-  private extractSystemPrompt(messages: ChatMessage[], optionsSystemPrompt?: string): string | undefined {
+  private extractSystemPrompt(
+    messages: ChatMessage[],
+    optionsSystemPrompt?: string
+  ): string | undefined {
     if (optionsSystemPrompt) return optionsSystemPrompt;
     const systemMessages = messages.filter((m) => m.role === 'system');
     if (systemMessages.length === 0) return undefined;

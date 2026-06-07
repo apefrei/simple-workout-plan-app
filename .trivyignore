@@ -1,0 +1,13 @@
+# Trivy ignore list — https://aquasecurity.github.io/trivy/latest/docs/configuration/filtering/
+#
+# tar (node-tar) is a transitive, INSTALL-TIME dependency pulled in by
+# bcrypt -> @mapbox/node-pre-gyp. It is only used to extract bcrypt's
+# prebuilt binary during `npm install` and is never invoked at runtime,
+# so these advisories carry no runtime exposure for this service.
+# Revisit if bcrypt/node-pre-gyp ship a tar >= 7 upgrade (or migrate to bcryptjs).
+CVE-2026-23745
+CVE-2026-23950
+CVE-2026-24842
+CVE-2026-26960
+CVE-2026-29786
+CVE-2026-31802

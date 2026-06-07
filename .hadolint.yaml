@@ -1,0 +1,13 @@
+# Hadolint configuration — https://github.com/hadolint/hadolint
+failure-threshold: warning
+
+ignored:
+  # DL3018: pin apk versions — alpine base images change frequently; we accept
+  # latest within a pinned base image tag.
+  - DL3018
+  # DL3059: multiple consecutive RUN — readability over micro-optimization.
+  - DL3059
+
+trustedRegistries:
+  - docker.io
+  - ghcr.io

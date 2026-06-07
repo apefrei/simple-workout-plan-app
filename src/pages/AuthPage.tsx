@@ -1,198 +1,107 @@
-import { useState, useRef } from 'react'
-import { Navigate } from 'react-router-dom'
-import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile'
-import { supabase } from '../lib/supabase'
-import { useAuth } from '../contexts/AuthContext'
+import { useState, useRef } from 'react';
+import { Navigate } from 'react-router-dom';
+import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile';
+import { auth as apiAuth, setToken } from '../lib/api';
+import { useAuth } from '../contexts/AuthContext';
 
-type AuthView = 'login' | 'register' | 'verify' | 'forgot'
+type AuthView = 'login' | 'register' | 'forgot';
 
-const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string
+const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string;
 
 export default function AuthPage() {
-  const { session, loading } = useAuth()
-  const [view, setView] = useState<AuthView>('login')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [otpLeft, setOtpLeft] = useState('')
-  const [otpRight, setOtpRight] = useState('')
-  const [error, setError] = useState('')
-  const [info, setInfo] = useState('')
-  const [submitting, setSubmitting] = useState(false)
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
-  const turnstileRef = useRef<TurnstileInstance>(null)
-  const otpRightRef = useRef<HTMLInputElement>(null)
+  const { user, loading } = useAuth();
+  const [view, setView] = useState<AuthView>('login');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [info, setInfo] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const turnstileRef = useRef<TurnstileInstance>(null);
 
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <p className="text-gray-500">Laden...</p>
       </div>
-    )
+    );
   }
 
-  if (session) {
-    return <Navigate to="/" replace />
+  if (user) {
+    return <Navigate to="/" replace />;
   }
 
   const resetCaptcha = () => {
-    setCaptchaToken(null)
-    turnstileRef.current?.reset()
-  }
+    setCaptchaToken(null);
+    turnstileRef.current?.reset();
+  };
 
   const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
+    e.preventDefault();
+    setError('');
 
-    if (!captchaToken) {
-      setError('Bitte warten – Captcha wird geladen.')
-      return
+    if (TURNSTILE_SITE_KEY && !captchaToken) {
+      setError('Bitte warten – Captcha wird geladen.');
+      return;
     }
 
-    setSubmitting(true)
+    setSubmitting(true);
     try {
-      const { error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { captchaToken },
-      })
-
-      resetCaptcha()
-
-      if (signUpError) {
-        // Generic message to prevent user enumeration
-        setError('Registrierung fehlgeschlagen. Bitte versuche es erneut.')
-        return
+      const { token } = await apiAuth.signup(email, password, captchaToken);
+      setToken(token);
+      // Reload to trigger AuthProvider to pick up the new token
+      window.location.href = '/';
+    } catch (err: unknown) {
+      resetCaptcha();
+      const apiErr = err as { status?: number };
+      if (apiErr.status === 409) {
+        setError('Diese E-Mail ist bereits registriert.');
+      } else {
+        setError('Registrierung fehlgeschlagen. Bitte versuche es erneut.');
       }
-
-      setView('verify')
-    } catch {
-      setError('Ein Fehler ist aufgetreten.')
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
-
-  const handleVerifyOtp = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-
-    const token = (otpLeft + otpRight).trim()
-    if (token.length !== 8) {
-      setError('Bitte den vollständigen Code eingeben (8 Zeichen).')
-      return
-    }
-
-    setSubmitting(true)
-    try {
-      const { error: verifyError } = await supabase.auth.verifyOtp({
-        email,
-        token,
-        type: 'email',
-      })
-
-      if (verifyError) {
-        setError('Ungültiger oder abgelaufener Code. Bitte versuche es erneut.')
-        return
-      }
-      // Session is set automatically via onAuthStateChange
-    } catch {
-      setError('Ein Fehler ist aufgetreten.')
-    } finally {
-      setSubmitting(false)
-    }
-  }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
+    e.preventDefault();
+    setError('');
 
-    if (!captchaToken) {
-      setError('Bitte warten – Captcha wird geladen.')
-      return
+    if (TURNSTILE_SITE_KEY && !captchaToken) {
+      setError('Bitte warten – Captcha wird geladen.');
+      return;
     }
 
-    setSubmitting(true)
+    setSubmitting(true);
     try {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-        options: { captchaToken },
-      })
-
-      resetCaptcha()
-
-      if (signInError) {
-        if (signInError.message === 'Email not confirmed') {
-          setView('verify')
-        }
-        setError('E-Mail oder Passwort ist falsch.')
-        return
-      }
+      const { token } = await apiAuth.signin(email, password, captchaToken);
+      resetCaptcha();
+      setToken(token);
+      window.location.href = '/';
     } catch {
-      setError('Ein Fehler ist aufgetreten.')
+      resetCaptcha();
+      setError('E-Mail oder Passwort ist falsch.');
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
-  const handleForgotPassword = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-
-    if (!captchaToken) {
-      setError('Bitte warten – Captcha wird geladen.')
-      return
-    }
-
-    setSubmitting(true)
-    try {
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(
-        email,
-        { captchaToken },
-      )
-
-      resetCaptcha()
-
-      // Always show success to prevent user enumeration
-      if (resetError) { /* ignore */ }
-      setError('')
-      setView('login')
-      setInfo('Falls ein Konto existiert, wurde eine E-Mail zum Zurücksetzen gesendet.')
-    } catch {
-      setError('Ein Fehler ist aufgetreten.')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  const handleOtpLeftChange = (value: string) => {
-    const clean = value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 4)
-    setOtpLeft(clean)
-    if (clean.length === 4) {
-      otpRightRef.current?.focus()
-    }
-  }
-
-  const handleOtpRightChange = (value: string) => {
-    const clean = value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 4)
-    setOtpRight(clean)
-  }
-
-  const handleOtpRightKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Backspace' && otpRight === '') {
-      e.preventDefault()
-      setOtpLeft((prev) => prev.slice(0, -1))
-      // Focus stays but logically we're editing the left part
-    }
-  }
+  const handleForgotPassword = (e: React.FormEvent) => {
+    e.preventDefault();
+    setView('login');
+    setInfo(
+      'Passwort-Reset ist in der Self-Hosted-Version noch nicht verfügbar. Bitte kontaktiere den Administrator.'
+    );
+  };
 
   const inputClass =
-    'w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-800 placeholder-gray-400 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500'
+    'w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-800 placeholder-gray-400 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500';
 
   const buttonClass =
-    'w-full rounded-lg bg-purple-600 px-4 py-3 font-semibold text-white transition-colors hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-50'
+    'w-full rounded-lg bg-purple-600 px-4 py-3 font-semibold text-white transition-colors hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-50';
 
-  const linkClass = 'text-purple-500 hover:text-purple-400 cursor-pointer text-sm'
+  const linkClass = 'text-purple-500 hover:text-purple-400 cursor-pointer text-sm';
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
@@ -236,69 +145,31 @@ export default function AuthPage() {
               minLength={8}
               className={inputClass}
             />
-            <Turnstile
-              ref={turnstileRef}
-              siteKey={TURNSTILE_SITE_KEY}
-              onSuccess={setCaptchaToken}
-              onError={() => setCaptchaToken(null)}
-              onExpire={() => setCaptchaToken(null)}
-              options={{ size: 'invisible' }}
-            />
+            {TURNSTILE_SITE_KEY && (
+              <Turnstile
+                ref={turnstileRef}
+                siteKey={TURNSTILE_SITE_KEY}
+                onSuccess={setCaptchaToken}
+                onError={() => setCaptchaToken(null)}
+                onExpire={() => setCaptchaToken(null)}
+                options={{ size: 'invisible' }}
+              />
+            )}
             <button type="submit" disabled={submitting} className={buttonClass}>
               {submitting ? 'Registrieren…' : 'Registrieren'}
             </button>
             <p className="text-center text-sm text-gray-500 dark:text-gray-400">
               Bereits ein Konto?{' '}
-              <button type="button" onClick={() => { setView('login'); setError(''); setInfo('') }} className={linkClass}>
-                Anmelden
-              </button>
-            </p>
-          </form>
-        )}
-
-        {/* --- Verify OTP --- */}
-        {view === 'verify' && (
-          <form onSubmit={handleVerifyOtp} className="space-y-4">
-            <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
-              E-Mail bestätigen
-            </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Wir haben einen Code an <strong>{email}</strong> gesendet.
-            </p>
-            <div className="flex items-center justify-center gap-2">
-              <input
-                type="text"
-                inputMode="text"
-                autoComplete="one-time-code"
-                value={otpLeft}
-                onChange={(e) => handleOtpLeftChange(e.target.value)}
-                placeholder="XXXX"
-                maxLength={4}
-                className="w-24 rounded-lg border border-gray-300 bg-white px-3 py-3 text-center text-xl font-mono tracking-widest text-gray-800 placeholder-gray-300 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-600"
-              />
-              <span className="text-2xl font-bold text-gray-400 dark:text-gray-500">–</span>
-              <input
-                ref={otpRightRef}
-                type="text"
-                inputMode="text"
-                value={otpRight}
-                onChange={(e) => handleOtpRightChange(e.target.value)}
-                onKeyDown={handleOtpRightKeyDown}
-                placeholder="XXXX"
-                maxLength={4}
-                className="w-24 rounded-lg border border-gray-300 bg-white px-3 py-3 text-center text-xl font-mono tracking-widest text-gray-800 placeholder-gray-300 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-600"
-              />
-            </div>
-            <button type="submit" disabled={submitting} className={buttonClass}>
-              {submitting ? 'Bestätigen…' : 'Bestätigen'}
-            </button>
-            <p className="text-center text-sm text-gray-500 dark:text-gray-400">
               <button
                 type="button"
-                onClick={() => { setView('login'); setError(''); setInfo('') }}
+                onClick={() => {
+                  setView('login');
+                  setError('');
+                  setInfo('');
+                }}
                 className={linkClass}
               >
-                Zurück zur Anmeldung
+                Anmelden
               </button>
             </p>
           </form>
@@ -307,9 +178,7 @@ export default function AuthPage() {
         {/* --- Login --- */}
         {view === 'login' && (
           <form onSubmit={handleLogin} className="space-y-4">
-            <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
-              Anmelden
-            </h2>
+            <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">Anmelden</h2>
             <input
               type="email"
               placeholder="E-Mail"
@@ -326,28 +195,38 @@ export default function AuthPage() {
               required
               className={inputClass}
             />
-            <Turnstile
-              ref={turnstileRef}
-              siteKey={TURNSTILE_SITE_KEY}
-              onSuccess={setCaptchaToken}
-              onError={() => setCaptchaToken(null)}
-              onExpire={() => setCaptchaToken(null)}
-              options={{ size: 'invisible' }}
-            />
+            {TURNSTILE_SITE_KEY && (
+              <Turnstile
+                ref={turnstileRef}
+                siteKey={TURNSTILE_SITE_KEY}
+                onSuccess={setCaptchaToken}
+                onError={() => setCaptchaToken(null)}
+                onExpire={() => setCaptchaToken(null)}
+                options={{ size: 'invisible' }}
+              />
+            )}
             <button type="submit" disabled={submitting} className={buttonClass}>
               {submitting ? 'Anmelden…' : 'Anmelden'}
             </button>
             <div className="flex items-center justify-between">
               <button
                 type="button"
-                onClick={() => { setView('forgot'); setError(''); setInfo('') }}
+                onClick={() => {
+                  setView('forgot');
+                  setError('');
+                  setInfo('');
+                }}
                 className={linkClass}
               >
                 Passwort vergessen?
               </button>
               <button
                 type="button"
-                onClick={() => { setView('register'); setError(''); setInfo('') }}
+                onClick={() => {
+                  setView('register');
+                  setError('');
+                  setInfo('');
+                }}
                 className={linkClass}
               >
                 Konto erstellen
@@ -370,21 +249,17 @@ export default function AuthPage() {
               required
               className={inputClass}
             />
-            <Turnstile
-              ref={turnstileRef}
-              siteKey={TURNSTILE_SITE_KEY}
-              onSuccess={setCaptchaToken}
-              onError={() => setCaptchaToken(null)}
-              onExpire={() => setCaptchaToken(null)}
-              options={{ size: 'invisible' }}
-            />
-            <button type="submit" disabled={submitting} className={buttonClass}>
-              {submitting ? 'Senden…' : 'Link senden'}
+            <button type="submit" className={buttonClass}>
+              Administrator kontaktieren
             </button>
             <p className="text-center text-sm text-gray-500 dark:text-gray-400">
               <button
                 type="button"
-                onClick={() => { setView('login'); setError(''); setInfo('') }}
+                onClick={() => {
+                  setView('login');
+                  setError('');
+                  setInfo('');
+                }}
                 className={linkClass}
               >
                 Zurück zur Anmeldung
@@ -394,5 +269,5 @@ export default function AuthPage() {
         )}
       </div>
     </div>
-  )
+  );
 }

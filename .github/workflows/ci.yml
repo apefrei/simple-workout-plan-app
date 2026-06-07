@@ -1,0 +1,218 @@
+name: CI Checks
+
+# Quality & security gate. Runs on every PR targeting main and on every
+# push to a non-main branch. Branch protection makes these jobs required,
+# so nothing reaches main unless all of them pass.
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches-ignore:
+      - main
+
+# Cancel superseded runs on the same ref to save CI minutes.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # 1) Secret Detection — Gitleaks
+  # ---------------------------------------------------------------------------
+  secret-detection:
+    name: Secret Detection (Gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks
+        run: |
+          docker run --rm -v "$PWD:/repo" \
+            ghcr.io/gitleaks/gitleaks:latest \
+            detect --source=/repo --no-banner --redact --verbose \
+            --config=/repo/.gitleaks.toml
+
+  # ---------------------------------------------------------------------------
+  # 2) Syntax Check — TypeScript type-check, ESLint (frontend) + node --check (API)
+  # ---------------------------------------------------------------------------
+  syntax-check:
+    name: Syntax Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install frontend dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: TypeScript type-check (frontend)
+        run: npx tsc -b
+
+      - name: ESLint (frontend)
+        run: npm run lint
+
+      - name: Prettier format check (frontend)
+        run: npx prettier --check "src/**/*.{ts,tsx,css}"
+
+      - name: Install API dependencies
+        working-directory: api
+        run: npm ci --no-audit --no-fund
+
+      - name: Node syntax check (API)
+        run: find api/src -name '*.js' -print0 | xargs -0 -n1 node --check
+
+  # ---------------------------------------------------------------------------
+  # 3) SAST — Semgrep (OWASP) + Trivy filesystem scan
+  # ---------------------------------------------------------------------------
+  sast:
+    name: SAST (Semgrep + Trivy FS)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Semgrep (OWASP Top Ten + JS/TS + React)
+        uses: semgrep/semgrep-action@v1
+        with:
+          config: >-
+            p/owasp-top-ten
+            p/javascript
+            p/typescript
+            p/react
+            p/secrets
+            p/dockerfile
+
+      # Dependency vulnerabilities (OWASP A06). Secrets are covered by the
+      # Gitleaks job and Dockerfiles by hadolint/Semgrep, so this stays
+      # focused on vulnerable packages to avoid overlapping findings.
+      - name: Trivy filesystem scan (dependency vulnerabilities)
+        run: |
+          docker run --rm -v "$PWD:/repo" aquasec/trivy:latest \
+            fs /repo \
+            --scanners vuln \
+            --severity CRITICAL,HIGH \
+            --ignore-unfixed \
+            --ignorefile /repo/.trivyignore \
+            --skip-dirs node_modules,dist,.taskmaster \
+            --no-progress \
+            --exit-code 1
+
+  # ---------------------------------------------------------------------------
+  # Workflow lint — actionlint validates the GitHub Actions YAML themselves.
+  # ---------------------------------------------------------------------------
+  workflow-lint:
+    name: Workflow Lint (actionlint)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: actionlint
+        run: |
+          docker run --rm -v "$PWD:/repo" --workdir /repo \
+            rhysd/actionlint:latest -color
+
+  # ---------------------------------------------------------------------------
+  # Dependency Review — flags PRs that introduce vulnerable or
+  # license-incompatible dependencies. Only runs on pull_request events.
+  #
+  # NOTE: Requires the repository "Dependency graph" feature to be enabled
+  # (Settings → Code security and analysis). Until then the action errors out,
+  # so this job is non-blocking (continue-on-error) and is NOT a required
+  # status check. Once the dependency graph is enabled, drop continue-on-error
+  # and add "Dependency Review" back to the branch protection required checks.
+  # ---------------------------------------------------------------------------
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Dependency Review
+        continue-on-error: true
+        uses: actions/dependency-review-action@v5
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: on-failure
+
+  # ---------------------------------------------------------------------------
+  # 4) Dockerfile Lint + Build + Image Scan (frontend + API)
+  # ---------------------------------------------------------------------------
+  docker:
+    name: Dockerfile Lint + Build + Image Scan
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        name: [frontend, api]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Resolve build context
+        id: ctx
+        run: |
+          if [ "${{ matrix.name }}" = "api" ]; then
+            echo "context=./api" >> "$GITHUB_OUTPUT"
+            echo "dockerfile=./api/Dockerfile" >> "$GITHUB_OUTPUT"
+          else
+            echo "context=." >> "$GITHUB_OUTPUT"
+            echo "dockerfile=./Dockerfile" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Hadolint (${{ matrix.name }} Dockerfile)
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ${{ steps.ctx.outputs.dockerfile }}
+          config: .hadolint.yaml
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build image (${{ matrix.name }})
+        uses: docker/build-push-action@v7
+        with:
+          context: ${{ steps.ctx.outputs.context }}
+          file: ${{ steps.ctx.outputs.dockerfile }}
+          push: false
+          load: true
+          tags: ci-scan/${{ matrix.name }}:${{ github.sha }}
+          cache-from: type=gha,scope=${{ matrix.name }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.name }}
+
+      # Report HIGH + CRITICAL for visibility (does not fail the build —
+      # base-image HIGH CVEs appear constantly and are rarely actionable).
+      - name: Trivy image report (${{ matrix.name }}, HIGH + CRITICAL)
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+            aquasec/trivy:latest image \
+            ci-scan/${{ matrix.name }}:${{ github.sha }} \
+            --severity HIGH,CRITICAL \
+            --ignore-unfixed \
+            --no-progress \
+            --exit-code 0
+
+      # Gate: only CRITICAL image vulnerabilities block the merge.
+      - name: Trivy image scan gate (${{ matrix.name }}, CRITICAL blocks)
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+            aquasec/trivy:latest image \
+            ci-scan/${{ matrix.name }}:${{ github.sha }} \
+            --severity CRITICAL \
+            --ignore-unfixed \
+            --no-progress \
+            --exit-code 1

@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react'
-import { useAuth } from '../contexts/AuthContext'
-import { createProvider } from '../lib/ai/factory'
+import { useState, useEffect, useCallback } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { createProvider } from '../lib/ai/factory';
 import {
   saveApiKey,
   getApiKey,
@@ -8,105 +8,113 @@ import {
   getActiveProvider,
   setActiveProvider,
   hasStoredKey,
-} from '../lib/ai/keyStorage'
-import type { ProviderName, AIError } from '../lib/ai/types'
-import { useToast } from '../components/Toast'
+} from '../lib/ai/keyStorage';
+import type { ProviderName, AIError } from '../lib/ai/types';
+import { useToast } from '../components/Toast';
 
 const PROVIDERS: { value: ProviderName; label: string; placeholder: string }[] = [
   { value: 'claude', label: 'Claude (Anthropic)', placeholder: 'sk-ant-...' },
   { value: 'gpt', label: 'GPT (OpenAI)', placeholder: 'sk-...' },
   { value: 'gemini', label: 'Gemini (Google)', placeholder: 'AI...' },
-]
+];
 
-type ValidationStatus = 'idle' | 'validating' | 'valid' | 'invalid'
+type ValidationStatus = 'idle' | 'validating' | 'valid' | 'invalid';
 
 export default function SettingsPage() {
-  const { user, signOut } = useAuth()
-  const { toast } = useToast()
-  const userId = user?.id ?? ''
+  const { user, signOut } = useAuth();
+  const { toast } = useToast();
+  const userId = user?.id ?? '';
 
-  const [selectedProvider, setSelectedProvider] = useState<ProviderName>('claude')
-  const [apiKey, setApiKey] = useState('')
-  const [showKey, setShowKey] = useState(false)
-  const [validationStatus, setValidationStatus] = useState<ValidationStatus>('idle')
-  const [statusMessage, setStatusMessage] = useState('')
-  const [hasKey, setHasKey] = useState(false)
+  const [selectedProvider, setSelectedProvider] = useState<ProviderName>('claude');
+  const [apiKey, setApiKey] = useState('');
+  const [showKey, setShowKey] = useState(false);
+  const [validationStatus, setValidationStatus] = useState<ValidationStatus>('idle');
+  const [statusMessage, setStatusMessage] = useState('');
+  const [hasKey, setHasKey] = useState(false);
 
   const checkExistingKey = useCallback(
     async (provider: ProviderName) => {
-      if (!userId) return
-      const stored = hasStoredKey(userId, provider)
-      setHasKey(stored)
+      if (!userId) return;
+      const stored = hasStoredKey(userId, provider);
+      setHasKey(stored);
       if (stored) {
-        const key = await getApiKey(userId, provider)
-        setValidationStatus(key ? 'valid' : 'idle')
-        setStatusMessage(key ? `Connected to ${PROVIDERS.find((p) => p.value === provider)?.label}` : '')
+        const key = await getApiKey(userId, provider);
+        setValidationStatus(key ? 'valid' : 'idle');
+        setStatusMessage(
+          key ? `Connected to ${PROVIDERS.find((p) => p.value === provider)?.label}` : ''
+        );
       } else {
-        setValidationStatus('idle')
-        setStatusMessage('')
+        setValidationStatus('idle');
+        setStatusMessage('');
       }
     },
-    [userId],
-  )
+    [userId]
+  );
 
   useEffect(() => {
-    if (!userId) return
-    const active = getActiveProvider(userId)
-    if (active) setSelectedProvider(active)
-  }, [userId])
+    if (!userId) return;
+    const active = getActiveProvider(userId);
+    // Sync selected provider from persisted state once userId is known.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (active) setSelectedProvider(active);
+  }, [userId]);
 
   useEffect(() => {
-    checkExistingKey(selectedProvider)
-    setApiKey('')
-    setShowKey(false)
-  }, [selectedProvider, checkExistingKey])
+    // Reset key inputs whenever the selected provider changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    checkExistingKey(selectedProvider);
+    setApiKey('');
+    setShowKey(false);
+  }, [selectedProvider, checkExistingKey]);
 
   const handleProviderChange = (provider: ProviderName) => {
-    setSelectedProvider(provider)
-    setApiKey('')
-    setShowKey(false)
-  }
+    setSelectedProvider(provider);
+    setApiKey('');
+    setShowKey(false);
+  };
 
   const handleValidateAndSave = async () => {
-    if (!apiKey.trim() || !userId) return
-    setValidationStatus('validating')
-    setStatusMessage('')
+    if (!apiKey.trim() || !userId) return;
+    setValidationStatus('validating');
+    setStatusMessage('');
 
     try {
-      const provider = createProvider(selectedProvider, apiKey.trim())
-      const isValid = await provider.validateKey(apiKey.trim())
+      const provider = createProvider(selectedProvider, apiKey.trim());
+      const isValid = await provider.validateKey(apiKey.trim());
 
       if (isValid) {
-        await saveApiKey(userId, selectedProvider, apiKey.trim())
-        setActiveProvider(userId, selectedProvider)
-        setValidationStatus('valid')
-        setStatusMessage(`Connected to ${PROVIDERS.find((p) => p.value === selectedProvider)?.label}`)
-        setHasKey(true)
-        setApiKey('')
-        setShowKey(false)
-        toast('API key validated and saved', 'success')
+        await saveApiKey(userId, selectedProvider, apiKey.trim());
+        setActiveProvider(userId, selectedProvider);
+        setValidationStatus('valid');
+        setStatusMessage(
+          `Connected to ${PROVIDERS.find((p) => p.value === selectedProvider)?.label}`
+        );
+        setHasKey(true);
+        setApiKey('');
+        setShowKey(false);
+        toast('API key validated and saved', 'success');
       } else {
-        setValidationStatus('invalid')
-        setStatusMessage('Invalid API key. Please check and try again.')
-        toast('Invalid API key', 'error')
+        setValidationStatus('invalid');
+        setStatusMessage('Invalid API key. Please check and try again.');
+        toast('Invalid API key', 'error');
       }
     } catch (err: unknown) {
-      setValidationStatus('invalid')
-      const aiError = err as AIError
-      setStatusMessage(aiError.message ?? 'Validation failed. Please try again.')
-      toast(aiError.message ?? 'Validation failed', 'error')
+      setValidationStatus('invalid');
+      const aiError = err as AIError;
+      setStatusMessage(aiError.message ?? 'Validation failed. Please try again.');
+      toast(aiError.message ?? 'Validation failed', 'error');
     }
-  }
+  };
 
   const handleRemoveKey = () => {
-    if (!userId) return
-    removeApiKey(userId, selectedProvider)
-    setHasKey(false)
-    setValidationStatus('idle')
-    toast('API key removed', 'info')
-    setStatusMessage('')
-    setApiKey('')
-  }
+    if (!userId) return;
+    removeApiKey(userId, selectedProvider);
+    setHasKey(false);
+    setValidationStatus('idle');
+    toast('API key removed', 'info');
+    setStatusMessage('');
+    setApiKey('');
+  };
 
   return (
     <div className="mx-auto max-w-lg p-4">
@@ -148,7 +156,9 @@ export default function SettingsPage() {
                     />
                     <span className="text-sm font-medium">{p.label}</span>
                     {hasStoredKey(userId, p.value) && (
-                      <span className="ml-auto text-xs text-green-600 dark:text-green-400">configured</span>
+                      <span className="ml-auto text-xs text-green-600 dark:text-green-400">
+                        configured
+                      </span>
                     )}
                   </label>
                 ))}
@@ -172,7 +182,12 @@ export default function SettingsPage() {
                   className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                 >
                   {showKey ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      className="h-4 w-4"
+                    >
                       <path
                         fillRule="evenodd"
                         d="M3.28 2.22a.75.75 0 00-1.06 1.06l14.5 14.5a.75.75 0 101.06-1.06l-1.745-1.745a10.029 10.029 0 003.3-4.38 1.651 1.651 0 000-1.185A10.004 10.004 0 009.999 3a9.956 9.956 0 00-4.744 1.194L3.28 2.22zM7.752 6.69l1.092 1.092a2.5 2.5 0 013.374 3.373l1.092 1.092a4 4 0 00-5.558-5.558z"
@@ -181,7 +196,12 @@ export default function SettingsPage() {
                       <path d="M10.748 13.93l2.523 2.523a9.987 9.987 0 01-3.27.547c-4.258 0-7.894-2.66-9.337-6.41a1.651 1.651 0 010-1.186A10.007 10.007 0 012.839 6.02L6.07 9.252a4 4 0 004.678 4.678z" />
                     </svg>
                   ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      className="h-4 w-4"
+                    >
                       <path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
                       <path
                         fillRule="evenodd"
@@ -207,12 +227,28 @@ export default function SettingsPage() {
               >
                 {validationStatus === 'validating' && (
                   <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
                   </svg>
                 )}
                 {validationStatus === 'valid' && (
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="h-4 w-4"
+                  >
                     <path
                       fillRule="evenodd"
                       d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
@@ -221,7 +257,12 @@ export default function SettingsPage() {
                   </svg>
                 )}
                 {validationStatus === 'invalid' && (
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="h-4 w-4"
+                  >
                     <path
                       fillRule="evenodd"
                       d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
@@ -274,5 +315,5 @@ export default function SettingsPage() {
         </button>
       </div>
     </div>
-  )
+  );
 }

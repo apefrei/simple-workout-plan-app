@@ -1,9 +1,9 @@
-import type { RoutineWithExercises } from '../hooks/useRoutines'
+import type { RoutineWithExercises } from '../hooks/useRoutines';
 
 interface RoutineCardProps {
-  routine: RoutineWithExercises
-  onOpen: (id: string) => void
-  onDelete: (id: string) => void
+  routine: RoutineWithExercises;
+  onOpen: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
 const MUSCLE_GROUP_COLORS: Record<string, string> = {
@@ -18,10 +18,10 @@ const MUSCLE_GROUP_COLORS: Record<string, string> = {
   forearms: 'bg-teal-100 text-teal-700 dark:bg-teal-900 dark:text-teal-300',
   calves: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300',
   full_body: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
-}
+};
 
 export default function RoutineCard({ routine, onOpen, onDelete }: RoutineCardProps) {
-  const muscleGroups = [...new Set(routine.exercises.map((e) => e.muscle_group))]
+  const muscleGroups = [...new Set(routine.exercises.map((e) => e.muscle_group))];
 
   return (
     <div
@@ -32,14 +32,23 @@ export default function RoutineCard({ routine, onOpen, onDelete }: RoutineCardPr
         <h3 className="text-lg font-semibold">{routine.name}</h3>
         <button
           onClick={(e) => {
-            e.stopPropagation()
-            onDelete(routine.id)
+            e.stopPropagation();
+            onDelete(routine.id);
           }}
           className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/30"
           title="Delete routine"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+              clipRule="evenodd"
+            />
           </svg>
         </button>
       </div>
@@ -61,5 +70,5 @@ export default function RoutineCard({ routine, onOpen, onDelete }: RoutineCardPr
         </div>
       )}
     </div>
-  )
+  );
 }

@@ -1,35 +1,39 @@
-import { useState, useEffect, useCallback, createContext, useContext } from 'react'
+import { useState, useEffect, useCallback, createContext, useContext } from 'react';
 
 interface ToastItem {
-  id: string
-  message: string
-  type: 'success' | 'error' | 'info'
-  duration: number
+  id: string;
+  message: string;
+  type: 'success' | 'error' | 'info';
+  duration: number;
 }
 
 interface ToastContextType {
-  toast: (message: string, type?: ToastItem['type'], duration?: number) => void
+  toast: (message: string, type?: ToastItem['type'], duration?: number) => void;
 }
 
-const ToastContext = createContext<ToastContextType | undefined>(undefined)
+const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useToast() {
-  const ctx = useContext(ToastContext)
-  if (!ctx) throw new Error('useToast must be used within ToastProvider')
-  return ctx
+  const ctx = useContext(ToastContext);
+  if (!ctx) throw new Error('useToast must be used within ToastProvider');
+  return ctx;
 }
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
-  const [toasts, setToasts] = useState<ToastItem[]>([])
+  const [toasts, setToasts] = useState<ToastItem[]>([]);
 
-  const toast = useCallback((message: string, type: ToastItem['type'] = 'info', duration = 4000) => {
-    const id = crypto.randomUUID()
-    setToasts((prev) => [...prev, { id, message, type, duration }])
-  }, [])
+  const toast = useCallback(
+    (message: string, type: ToastItem['type'] = 'info', duration = 4000) => {
+      const id = crypto.randomUUID();
+      setToasts((prev) => [...prev, { id, message, type, duration }]);
+    },
+    []
+  );
 
   const dismiss = useCallback((id: string) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id))
-  }, [])
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }, []);
 
   return (
     <ToastContext.Provider value={{ toast }}>
@@ -40,26 +44,26 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         ))}
       </div>
     </ToastContext.Provider>
-  )
+  );
 }
 
 function ToastItem({ item, onDismiss }: { item: ToastItem; onDismiss: (id: string) => void }) {
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    requestAnimationFrame(() => setVisible(true))
+    requestAnimationFrame(() => setVisible(true));
     const timer = setTimeout(() => {
-      setVisible(false)
-      setTimeout(() => onDismiss(item.id), 200)
-    }, item.duration)
-    return () => clearTimeout(timer)
-  }, [item, onDismiss])
+      setVisible(false);
+      setTimeout(() => onDismiss(item.id), 200);
+    }, item.duration);
+    return () => clearTimeout(timer);
+  }, [item, onDismiss]);
 
   const colors = {
     success: 'bg-green-600 text-white',
     error: 'bg-red-600 text-white',
     info: 'bg-gray-800 text-white dark:bg-gray-200 dark:text-gray-800',
-  }
+  };
 
   return (
     <div
@@ -69,5 +73,5 @@ function ToastItem({ item, onDismiss }: { item: ToastItem; onDismiss: (id: strin
     >
       {item.message}
     </div>
-  )
+  );
 }

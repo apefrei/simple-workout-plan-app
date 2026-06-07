@@ -1,26 +1,26 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useRoutines } from '../hooks/useRoutines'
-import RoutineCard from '../components/RoutineCard'
-import CreateRoutineModal from '../components/CreateRoutineModal'
-import ImportWorkoutsButton from '../components/ImportWorkoutsButton'
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useRoutines } from '../hooks/useRoutines';
+import RoutineCard from '../components/RoutineCard';
+import CreateRoutineModal from '../components/CreateRoutineModal';
+import ImportWorkoutsButton from '../components/ImportWorkoutsButton';
 
 export default function RoutinesPage() {
-  const { routines, loading, createRoutine, deleteRoutine, refetch } = useRoutines()
-  const [showCreate, setShowCreate] = useState(false)
-  const navigate = useNavigate()
+  const { routines, loading, createRoutine, deleteRoutine, refetch } = useRoutines();
+  const [showCreate, setShowCreate] = useState(false);
+  const navigate = useNavigate();
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Delete this routine and all its exercises?')) return
-    await deleteRoutine(id)
-  }
+    if (!confirm('Delete this routine and all its exercises?')) return;
+    await deleteRoutine(id);
+  };
 
   if (loading) {
     return (
       <div className="flex justify-center p-12">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent" />
       </div>
-    )
+    );
   }
 
   return (
@@ -60,5 +60,5 @@ export default function RoutinesPage() {
         onCreate={createRoutine}
       />
     </div>
-  )
+  );
 }

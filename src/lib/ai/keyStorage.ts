@@ -21,24 +21,27 @@ async function deriveKey(userId: string): Promise<CryptoKey> {
     encoder.encode(userId),
     'PBKDF2',
     false,
-    ['deriveKey'],
+    ['deriveKey']
   );
   return crypto.subtle.deriveKey(
     { name: 'PBKDF2', salt: encoder.encode(SALT), iterations: 100_000, hash: 'SHA-256' },
     keyMaterial,
     { name: 'AES-GCM', length: 256 },
     false,
-    ['encrypt', 'decrypt'],
+    ['encrypt', 'decrypt']
   );
 }
 
-async function encrypt(plaintext: string, cryptoKey: CryptoKey): Promise<{ ciphertext: string; iv: string }> {
+async function encrypt(
+  plaintext: string,
+  cryptoKey: CryptoKey
+): Promise<{ ciphertext: string; iv: string }> {
   const encoder = new TextEncoder();
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const encrypted = await crypto.subtle.encrypt(
     { name: 'AES-GCM', iv },
     cryptoKey,
-    encoder.encode(plaintext),
+    encoder.encode(plaintext)
   );
   return {
     ciphertext: btoa(String.fromCharCode(...new Uint8Array(encrypted))),
@@ -46,18 +49,22 @@ async function encrypt(plaintext: string, cryptoKey: CryptoKey): Promise<{ ciphe
   };
 }
 
-async function decrypt(ciphertext: string, ivString: string, cryptoKey: CryptoKey): Promise<string> {
+async function decrypt(
+  ciphertext: string,
+  ivString: string,
+  cryptoKey: CryptoKey
+): Promise<string> {
   const encrypted = Uint8Array.from(atob(ciphertext), (c) => c.charCodeAt(0));
   const iv = Uint8Array.from(atob(ivString), (c) => c.charCodeAt(0));
-  const decrypted = await crypto.subtle.decrypt(
-    { name: 'AES-GCM', iv },
-    cryptoKey,
-    encrypted,
-  );
+  const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, cryptoKey, encrypted);
   return new TextDecoder().decode(decrypted);
 }
 
-export async function saveApiKey(userId: string, provider: ProviderName, apiKey: string): Promise<void> {
+export async function saveApiKey(
+  userId: string,
+  provider: ProviderName,
+  apiKey: string
+): Promise<void> {
   const cryptoKey = await deriveKey(userId);
   const { ciphertext, iv } = await encrypt(apiKey, cryptoKey);
   const stored: StoredKey = { encryptedKey: ciphertext, iv, timestamp: Date.now() };

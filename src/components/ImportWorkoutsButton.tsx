@@ -1,35 +1,35 @@
-import { useState } from 'react'
-import { useAuth } from '../contexts/AuthContext'
-import { importSeedData } from '../lib/importSeedData'
+import { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { importSeedData } from '../lib/importSeedData';
 
 interface Props {
-  onImported: () => void
+  onImported: () => void;
 }
 
 export default function ImportWorkoutsButton({ onImported }: Props) {
-  const { user } = useAuth()
-  const [loading, setLoading] = useState(false)
-  const [result, setResult] = useState<{ imported: number; skipped: number } | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<{ imported: number; skipped: number } | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleImport = async () => {
-    if (!user) return
-    setLoading(true)
-    setError(null)
-    setResult(null)
+    if (!user) return;
+    setLoading(true);
+    setError(null);
+    setResult(null);
 
     try {
-      const res = await importSeedData(user.id)
-      setResult(res)
+      const res = await importSeedData();
+      setResult(res);
       if (res.imported > 0) {
-        onImported()
+        onImported();
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Import failed')
+      setError(err instanceof Error ? err.message : 'Import failed');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="mt-6 rounded-lg border border-dashed border-gray-300 p-4 text-center dark:border-gray-600">
@@ -49,9 +49,7 @@ export default function ImportWorkoutsButton({ onImported }: Props) {
           {result.imported} importiert, {result.skipped} übersprungen (bereits vorhanden).
         </p>
       )}
-      {error && (
-        <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>
-      )}
+      {error && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>}
     </div>
-  )
+  );
 }

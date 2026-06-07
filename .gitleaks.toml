@@ -1,0 +1,20 @@
+# Gitleaks configuration — extends the bundled default ruleset.
+# https://github.com/gitleaks/gitleaks
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Global allowlist for known-safe paths and example files"
+paths = [
+  '''package-lock\.json''',
+  '''\.env\.example''',
+  '''\.env\.docker\.example''',
+  '''(^|/)dist/''',
+  '''(^|/)node_modules/''',
+  # Task-Master task metadata / PRD text (documentation, not shipped code).
+  '''(^|/)\.taskmaster/''',
+]
+# Placeholder values in example env files are not real secrets.
+regexes = [
+  '''(?i)(your[_-]?(api[_-]?key|secret|token)|changeme|example|placeholder|xxxx+)''',
+]

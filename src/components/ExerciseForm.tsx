@@ -1,53 +1,65 @@
-import { useState } from 'react'
-import type { MuscleGroup } from '../types/database'
-import MediaUpload from './MediaUpload'
+import { useState } from 'react';
+import type { MuscleGroup } from '../types/database';
+import MediaUpload from './MediaUpload';
 
 const MUSCLE_GROUPS: MuscleGroup[] = [
-  'chest', 'back', 'shoulders', 'biceps', 'triceps',
-  'legs', 'glutes', 'abs', 'forearms', 'calves', 'full_body',
-]
+  'chest',
+  'back',
+  'shoulders',
+  'biceps',
+  'triceps',
+  'legs',
+  'glutes',
+  'abs',
+  'forearms',
+  'calves',
+  'full_body',
+];
 
 interface ExerciseFormProps {
   onAdd: (exercise: {
-    name: string
-    muscle_group: MuscleGroup
-    machine_info?: string
-    target_sets_reps?: string
-    mediaFile?: File
-  }) => Promise<boolean>
+    name: string;
+    muscle_group: MuscleGroup;
+    machine_info?: string;
+    target_sets_reps?: string;
+    mediaFile?: File;
+  }) => Promise<boolean>;
 }
 
 export default function ExerciseForm({ onAdd }: ExerciseFormProps) {
-  const [name, setName] = useState('')
-  const [muscleGroup, setMuscleGroup] = useState<MuscleGroup>('chest')
-  const [machineInfo, setMachineInfo] = useState('')
-  const [targetSetsReps, setTargetSetsReps] = useState('')
-  const [mediaFile, setMediaFile] = useState<File | null>(null)
-  const [saving, setSaving] = useState(false)
+  const [name, setName] = useState('');
+  const [muscleGroup, setMuscleGroup] = useState<MuscleGroup>('chest');
+  const [machineInfo, setMachineInfo] = useState('');
+  const [targetSetsReps, setTargetSetsReps] = useState('');
+  const [mediaFile, setMediaFile] = useState<File | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const trimmed = name.trim()
-    if (!trimmed) return
-    setSaving(true)
+    e.preventDefault();
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    setSaving(true);
     const ok = await onAdd({
       name: trimmed,
       muscle_group: muscleGroup,
       machine_info: machineInfo.trim() || undefined,
       target_sets_reps: targetSetsReps.trim() || undefined,
       mediaFile: mediaFile ?? undefined,
-    })
+    });
     if (ok) {
-      setName('')
-      setMachineInfo('')
-      setTargetSetsReps('')
-      setMediaFile(null)
+      setName('');
+      setMachineInfo('');
+      setTargetSetsReps('');
+      setMediaFile(null);
     }
-    setSaving(false)
-  }
+    setSaving(false);
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-xl border border-dashed border-gray-300 p-4 dark:border-gray-600">
+    <form
+      onSubmit={handleSubmit}
+      className="rounded-xl border border-dashed border-gray-300 p-4 dark:border-gray-600"
+    >
       <h4 className="mb-3 text-sm font-semibold text-gray-600 dark:text-gray-400">Add Exercise</h4>
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
@@ -61,7 +73,9 @@ export default function ExerciseForm({ onAdd }: ExerciseFormProps) {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-500 dark:text-gray-400">Muscle Group</label>
+          <label className="block text-sm font-medium text-gray-500 dark:text-gray-400">
+            Muscle Group
+          </label>
           <select
             value={muscleGroup}
             onChange={(e) => setMuscleGroup(e.target.value as MuscleGroup)}
@@ -75,7 +89,9 @@ export default function ExerciseForm({ onAdd }: ExerciseFormProps) {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-500 dark:text-gray-400">Machine / Equipment</label>
+          <label className="block text-sm font-medium text-gray-500 dark:text-gray-400">
+            Machine / Equipment
+          </label>
           <input
             type="text"
             value={machineInfo}
@@ -85,7 +101,9 @@ export default function ExerciseForm({ onAdd }: ExerciseFormProps) {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-500 dark:text-gray-400">Target Sets x Reps</label>
+          <label className="block text-sm font-medium text-gray-500 dark:text-gray-400">
+            Target Sets x Reps
+          </label>
           <input
             type="text"
             value={targetSetsReps}
@@ -112,5 +130,5 @@ export default function ExerciseForm({ onAdd }: ExerciseFormProps) {
         </button>
       </div>
     </form>
-  )
+  );
 }

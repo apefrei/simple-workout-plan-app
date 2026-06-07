@@ -20,7 +20,10 @@ const DEFAULTS = {
   qualityStep: 0.1,
 };
 
-export async function compressImage(file: File, options?: CompressionOptions): Promise<CompressedImage> {
+export async function compressImage(
+  file: File,
+  options?: CompressionOptions
+): Promise<CompressedImage> {
   if (!file.type.startsWith('image/')) {
     throw new Error('File is not an image');
   }
@@ -31,7 +34,11 @@ export async function compressImage(file: File, options?: CompressionOptions): P
   let quality = options?.quality ?? DEFAULTS.quality;
 
   const img = await loadImage(file);
-  const { width, height } = calculateDimensions(img.naturalWidth, img.naturalHeight, maxWidthOrHeight);
+  const { width, height } = calculateDimensions(
+    img.naturalWidth,
+    img.naturalHeight,
+    maxWidthOrHeight
+  );
 
   const canvas = document.createElement('canvas');
   canvas.width = width;
@@ -57,7 +64,9 @@ export async function compressImage(file: File, options?: CompressionOptions): P
   const sizeBytes = base64SizeBytes(base64);
 
   if (sizeBytes > maxSizeBytes) {
-    throw new Error(`Could not compress image below ${maxSizeMB}MB (got ${Math.round(sizeBytes / 1024)}KB at minimum quality)`);
+    throw new Error(
+      `Could not compress image below ${maxSizeMB}MB (got ${Math.round(sizeBytes / 1024)}KB at minimum quality)`
+    );
   }
 
   return { base64: stripDataURLPrefix(base64), mimeType, sizeKB: Math.round(sizeBytes / 1024) };
@@ -81,7 +90,7 @@ function loadImage(file: File): Promise<HTMLImageElement> {
 function calculateDimensions(
   width: number,
   height: number,
-  maxDimension: number,
+  maxDimension: number
 ): { width: number; height: number } {
   if (width <= maxDimension && height <= maxDimension) {
     return { width, height };

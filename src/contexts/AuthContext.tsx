@@ -1,52 +1,65 @@
-import { createContext, useContext, useEffect, useState } from 'react'
-import type { Session, User } from '@supabase/supabase-js'
-import { supabase } from '../lib/supabase'
+import { createContext, useContext, useEffect, useState } from 'react';
+import { auth as apiAuth, getToken, setToken } from '../lib/api';
+import { clearAllKeys } from '../lib/ai/keyStorage';
+
+export interface AuthUser {
+  id: string;
+  email: string;
+}
 
 interface AuthContextType {
-  session: Session | null
-  user: User | null
-  loading: boolean
-  signOut: () => Promise<void>
+  user: AuthUser | null;
+  loading: boolean;
+  signOut: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [session, setSession] = useState<Session | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setLoading(false)
-    })
+    const token = getToken();
+    if (!token) {
+      // No token: nothing to restore, just leave the loading state.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setLoading(false);
+      return;
+    }
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [])
+    apiAuth
+      .me()
+      .then(({ user: u, token: fresh }) => {
+        setToken(fresh);
+        setUser(u);
+      })
+      .catch(() => {
+        setToken(null);
+        setUser(null);
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   const signOut = async () => {
-    await supabase.auth.signOut()
-  }
+    if (user?.id) clearAllKeys(user.id);
+    try {
+      await apiAuth.signout();
+    } catch {
+      /* ignore */
+    }
+    setToken(null);
+    setUser(null);
+  };
 
-  return (
-    <AuthContext.Provider
-      value={{ session, user: session?.user ?? null, loading, signOut }}
-    >
-      {children}
-    </AuthContext.Provider>
-  )
+  return <AuthContext.Provider value={{ user, loading, signOut }}>{children}</AuthContext.Provider>;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
-  const context = useContext(AuthContext)
+  const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
+    throw new Error('useAuth must be used within an AuthProvider');
   }
-  return context
+  return context;
 }

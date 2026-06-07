@@ -43,7 +43,10 @@ export class OpenAIProvider implements AIProvider {
       return {
         content: response.choices[0]?.message?.content ?? '',
         usage: response.usage
-          ? { inputTokens: response.usage.prompt_tokens, outputTokens: response.usage.completion_tokens ?? 0 }
+          ? {
+              inputTokens: response.usage.prompt_tokens,
+              outputTokens: response.usage.completion_tokens ?? 0,
+            }
           : undefined,
       };
     } catch (error) {
@@ -53,7 +56,7 @@ export class OpenAIProvider implements AIProvider {
 
   private formatMessages(
     messages: ChatMessage[],
-    systemPrompt?: string,
+    systemPrompt?: string
   ): OpenAI.ChatCompletionMessageParam[] {
     const result: OpenAI.ChatCompletionMessageParam[] = [];
 
@@ -63,9 +66,15 @@ export class OpenAIProvider implements AIProvider {
 
     for (const msg of messages) {
       if (msg.role === 'system') {
-        result.push({ role: 'system', content: typeof msg.content === 'string' ? msg.content : '' });
+        result.push({
+          role: 'system',
+          content: typeof msg.content === 'string' ? msg.content : '',
+        });
       } else if (msg.role === 'assistant') {
-        result.push({ role: 'assistant', content: typeof msg.content === 'string' ? msg.content : '' });
+        result.push({
+          role: 'assistant',
+          content: typeof msg.content === 'string' ? msg.content : '',
+        });
       } else {
         result.push({ role: 'user', content: this.formatContent(msg.content) });
       }
@@ -74,7 +83,9 @@ export class OpenAIProvider implements AIProvider {
     return result;
   }
 
-  private formatContent(content: string | ContentPart[]): string | OpenAI.ChatCompletionContentPart[] {
+  private formatContent(
+    content: string | ContentPart[]
+  ): string | OpenAI.ChatCompletionContentPart[] {
     if (typeof content === 'string') return content;
     return content.map((part): OpenAI.ChatCompletionContentPart => {
       if (part.type === 'text') {
